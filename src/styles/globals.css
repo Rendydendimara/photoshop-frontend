@@ -1,0 +1,119 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --color-primary: #b87514;
+  --color-brown-1: #ad3113;
+}
+
+.colorPrimary {
+  color: 'var(--color-primary)';
+}
+
+.backgrounPrimary {
+  background-color: 'var(--color-primary)';
+}
+
+.my-masonry-grid {
+  display: -webkit-box; /* Not needed if autoprefixing */
+  display: -ms-flexbox; /* Not needed if autoprefixing */
+  display: flex;
+  width: auto;
+}
+.my-masonry-grid_column {
+  background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column > div {
+  /* change div to reference your elements you put in <Masonry> */
+  margin-bottom: 10px;
+}
+
+/* @media only screen and (max-width: 600px) {
+  .my-masonry-grid {
+    width: 100%;
+  }
+  .my-masonry-grid_column {
+    padding-left: 0px; gutter size
+  }
+} */
+
+/* sm */
+@media only screen and (min-width: 30em) {
+  .my-masonry-grid {
+    width: 100%;
+  }
+}
+/* md */
+@media only screen and (min-width: 48em) {
+}
+/* lg */
+@media only screen and (min-width: 1024px) {
+  .my-masonry-grid {
+    width: 100%;
+    display: flex;
+  }
+}
+
+/* lg */
+@media only screen and (min-width: 768px) {
+}
+
+/* xl */
+@media only screen and (min-width: 1390px) {
+  .my-masonry-grid {
+    width: 100%;
+    display: flex;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.HideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.HideScrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.disableRadioHoverLaravelMigration > label:last-child {
+  cursor: not-allowed;
+}
+
+.radioButtonUseDatabaseType > span {
+  margin-left: 12px;
+}
+
+.chakra-radio__label {
+  margin-inline-start: 10px !important;
+}
+
+.styled-scrollbar::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+.styled-scrollbar::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 0.5em;
+}
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0.5em;
+}
