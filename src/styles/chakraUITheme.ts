@@ -53,8 +53,8 @@ const theme = extendTheme({
   breakpoints,
   // use custom font-family
   fonts: {
-    heading: 'Nunito',
-    body: 'Nunito',
+    heading: 'Rubik',
+    body: 'Rubik',
   },
 });
 

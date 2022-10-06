@@ -6,13 +6,12 @@ import {
 import { GetServerSidePropsContext } from 'next';
 import { ReactNode } from 'react';
 import theme from 'styles/chakraUITheme';
-import '@fontsource/nunito/200.css';
-import '@fontsource/nunito/300.css';
-import '@fontsource/nunito/400.css';
-import '@fontsource/nunito/600.css';
-import '@fontsource/nunito/700.css';
-import '@fontsource/nunito/800.css';
-import '@fontsource/nunito/900.css';
+import '@fontsource/rubik/300.css';
+import '@fontsource/rubik/400.css';
+import '@fontsource/rubik/600.css';
+import '@fontsource/rubik/700.css';
+import '@fontsource/rubik/800.css';
+import '@fontsource/rubik/900.css';
 // import '@fontsource/roboto';
 
 interface ChakraProps {
