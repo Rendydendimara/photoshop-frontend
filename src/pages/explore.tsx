@@ -33,39 +33,67 @@ const Explore: NextPage = () => {
             md: '20px',
             xl: '30px',
           }}
-          h='100vh'
           w='full'
           py='4'
         >
-          {/* <SimpleGrid
-            h='full'
-            w='full'
-            columns={[1, 2, 3]}
-            justifyContent='space-between'
-            alignItems='center'
-          ></SimpleGrid> */}
-          <Box
-            padding={4}
-            w='100%'
-            mx='auto'
-            sx={{ columnCount: [1, 2, 3], columnGap: '4px' }}
-          >
-            {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(
-              (dt, index) => (
+          <SimpleGrid padding={4} w='full' columns={[1, 2, 3]} spacing={3}>
+            <Box
+              maxH='100vh' //{{ base: 'unset', md: '100vh' }}
+              overflowY={{ base: 'unset', md: 'scroll' }}
+              className='styled-scrollbar'
+            >
+              {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((dt, index) => (
                 <Box
                   onClick={onOpen}
                   _hover={{ cursor: 'pointer' }}
                   key={index}
-                  w={{ base: '300px', md: '380px', lg: '400px', xl: '430px' }}
+                  w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
                   borderRadius='xl'
                   mb={2}
-                  display='inline-block'
                   h={height[Math.floor(Math.random() * 5)]}
                   bgColor='#FF9797'
                 />
-              )
-            )}
-          </Box>
+              ))}
+            </Box>
+
+            <Box
+              maxH='100vh' //{{ base: 'unset', md: '100vh' }}
+              overflowY={{ base: 'unset', md: 'scroll' }}
+              className='styled-scrollbar'
+            >
+              {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((dt, index) => (
+                <Box
+                  onClick={onOpen}
+                  _hover={{ cursor: 'pointer' }}
+                  key={index}
+                  w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
+                  borderRadius='xl'
+                  mb={2}
+                  h={height[Math.floor(Math.random() * 5)]}
+                  bgColor='#FF9797'
+                />
+              ))}
+            </Box>
+
+            <Box
+              maxH='100vh' //{{ base: 'unset', md: '100vh' }}
+              overflowY={{ base: 'unset', md: 'scroll' }}
+              className='styled-scrollbar'
+            >
+              {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((dt, index) => (
+                <Box
+                  onClick={onOpen}
+                  _hover={{ cursor: 'pointer' }}
+                  key={index}
+                  w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
+                  borderRadius='xl'
+                  mb={2}
+                  h={height[Math.floor(Math.random() * 5)]}
+                  bgColor='#FF9797'
+                />
+              ))}
+            </Box>
+          </SimpleGrid>
         </Box>
         <Modal
           closeOnOverlayClick={false}
@@ -81,7 +109,7 @@ const Explore: NextPage = () => {
               <Flex justifyContent='flex-end'>
                 <Box width='303px' height='49px' bgColor='#D9D9D9' />
               </Flex>
-              <SimpleGrid mt='17px' columns={[2, 3, 5]} spacing='16px'>
+              <SimpleGrid mt='17px' columns={[1, 3, 5]} spacing='16px'>
                 <Box width='135px' height='135px' bgColor='#D9D9D9' />
                 <Box width='135px' height='135px' bgColor='#D9D9D9' />
                 <Box width='135px' height='135px' bgColor='#D9D9D9' />
