@@ -1,20 +1,13 @@
-import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Box, Flex, SimpleGrid } from '@chakra-ui/layout';
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/modal';
+import { Input } from '@chakra-ui/input';
+import { Box, Flex, HStack, SimpleGrid, Text } from '@chakra-ui/layout';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Explore: NextPage = () => {
   const height = ['529px', '600px', '350px', '500px', '429px', '400px'];
@@ -26,115 +19,120 @@ const Explore: NextPage = () => {
         <title>{APP_NAME} | Explore</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <AppTemplate showInfoBeta>
-        <Box
-          px={{
-            base: '15px',
-            md: '20px',
-            xl: '30px',
-          }}
-          w='full'
-          py='4'
+      <AppTemplate>
+        <Flex
+          flexDirection='column'
+          justifyContent='center'
+          alignItems='center'
+          pt='195px'
+          px='168px'
+          pb='50px'
         >
-          <SimpleGrid padding={4} w='full' columns={[1, 2, 3]} spacing={3}>
-            <Box
-              maxH='100vh' //{{ base: 'unset', md: '100vh' }}
-              overflowY={{ base: 'unset', md: 'scroll' }}
-              className='styled-scrollbar'
-            >
-              {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((dt, index) => (
-                <Box
-                  onClick={onOpen}
-                  _hover={{ cursor: 'pointer' }}
-                  key={index}
-                  w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
-                  borderRadius='xl'
-                  mb={2}
-                  h={height[Math.floor(Math.random() * 5)]}
-                  bgColor='#FF9797'
-                />
-              ))}
-            </Box>
-
-            <Box
-              maxH='100vh' //{{ base: 'unset', md: '100vh' }}
-              overflowY={{ base: 'unset', md: 'scroll' }}
-              className='styled-scrollbar'
-            >
-              {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((dt, index) => (
-                <Box
-                  onClick={onOpen}
-                  _hover={{ cursor: 'pointer' }}
-                  key={index}
-                  w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
-                  borderRadius='xl'
-                  mb={2}
-                  h={height[Math.floor(Math.random() * 5)]}
-                  bgColor='#FF9797'
-                />
-              ))}
-            </Box>
-
-            <Box
-              maxH='100vh' //{{ base: 'unset', md: '100vh' }}
-              overflowY={{ base: 'unset', md: 'scroll' }}
-              className='styled-scrollbar'
-            >
-              {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((dt, index) => (
-                <Box
-                  onClick={onOpen}
-                  _hover={{ cursor: 'pointer' }}
-                  key={index}
-                  w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
-                  borderRadius='xl'
-                  mb={2}
-                  h={height[Math.floor(Math.random() * 5)]}
-                  bgColor='#FF9797'
-                />
-              ))}
-            </Box>
-          </SimpleGrid>
-        </Box>
-        <Modal
-          closeOnOverlayClick={false}
-          onClose={onClose}
-          isOpen={isOpen}
-          isCentered
-          size='3xl'
-        >
-          <ModalOverlay />
-          <ModalContent maxH='90vh'>
-            <ModalCloseButton />
-            <ModalBody mt='40px' w='full' overflowY='scroll'>
-              <Flex justifyContent='flex-end'>
-                <Box width='303px' height='49px' bgColor='#D9D9D9' />
-              </Flex>
-              <SimpleGrid mt='17px' columns={[1, 3, 5]} spacing='16px'>
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-              </SimpleGrid>
-            </ModalBody>
-            <ModalFooter justifyContent='center'>
-              <Button bgColor='#D9D9D9' onClick={onClose} w='135px'></Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+          <Input
+            width='717px'
+            height='60px'
+            border='1px solid #DADADA'
+            borderRadius='16px'
+            placeholder='Ex Gojek, Cart, or Fashion'
+            _placeholder={{
+              fontWeight: 300,
+              fontSize: '20px',
+              lineHeight: '24px',
+              color: '#B1B1B1',
+            }}
+          />
+          <Box mt='55px'>
+            <GridImage />
+            <Box mt='80px' />
+            <GridImage />
+            <Box mt='80px' />
+            <GridImage />
+          </Box>
+        </Flex>
       </AppTemplate>
     </Layout>
   );
 };
 
 export default Explore;
+
+const GridImage: React.FC<any> = () => {
+  return (
+    <SimpleGrid padding={4} w='full' gap='48px' columns={[2, 3, 4]} spacing={3}>
+      {[0, 1, 2, 3].map((i) => (
+        <Link href='/brand/shoope' key={i}>
+          <Box _hover={{ cursor: 'pointer' }}>
+            <Flex
+              justifyContent='center'
+              alignItems='center'
+              boxShadow='md'
+              width='full'
+              height='190px'
+              borderRadius='8px'
+            >
+              <Image
+                src='/images/shoope.png'
+                alt='shoope logo'
+                width='174px'
+                height='56px'
+                objectFit='contain'
+                objectPosition='center'
+              />
+            </Flex>
+            <Box mt='18px' padding='8px'>
+              <Text
+                fontWeight='700'
+                fontSize='20px'
+                lineHeight='24px'
+                textAlign='left'
+              >
+                Astro
+              </Text>
+              <Text
+                mt='4px'
+                textAlign='left'
+                fontWeight='400'
+                fontSize='16px'
+                lineHeight='19px'
+              >
+                Last updated 28 Apr
+              </Text>
+              <Text
+                mt='12px'
+                textAlign='left'
+                fontWeight='400'
+                fontSize='14px'
+                lineHeight='150%'
+                color='#666666'
+              >
+                UNIQLO is a clothing apparel company, which was originally
+                founded in Yamaguchi, Japan in 1949 as a textiles manufacturer.
+                Now it is a global brand with over 1000 stores around the world.
+                Redefining clothing, with a focus on quality and textiles which
+                has been unwavered since the company's origins in 1949.
+              </Text>
+              <HStack spacing={2} mt='12px'>
+                <Text
+                  fontWeight='400'
+                  fontSize='14px'
+                  lineHeight='17px'
+                  color='#3E97FF'
+                >
+                  #Ecommerce
+                </Text>
+                <Text
+                  fontWeight='400'
+                  fontSize='14px'
+                  lineHeight='17px'
+                  color='#3E97FF'
+                >
+                  #Clothes
+                </Text>
+              </HStack>
+            </Box>
+          </Box>
+        </Link>
+      ))}
+    </SimpleGrid>
+  );
+};
