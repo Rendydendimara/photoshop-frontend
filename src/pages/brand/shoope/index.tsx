@@ -1,4 +1,5 @@
-import { IconButton } from '@chakra-ui/button';
+import { Button, IconButton } from '@chakra-ui/button';
+import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image as ImageChakra } from '@chakra-ui/image';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
@@ -11,6 +12,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowLeftCircle } from 'react-icons/fi';
+import { HiOutlinePlusSm } from 'react-icons/hi';
 
 const BrandIndex: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,7 +27,7 @@ const BrandIndex: NextPage = () => {
         <title>{APP_NAME} | Brand</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <AppTemplate>
+      <AppTemplate showNavbarFooter>
         <Link href='/explore'>
           <IconButton
             mt='4'
@@ -42,74 +44,111 @@ const BrandIndex: NextPage = () => {
             w={{ base: '100%', lg: '25%' }}
           >
             <Box>
-              <Flex
-                justifyContent='center'
-                alignItems='center'
-                boxShadow='md'
-                width='full'
-                height='190px'
-                borderRadius='8px'
-              >
-                <Image
-                  src='/images/shoope.png'
-                  alt='shoope logo'
-                  width='174px'
-                  height='56px'
-                  objectFit='contain'
-                  objectPosition='center'
-                />
-              </Flex>
-              <Box mt='18px' padding='8px'>
-                <Text
-                  fontWeight='700'
-                  fontSize='20px'
-                  lineHeight='24px'
-                  textAlign='left'
+              {/* Profile */}
+              <Box>
+                <Flex
+                  justifyContent='center'
+                  alignItems='center'
+                  boxShadow='md'
+                  width='full'
+                  height='190px'
+                  borderRadius='8px'
                 >
-                  Astro
-                </Text>
-                <Text
-                  mt='4px'
-                  textAlign='left'
-                  fontWeight='400'
-                  fontSize='16px'
-                  lineHeight='19px'
-                >
-                  Last updated 28 Apr
-                </Text>
-                <Text
-                  mt='12px'
-                  textAlign='left'
-                  fontWeight='400'
-                  fontSize='14px'
-                  lineHeight='150%'
-                  color='#666666'
-                >
-                  UNIQLO is a clothing apparel company, which was originally
-                  founded in Yamaguchi, Japan in 1949 as a textiles
-                  manufacturer. Now it is a global brand with over 1000 stores
-                  around the world. Redefining clothing, with a focus on quality
-                  and textiles which has been unwavered since the company's
-                  origins in 1949.
-                </Text>
-                <HStack spacing={2} mt='12px'>
+                  <Image
+                    src='/images/shoope.png'
+                    alt='shoope logo'
+                    width='174px'
+                    height='56px'
+                    objectFit='contain'
+                    objectPosition='center'
+                  />
+                </Flex>
+                <Box mt='18px' padding='8px'>
                   <Text
-                    fontWeight='400'
-                    fontSize='14px'
-                    lineHeight='17px'
-                    color='#3E97FF'
+                    fontWeight='700'
+                    fontSize='20px'
+                    lineHeight='24px'
+                    textAlign='left'
                   >
-                    #Ecommerce
+                    Astro
                   </Text>
                   <Text
+                    mt='4px'
+                    textAlign='left'
+                    fontWeight='400'
+                    fontSize='16px'
+                    lineHeight='19px'
+                  >
+                    Last updated 28 Apr
+                  </Text>
+                  <Text
+                    mt='12px'
+                    textAlign='left'
                     fontWeight='400'
                     fontSize='14px'
-                    lineHeight='17px'
-                    color='#3E97FF'
+                    lineHeight='150%'
+                    color='#666666'
                   >
-                    #Clothes
+                    UNIQLO is a clothing apparel company, which was originally
+                    founded in Yamaguchi, Japan in 1949 as a textiles
+                    manufacturer. Now it is a global brand with over 1000 stores
+                    around the world. Redefining clothing, with a focus on
+                    quality and textiles which has been unwavered since the
+                    company's origins in 1949.
                   </Text>
-                </HStack>
+                  <HStack spacing={2} mt='12px'>
+                    <Text
+                      fontWeight='400'
+                      fontSize='14px'
+                      lineHeight='17px'
+                      color='#3E97FF'
+                    >
+                      #Ecommerce
+                    </Text>
+                    <Text
+                      fontWeight='400'
+                      fontSize='14px'
+                      lineHeight='17px'
+                      color='#3E97FF'
+                    >
+                      #Clothes
+                    </Text>
+                  </HStack>
+                </Box>
+              </Box>
+              {/* Modules */}
+              <Box mt='30px'>
+                <Text fontWeight='700' fontSize='24px' color='#09BC8A'>
+                  Modules
+                </Text>
+                <Box
+                  padding='32px 24px'
+                  background='#FBFBFB'
+                  boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                  display='flex'
+                  flexDirection='column'
+                  gap='20px'
+                >
+                  {[0, 1, 2, 3, 4, 5].map((i) => (
+                    <Checkbox key={i}>Cart Page</Checkbox>
+                  ))}
+                </Box>
+              </Box>
+              {/* Button Compare */}
+              <Box mt='30px'>
+                <Link href='/compare'>
+                  <Button
+                    leftIcon={<HiOutlinePlusSm />}
+                    color='#FBFFFE'
+                    fontWeight='600'
+                    variant='solid'
+                    w='full'
+                    bgColor='#09BC8A'
+                    h='40px'
+                  >
+                    Compare
+                  </Button>
+                </Link>
               </Box>
             </Box>
           </Box>

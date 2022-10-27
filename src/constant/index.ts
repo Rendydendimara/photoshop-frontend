@@ -10,3 +10,20 @@ export const BACKEND_URL: string =
     ? BACKEND_LOCAL_URL
     : BACKEND_PRODUCTION_URL;
 export const APP_NAME = 'PHOTOSHOP';
+
+export interface INavItem {
+  label: string;
+  subLabel?: string;
+  children?: Array<INavItem>;
+  href?: string;
+}
+export const ROUTE: INavItem[] = [
+  {
+    label: 'Home',
+    href: '/',
+  },
+  {
+    label: 'Compare',
+    href: '#',
+  },
+];

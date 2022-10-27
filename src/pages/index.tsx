@@ -17,53 +17,63 @@ const Home: NextPage = () => {
       <AppTemplate showInfoBeta>
         <Box
           px={{
-            base: '15px',
+            base: '12px',
             md: '40px',
             xl: '80px',
           }}
-          h='100vh'
+          h={{ base: 'initial', md: '100vh' }}
           w='full'
+          py='4'
         >
-          <SimpleGrid
+          <Flex
             h='full'
             w='full'
-            columns={[1, 2, 2]}
             justifyContent='space-between'
-            alignItems='center'
+            alignItems={{ base: 'initial', md: 'center' }}
+            flexDirection={{ base: 'column-reverse', md: 'row' }}
           >
-            <Box w='700px'>
+            <Box w={{ base: '100%', md: '700px' }}>
               <Text
                 textAlign='left'
                 fontWeight='700'
-                fontSize='64px'
-                lineHeight='76px'
+                fontSize={{ base: '44px', md: '64px' }}
+                lineHeight={{ base: '52.14px', md: '76px' }}
+                mt={{ base: '-45px', md: 0 }}
               >
                 GOOD INSPIRATIONS GOOD DESIGN
               </Text>
               <Text
-                w='430px'
+                w={{ base: 'initial', md: '430px' }}
                 fontWeight='400'
                 fontSize='16px'
                 lineHeight='19px'
                 textAlign='left'
+                mt={{ base: '25px', md: 0 }}
               >
                 More than 1001 architecture inspiration around the world, we
                 believe this can help you to better inspiration for your design
               </Text>
               <Link href='/explore'>
                 <Button
-                  mt='40px'
+                  mt={{ base: '25px', md: '40px' }}
                   width='210px'
                   height='56px'
-                  bgColor='#10BA41'
+                  bgColor='#09BC8A'
                   borderRadius='12px'
                   color='white'
+                  fontWeight='500'
+                  fontSize='20px'
+                  size='md'
                 >
                   Explore
                 </Button>
               </Link>
             </Box>
-            <Flex gap='10px' justifyContent='flex-end'>
+            <Flex
+              w={{ base: 'full', md: 'initial' }}
+              gap='10px'
+              justifyContent='flex-end'
+            >
               <Flex flexDirection='column' gap='10px'>
                 <BoxImage noBG />
                 <BoxImage noBG />
@@ -95,7 +105,7 @@ const Home: NextPage = () => {
                 <BoxImage />
               </Flex>
             </Flex>
-          </SimpleGrid>
+          </Flex>
         </Box>
       </AppTemplate>
     </Layout>

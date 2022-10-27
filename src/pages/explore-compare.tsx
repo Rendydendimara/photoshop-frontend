@@ -25,7 +25,7 @@ const Explore: NextPage = () => {
         <title>{APP_NAME} | Explore</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <AppTemplate showInfoBeta>
+      <AppTemplate showNavbarFooter>
         <Box
           px={{
             base: '15px',
