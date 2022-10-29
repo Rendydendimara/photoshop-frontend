@@ -14,11 +14,12 @@ export const localCookieClearToken = () => {
 };
 
 export const setLocalCookie = (key: string, value: any) => {
-  Cookie.set(key, value, { expires: 31 });
+  Cookie.set(key, JSON.stringify(value), { expires: 31 });
 };
 
 export const getLocalCookie = (key: string) => {
-  Cookie.get(key);
+  let result = Cookie.get(key);
+  return result ? JSON.parse(result) : false;
 };
 
 export const removeLocalCookie = (key: string) => {

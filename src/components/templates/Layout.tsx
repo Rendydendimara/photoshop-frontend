@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/layout';
+import Footer from 'components/molecules/Footer';
 import Navbar from 'components/molecules/Navbar';
 import { APP_NAME } from 'constant';
 import Head from 'next/head';
@@ -13,7 +14,10 @@ interface IProps {
   cookies?: string;
 }
 
-interface IProps {}
+interface IProps {
+  showInfoBeta?: boolean;
+  showNavbarFooter?: boolean;
+}
 
 const Layout: React.FC<IProps> = (props) => {
   return (
@@ -130,14 +134,15 @@ const Layout: React.FC<IProps> = (props) => {
           content=''
         /> */}
         </Head>
-        {/* <Header /> */}
-        {/* <Navbar /> */}
+        {props.showNavbarFooter && <Navbar />}
+
         <main className={styles.main}>
           <Box maxW='1700px' w='full'>
             {props.children}
           </Box>
         </main>
-        {/* <Footer /> */}
+        {props.showNavbarFooter && <Footer />}
+
         <script
           async
           defer

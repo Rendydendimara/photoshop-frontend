@@ -14,7 +14,13 @@ const Home: NextPage = () => {
         <title>{APP_NAME} | Home</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <AppTemplate showInfoBeta>
+      <AppTemplate
+        px={{
+          sm: '15px',
+          md: '40px',
+          xl: '124px',
+        }}
+      >
         <Box
           px={{
             base: '12px',
