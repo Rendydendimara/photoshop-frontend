@@ -99,13 +99,14 @@ const Compare: NextPage = () => {
       </Head>
       <AppTemplate>
         <Flex
-          gap='40px'
+          // gap='40px'
           flexDirection='column'
           alignItems='center'
           justifyContent='center'
+          h='90vh'
         >
-          <Box>
-            <Text fontWeight='600' fontSize='20px'>
+          <Box mb='44px'>
+            <Text fontWeight='600' lineHeight='24px' fontSize='20px'>
               Compare Competitor
             </Text>
           </Box>
@@ -132,30 +133,6 @@ const Compare: NextPage = () => {
                 onRemove={handleRemoveBrandCompare}
               />
             )}
-            {/* <Box>
-              <Flex
-                // filter='drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.04)) drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.08))'
-                boxShadow='md'
-                justifyContent='center'
-                alignItems='center'
-                minW='240px'
-                minH='190px'
-              >
-                <ChakraImage alt='shoope' src='/images/shoope.png' />
-              </Flex>
-              <Center>
-                <Button
-                  fontWeight='400'
-                  fontSize='14px'
-                  color='#B4C6D5'
-                  colorScheme='teal'
-                  variant='unstyle'
-                  leftIcon={<HiTrash />}
-                >
-                  Remove
-                </Button>
-              </Center>
-            </Box> */}
             {!listIdBrandCompareObject.brand1 && (
               <Flex
                 boxShadow='md'
@@ -167,7 +144,12 @@ const Compare: NextPage = () => {
                 onClick={() => handleOpenBrand('brand1')}
               >
                 <AiOutlinePlus size='30' fill='#172A3A' />
-                <Text fontWeight='500' fontSize='16px' color='#172A3A'>
+                <Text
+                  fontWeight='500'
+                  fontSize='16px'
+                  color='#172A3A'
+                  lineHeight='19px'
+                >
                   Add Competitor
                 </Text>
               </Flex>
@@ -183,7 +165,12 @@ const Compare: NextPage = () => {
                 onClick={() => handleOpenBrand('brand2')}
               >
                 <AiOutlinePlus size='30' fill='#172A3A' />
-                <Text fontWeight='500' fontSize='16px' color='#172A3A'>
+                <Text
+                  fontWeight='500'
+                  fontSize='16px'
+                  color='#172A3A'
+                  lineHeight='19px'
+                >
                   Add Competitor
                 </Text>
               </Flex>
@@ -199,13 +186,18 @@ const Compare: NextPage = () => {
                 flexDirection='column'
               >
                 <AiOutlinePlus size='30' fill='#172A3A' />
-                <Text fontWeight='500' fontSize='16px' color='#172A3A'>
+                <Text
+                  fontWeight='500'
+                  fontSize='16px'
+                  color='#172A3A'
+                  lineHeight='19px'
+                >
                   Add Competitor
                 </Text>
               </Flex>
             )}
           </Flex>
-          <Box>
+          <Box mt='22px'>
             <Link
               href={`/explore-compare?brand1=${listIdBrandCompareObject.brand1}&brand2=${listIdBrandCompareObject.brand2}&brand3=${listIdBrandCompareObject.brand3}`}
             >

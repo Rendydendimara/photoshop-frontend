@@ -31,7 +31,6 @@ import React from 'react';
 interface IProps {}
 
 const Navbar: React.FC<IProps> = () => {
-  const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
   return (
     <Box>
@@ -39,8 +38,12 @@ const Navbar: React.FC<IProps> = () => {
         bg='white'
         color='gray.600'
         minH={'60px'}
-        py={{ base: 2 }}
-        px={{ base: 4 }}
+        pt={{ base: 4, xl: '49px' }}
+        px={{
+          sm: '16px',
+          md: '100px',
+          xl: '167px',
+        }}
         align={'center'}
       >
         <Flex
@@ -78,40 +81,13 @@ const Navbar: React.FC<IProps> = () => {
       <MobileDrawer open={isOpen} onClose={onToggle} />
     </Box>
   );
-  // return (
-  //   <Flex
-  //     my='8'
-  //     padding={{
-  //       base: '20px',
-  //       xl: '32px',
-  //     }}
-  //     w='full'
-  //     justifyContent='flex-end'
-  //     alignItems='center'
-  //     gap='30px'
-  //   >
-  //     {ROUTE.map((route, i) => (
-  //       <Link passHref href={route.link}>
-  //         <Text
-  //           _hover={{
-  //             cursor: 'pointer',
-  //           }}
-  //           textAlign='right'
-  //           fontSize='14px'
-  //           fontWeight={router.pathname === route.link ? '600' : '400'}
-  //         >
-  //           {route.label}
-  //         </Text>
-  //       </Link>
-  //     ))}
-  //   </Flex>
-  // );
 };
 
 const DesktopNav = () => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
+  const router = useRouter();
 
   return (
     <Stack direction={'row'} spacing={4}>
@@ -122,8 +98,9 @@ const DesktopNav = () => {
               <ChakraLink
                 p={2}
                 href={navItem.href ?? '#'}
-                fontSize={'sm'}
-                fontWeight={500}
+                fontSize='16px'
+                lineHeight='19px'
+                fontWeight={navItem.pathname === router.pathname ? 600 : 400}
                 color={linkColor}
                 _hover={{
                   textDecoration: 'none',
@@ -196,7 +173,7 @@ const DesktopSubNav = ({ label, href, subLabel }: INavItem) => {
 
 const MobileNavItem = ({ label, children, href }: INavItem) => {
   const { isOpen, onToggle } = useDisclosure();
-
+  const router = useRouter();
   return (
     <Stack spacing={4} onClick={children && onToggle}>
       <Flex
@@ -210,7 +187,7 @@ const MobileNavItem = ({ label, children, href }: INavItem) => {
         }}
       >
         <Text
-          fontWeight={600}
+          fontWeight={href === router.pathname ? 600 : 400}
           color={useColorModeValue('gray.600', 'gray.200')}
         >
           {label}

@@ -22,14 +22,10 @@ const Home: NextPage = () => {
         }}
       >
         <Box
-          px={{
-            base: '12px',
-            md: '40px',
-            xl: '80px',
-          }}
           h={{ base: 'initial', md: '100vh' }}
           w='full'
-          py='4'
+          pt={{ base: '33px', md: 0 }}
+          pb={{ base: '98px', md: 0 }}
         >
           <Flex
             h='full'
@@ -45,6 +41,7 @@ const Home: NextPage = () => {
                 fontSize={{ base: '44px', md: '64px' }}
                 lineHeight={{ base: '52.14px', md: '76px' }}
                 mt={{ base: '-45px', md: 0 }}
+                color='#000'
               >
                 GOOD INSPIRATIONS GOOD DESIGN
               </Text>
@@ -56,8 +53,8 @@ const Home: NextPage = () => {
                 textAlign='left'
                 mt={{ base: '25px', md: 0 }}
               >
-                More than 1001 architecture inspiration around the world, we
-                believe this can help you to better inspiration for your design
+                Bring you a new way to looking a design inspiration, more than
+                150 apps we collect for your inspiration.
               </Text>
               <Link href='/explore'>
                 <Button
@@ -69,7 +66,7 @@ const Home: NextPage = () => {
                   color='white'
                   fontWeight='500'
                   fontSize='20px'
-                  size='md'
+                  // size='md'
                 >
                   Explore
                 </Button>

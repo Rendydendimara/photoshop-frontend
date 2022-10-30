@@ -6,14 +6,17 @@ export interface INavItem {
   subLabel?: string;
   children?: Array<INavItem>;
   href?: string;
+  pathname?: string;
 }
 export const ROUTE: INavItem[] = [
   {
     label: 'Home',
-    href: '/',
+    href: '/explore',
+    pathname: '/explore',
   },
   {
     label: 'Compare',
-    href: '#',
+    href: '/compare',
+    pathname: '/compare',
   },
 ];

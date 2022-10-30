@@ -121,6 +121,35 @@ const BrandIndex: NextPage = () => {
     return result;
   };
 
+  // useEffect(() => {
+  //   // Get the navbar
+  //   let navbar: any;
+
+  //   if (typeof window !== 'undefined') {
+  //     navbar = document.getElementById('brandInfoSection');
+  //   }
+
+  //   // Get the offset position of the navbar
+  //   let sticky: any = navbar?.offsetTop;
+  //   // When the user scrolls the page, execute myFunction
+  //   if (typeof window !== 'undefined') {
+  //     window.onscroll = function () {
+  //       handleScroll();
+  //     };
+  //   }
+
+  //   function handleScroll() {
+  //     console.log('window.pageYOffset', window.pageYOffset);
+  //     console.log('sticky', sticky);
+  //     // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+  //     if (window.pageYOffset >= sticky) {
+  //       navbar.classList.add('stickyBrandAbout');
+  //     } else {
+  //       navbar.classList.remove('stickyBrandAbout');
+  //     }
+  //   }
+  // });
+
   useEffect(() => {
     const { id }: any = router.query;
     if (id) {
@@ -144,19 +173,17 @@ const BrandIndex: NextPage = () => {
           xl: '0',
         }}
       >
-        <Box ml={{ base: '15px', md: '40px', xl: '80px' }}>
-          <Link href='/explore'>
-            <IconButton
-              variant='unstyled'
-              colorScheme='whatsapp'
-              aria-label='back'
-              icon={<FiArrowLeftCircle />}
-            />
-          </Link>
-          <Flex pt='70px' pb='50px' w='full' alignItems='flex-start'>
+        <Box mt='99px' mb='120px' ml={{ base: '15px', md: '40px', xl: '80px' }}>
+          <Flex w='full' gap='48px' alignItems='flex-start'>
             <Box
-              px={{ base: '15px', md: '40px', lg: '80px' }}
-              w={{ base: '100%', lg: '25%' }}
+              // px={{ base: '15px', md: '40px', lg: '80px' }}
+              w={{ base: '100%', lg: '20%' }}
+              // position='fixed'
+              // overflowY='scroll'
+              // id='brandInfoSection'
+              // maxH='100vh'
+              // overflowY='scroll'
+              // className='styled-scrollbar'
             >
               <Box>
                 {/* Profile */}
@@ -165,7 +192,7 @@ const BrandIndex: NextPage = () => {
                     justifyContent='center'
                     alignItems='center'
                     boxShadow='md'
-                    width='full'
+                    width='240px'
                     height='190px'
                     borderRadius='8px'
                   >
@@ -179,6 +206,15 @@ const BrandIndex: NextPage = () => {
                     />
                   </Flex>
                   <Box mt='18px' padding='8px'>
+                    <Text
+                      mb='20px'
+                      fontWeight='700'
+                      fontSize='24px'
+                      color='#09BC8A'
+                      lineHeight='28px'
+                    >
+                      About
+                    </Text>
                     <Text
                       fontWeight='700'
                       fontSize='20px'
@@ -199,16 +235,18 @@ const BrandIndex: NextPage = () => {
                         ? moment(brand.updated_at).format('DD MMM')
                         : moment(brand?.created_at).format('DD MMM')}
                     </Text>
-                    <Text
-                      mt='12px'
-                      textAlign='left'
-                      fontWeight='400'
-                      fontSize='14px'
-                      lineHeight='150%'
-                      color='#666666'
-                    >
-                      {brand?.description}
-                    </Text>
+                    {brand?.description && (
+                      <Text
+                        mt='12px'
+                        textAlign='left'
+                        fontWeight='400'
+                        fontSize='14px'
+                        lineHeight='150%'
+                        color='#666666'
+                      >
+                        {brand?.description}
+                      </Text>
+                    )}
                     {brand && brand.tags.length > 0 && (
                       <HStack spacing={2} mt='12px'>
                         {brand.tags.map((tag, i) => (
@@ -227,11 +265,17 @@ const BrandIndex: NextPage = () => {
                   </Box>
                 </Box>
                 {/* Modules */}
-                <Box mt='30px'>
-                  <Text fontWeight='700' fontSize='24px' color='#09BC8A'>
+                <Box mt='32px'>
+                  <Text
+                    fontWeight='700'
+                    fontSize='24px'
+                    lineHeight='28px'
+                    color='#09BC8A'
+                  >
                     Modules
                   </Text>
                   <Box
+                    mt='20px'
                     padding='32px 24px'
                     background='#FBFBFB'
                     boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
@@ -245,13 +289,23 @@ const BrandIndex: NextPage = () => {
                         onChange={handleChangeModuleCheckbox}
                         key={i}
                       >
-                        {module._id}
+                        <Text
+                          fontWeight='500'
+                          fontSize='14px'
+                          lineHeight='150%'
+                          color='#172A3A'
+                          as='span'
+                          ml='4px'
+                          textTransform='capitalize'
+                        >
+                          {module._id}
+                        </Text>
                       </Checkbox>
                     ))}
                   </Box>
                 </Box>
                 {/* Button Compare */}
-                <Box mt='30px'>
+                <Box mt='32px'>
                   {/* <Link href='/compare'> */}
                   <Button
                     leftIcon={<HiOutlinePlusSm />}
@@ -269,7 +323,13 @@ const BrandIndex: NextPage = () => {
                 </Box>
               </Box>
             </Box>
-            <Box w={{ base: '100%', lg: '75%' }}>
+            <Box
+              //  ml='300px'
+              w={{ base: '100%', lg: '80%' }}
+              // maxH='100vh'
+              // overflowY='scroll'
+              // className='styled-scrollbar'
+            >
               {filterBrandImages().map((imgBrand, i) => (
                 <Box key={i}>
                   <ListImage
@@ -277,7 +337,7 @@ const BrandIndex: NextPage = () => {
                     images={imgBrand.images}
                     onClickImage={onOpenImage}
                   />
-                  <Box mt={{ base: '30px', md: '50px', lg: '96px' }} />
+                  <Box mt={{ base: '20px', md: '30px', xl: '48px' }} />
                 </Box>
               ))}
             </Box>
@@ -330,8 +390,23 @@ interface IListImage {
 const ListImage: React.FC<IListImage> = (props) => {
   return (
     <Box>
-      <Text fontWeight='700' fontSize='20px' lineHeight='24px'>
+      <Text
+        color='#09BC8A'
+        textTransform='capitalize'
+        fontWeight='700'
+        fontSize='20px'
+        lineHeight='24px'
+      >
         {props.moduleName}
+      </Text>
+      <Text
+        mt='4px'
+        color='#000'
+        fontWeight='400'
+        fontSize='14px'
+        lineHeight='17px'
+      >
+        {props.images.length} Screen
       </Text>
       <Flex
         mt='24px'

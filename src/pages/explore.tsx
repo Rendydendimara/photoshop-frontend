@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image } from '@chakra-ui/image';
-import { Input } from '@chakra-ui/input';
+import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
 import { Box, Center, Flex, HStack, SimpleGrid, Text } from '@chakra-ui/layout';
 import {
   Drawer,
@@ -22,8 +22,9 @@ import Head from 'next/head';
 // import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { useOnClickOutside } from 'usehooks-ts';
 import { AiOutlineClose } from 'react-icons/ai';
+import { BiSearch } from 'react-icons/bi';
+import { useOnClickOutside } from 'usehooks-ts';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -136,7 +137,7 @@ const Explore: NextPage = () => {
         {dataBase.map((brandBase: any, i: any) => (
           <Box key={i}>
             {renderItemBrand(brandBase)}
-            <Box mt={{ base: '10px', md: '80px' }} />
+            <Box mt={{ base: '10px', md: '72px' }} />
           </Box>
         ))}
       </Box>
@@ -167,6 +168,33 @@ const Explore: NextPage = () => {
   };
 
   useEffect(() => {
+    // Get the navbar
+    let navbar: any;
+
+    if (typeof window !== 'undefined') {
+      navbar = document.getElementById('categoryDeskop');
+    }
+
+    // Get the offset position of the navbar
+    let sticky: any = navbar?.offsetTop;
+    // When the user scrolls the page, execute myFunction
+    if (typeof window !== 'undefined') {
+      window.onscroll = function () {
+        handleScroll();
+      };
+    }
+
+    function handleScroll() {
+      // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+      if (window.pageYOffset >= sticky) {
+        navbar.classList.add('stickyNavbarHome');
+      } else {
+        navbar.classList.remove('stickyNavbarHome');
+      }
+    }
+  });
+
+  useEffect(() => {
     handleGetListBrand({});
     handleGetListCategory();
   }, []);
@@ -182,111 +210,141 @@ const Explore: NextPage = () => {
           flexDirection={{ base: 'row', md: 'column' }}
           justifyContent={{ base: 'space-between', md: 'center' }}
           alignItems={{ base: 'flex-start', md: 'center' }}
-          pt='20px'
-          px={{ base: '15px', md: '120px' }}
+          mt={{ base: '20px', xl: '66px' }}
+          // px={{ base: '15px', md: '120px' }}
           w='full'
           gap={{ base: '10px', md: 0 }}
+          position='relative'
         >
           <Box>
-            <Input
-              width={{ base: '75%', md: '717px' }}
-              height={{ base: '41px', md: '60px' }}
-              // border='1px solid #172A3A'
-              borderColor='#172A3A'
-              borderRadius='16px'
-              onKeyDown={handleKeyOnDownKeyword}
-              placeholder='Ex Gojek, Cart, or Fashion'
-              _placeholder={{
-                fontWeight: 300,
-                fontSize: { base: '14px', md: '20px' },
-                lineHeight: '24px',
-                color: '#B1B1B1',
-              }}
-            />
-            <HStack mt='2' spacing='3'>
-              {filterBrand.keyword.map((keyword, i) => (
-                <Button
-                  rightIcon={
-                    <AiOutlineClose onClick={() => removeKeyword(keyword)} />
-                  }
-                  color='#172A3A'
-                  fontWeight='400'
-                  fontSize={{ sm: '14px', md: '18px' }}
-                  colorScheme='teal'
-                  variant='unstyled'
-                >
-                  {keyword}
-                </Button>
-              ))}
-            </HStack>
+            <InputGroup>
+              <InputLeftElement
+                display={{ base: 'flex', md: 'none' }}
+                pointerEvents='none'
+                children={<BiSearch size={16} color='#B4C6D4' />}
+              />
+              <Input
+                width={{ base: 'full', md: '717px' }}
+                height={{ base: '41px', md: '60px' }}
+                border='1px solid #172A3A'
+                borderColor='#172A3A'
+                borderRadius='12px'
+                onKeyDown={handleKeyOnDownKeyword}
+                placeholder='Ex Gojek, Cart, or Fashion'
+                _placeholder={{
+                  fontWeight: 300,
+                  fontSize: { base: '14px', md: '18px' },
+                  lineHeight: '21px',
+                  color: '#B4C6D5',
+                }}
+              />
+            </InputGroup>
+            {filterBrand.keyword.length > 0 && (
+              <HStack mt='2' spacing='3'>
+                {filterBrand.keyword.map((keyword, i) => (
+                  <Button
+                    rightIcon={
+                      <AiOutlineClose onClick={() => removeKeyword(keyword)} />
+                    }
+                    color='#172A3A'
+                    fontWeight='400'
+                    fontSize={{ sm: '14px', md: '18px' }}
+                    colorScheme='teal'
+                    variant='unstyled'
+                  >
+                    {keyword}
+                  </Button>
+                ))}
+              </HStack>
+            )}
           </Box>
 
-          <Box mt={{ base: 0, md: '4' }}>
+          <Box w={{ base: 'initial', md: 'full' }} mt={{ base: 0, md: '35px' }}>
             {/* Category Deskop  */}
             <Flex
+              id='categoryDeskop'
+              // bgColor='red'
+              bgColor='white'
+              w='full'
+              justifyContent='center'
+              // position='fixed'
               display={{ base: 'none', md: 'flex' }}
-              my='6'
               alignItems='center'
               gap='15px'
             >
-              <Button
-                onClick={() =>
-                  clearFilterBrand({ isCategory: true, isKeyword: true })
-                }
-                color='white'
-                bgColor={filterBrand.selectedCategory ? 'gray.500' : '#09BC8A'}
-                variant='outline'
-                fontWeight='400'
-                fontSize='14px'
-                border='1px solid #FBFFFE'
-                borderRadius='24px'
+              <Flex
+                bgColor='white'
+                w='full'
+                justifyContent='center'
+                display={{ base: 'none', md: 'flex' }}
+                alignItems='center'
+                gap='15px'
+                maxWidth='1106px'
               >
-                All
-              </Button>
-              {listCategory.slice(0, 6).map((category, index) => (
                 <Button
+                  onClick={() =>
+                    clearFilterBrand({ isCategory: true, isKeyword: true })
+                  }
+                  p='8px 12px 8px 12px'
+                  color='white'
                   bgColor={
-                    filterBrand.selectedCategory === category._id
-                      ? '#09BC8A'
-                      : 'initial'
+                    filterBrand.selectedCategory ? 'gray.500' : '#09BC8A'
                   }
-                  borderColor='#172A3A'
-                  colorScheme='#172A3A'
-                  border={
-                    filterBrand.selectedCategory === category._id
-                      ? '1px solid whte'
-                      : '1px solid #172A3A'
-                  }
-                  borderRadius='24px'
+                  variant='outline'
                   fontWeight='400'
                   fontSize='14px'
-                  color={
-                    filterBrand.selectedCategory === category._id
-                      ? 'white'
-                      : 'initial'
-                  }
-                  key={index}
-                  onClick={() => handleFilterCategory(category._id)}
-                  variant='outline'
-                >
-                  {category.name}
-                </Button>
-              ))}
-              {listCategory.length > 6 && (
-                <Button
-                  border='1px solid #172A3A'
+                  border='1px solid #FBFFFE'
                   borderRadius='24px'
-                  fontWeight='400'
-                  fontSize='14px'
-                  color='#172A3A'
-                  variant='outline'
-                  onClick={onOpenAllCategory}
-                  borderColor='#172A3A'
-                  colorScheme='#172A3A'
                 >
-                  + 3 More
+                  All
                 </Button>
-              )}
+                {listCategory.slice(0, 6).map((category, index) => (
+                  <Button
+                    p='8px 12px 8px 12px'
+                    bgColor={
+                      filterBrand.selectedCategory === category._id
+                        ? '#09BC8A'
+                        : 'initial'
+                    }
+                    borderColor='#172A3A'
+                    colorScheme='#172A3A'
+                    border={
+                      filterBrand.selectedCategory === category._id
+                        ? '1px solid whte'
+                        : '1px solid #172A3A'
+                    }
+                    borderRadius='24px'
+                    fontWeight='400'
+                    fontSize='14px'
+                    color={
+                      filterBrand.selectedCategory === category._id
+                        ? 'white'
+                        : '#172A3A'
+                    }
+                    key={index}
+                    onClick={() => handleFilterCategory(category._id)}
+                    variant='outline'
+                  >
+                    {category.name}
+                  </Button>
+                ))}
+                {listCategory.length > 6 && (
+                  <Button
+                    p='8px 12px 8px 12px'
+                    border='1px solid #172A3A'
+                    borderRadius='24px'
+                    fontWeight='400'
+                    fontSize='14px'
+                    color='#172A3A'
+                    variant='outline'
+                    onClick={onOpenAllCategory}
+                    borderColor='#172A3A'
+                    colorScheme='#172A3A'
+                  >
+                    + 3 More
+                  </Button>
+                )}
+              </Flex>
             </Flex>
             {/* Category Mobile */}
             <Box display={{ base: 'initial', md: 'none' }}>
@@ -413,8 +471,9 @@ const Explore: NextPage = () => {
               borderRadius='16px 16px 0px 0px'
               maxH='60vh'
               bgColor='white'
+              p='0'
             >
-              <Center my='4' mb='6'>
+              <Center mt='9px'>
                 <Box
                   width='56px'
                   height='4.13px'
@@ -422,7 +481,7 @@ const Explore: NextPage = () => {
                   borderRadius='24px'
                 />
               </Center>
-              <Box>
+              <Box mt='30px' px='16px'>
                 <Text
                   fontWeight='500'
                   fontSize='14px'
@@ -446,6 +505,7 @@ const Explore: NextPage = () => {
                     bgColor={
                       filterBrand.selectedCategory ? 'gray.500' : '#09BC8A'
                     }
+                    p='8px 12px 8px 12px'
                     variant='outline'
                     fontWeight='400'
                     fontSize='14px'
@@ -456,6 +516,7 @@ const Explore: NextPage = () => {
                   </Button>
                   {listCategory.map((category, index) => (
                     <Button
+                      p='8px 12px 8px 12px'
                       bgColor={
                         filterBrand.selectedCategory === category._id
                           ? '#09BC8A'
@@ -471,10 +532,11 @@ const Explore: NextPage = () => {
                       borderRadius='24px'
                       fontWeight='400'
                       fontSize='14px'
+                      lineHeight='17px'
                       color={
                         filterBrand.selectedCategory === category._id
                           ? 'white'
-                          : 'initial'
+                          : '#172A3A'
                       }
                       key={index}
                       onClick={() => handleFilterCategory(category._id)}
@@ -485,7 +547,8 @@ const Explore: NextPage = () => {
                   ))}
                 </Flex>
                 <Button
-                  my='6'
+                  mt='29px'
+                  mb='27px'
                   w='full'
                   color='white'
                   bgColor='#09BC8A'
@@ -500,7 +563,7 @@ const Explore: NextPage = () => {
             </DrawerBody>
           </DrawerContent>
         </Drawer>
-        <Box mt='55px'>
+        <Box mt='50px'>
           {renderBrand()}
           {/* <GridImage />
           <Box mt={{ base: '10px', md: '80px' }} />
@@ -521,12 +584,12 @@ interface IGridImage {
 const GridImage: React.FC<IGridImage> = (props) => {
   return (
     <SimpleGrid
-      padding={{ md: 4 }}
+      // padding={{ md: 4 }}
       w='full'
       // gap='48px'
       // column={[2, 3, 4]}
       minChildWidth={{ base: '155px', md: '240px' }}
-      spacing={{ base: 1, md: '30px', lg: '48px' }}
+      spacing={{ base: 1, md: '30px', xl: '48px' }}
       justifyContent={{ base: 'center', md: 'initial' }}
     >
       {props.brands.map((brand, i) => (
@@ -547,7 +610,7 @@ const GridImage: React.FC<IGridImage> = (props) => {
               <Image
                 src='/images/shoope.png'
                 alt='shoope logo'
-                width={{ base: 'full', md: '174px' }}
+                width={{ base: '130px', md: '174px' }}
                 height='56px'
                 objectFit='contain'
                 objectPosition='center'
@@ -555,9 +618,9 @@ const GridImage: React.FC<IGridImage> = (props) => {
             </Flex>
             <Box mt='18px' padding='8px'>
               <Text
-                fontWeight='700'
-                fontSize='20px'
-                lineHeight='24px'
+                fontWeight={{ base: '600', md: '700' }}
+                fontSize={{ base: '18px', md: '20px' }}
+                lineHeight={{ base: '21px', md: '24px' }}
                 textAlign='left'
               >
                 {brand.brandName}
@@ -566,7 +629,7 @@ const GridImage: React.FC<IGridImage> = (props) => {
                 mt='4px'
                 textAlign='left'
                 fontWeight='400'
-                fontSize='16px'
+                fontSize={{ base: '12px', md: '16px' }}
                 lineHeight='19px'
               >
                 Last updated{' '}

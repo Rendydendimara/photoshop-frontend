@@ -64,7 +64,7 @@ const Explore: NextPage = () => {
   }, [router.query]);
 
   return (
-    <Layout showNavbarFooter>
+    <Layout>
       <Head>
         <title>{APP_NAME} | Explore</title>
         <link rel='icon' href='/favicon.ico' />
@@ -79,7 +79,7 @@ const Explore: NextPage = () => {
           w='full'
           py='4'
         >
-          <SimpleGrid padding={4} w='full' columns={[1, 2, 3]} spacing={3}>
+          <SimpleGrid padding={4} w='full' columns={[1, 2, 3]} spacing='24px'>
             {imagesBrand.map((brand, i) => (
               <Box
                 key={i}
@@ -94,7 +94,7 @@ const Explore: NextPage = () => {
                     _hover={{ cursor: 'pointer' }}
                     key={index}
                     w={{ base: '270px', md: '380px', lg: '400px', xl: '430px' }}
-                    mb={2}
+                    mb='30px'
                     bgColor='#FF9797'
                   />
                 ))}
