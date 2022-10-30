@@ -596,7 +596,7 @@ const GridImage: React.FC<IGridImage> = (props) => {
         <Link href={`/brand/${brand._id}`} key={i}>
           <Box
             mb={{ base: 2, md: 0 }}
-            w={{ base: '155px', md: '240px' }}
+            // w={{ base: '155px', md: '240px' }}
             _hover={{ cursor: 'pointer' }}
           >
             <Flex
