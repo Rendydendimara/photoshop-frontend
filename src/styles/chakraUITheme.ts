@@ -22,6 +22,13 @@ const breakpoints = createBreakpoints({
 
 // Call `extendTheme` and pass your custom values (#Custom_Color)
 const theme = extendTheme({
+  styles: {
+    global: {
+      p: {
+        color: 'black',
+      },
+    },
+  },
   colors: {
     brand: {
       100: '#f7fafc',

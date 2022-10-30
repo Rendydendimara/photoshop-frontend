@@ -84,8 +84,6 @@ const Navbar: React.FC<IProps> = () => {
 };
 
 const DesktopNav = () => {
-  const linkColor = useColorModeValue('gray.600', 'gray.200');
-  const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
   const router = useRouter();
 
@@ -101,10 +99,9 @@ const DesktopNav = () => {
                 fontSize='16px'
                 lineHeight='19px'
                 fontWeight={navItem.pathname === router.pathname ? 600 : 400}
-                color={linkColor}
+                color='black'
                 _hover={{
                   textDecoration: 'none',
-                  color: linkHoverColor,
                 }}
               >
                 {navItem.label}
@@ -150,6 +147,7 @@ const DesktopSubNav = ({ label, href, subLabel }: INavItem) => {
             transition={'all .3s ease'}
             _groupHover={{ color: 'pink.400' }}
             fontWeight={500}
+            color='black'
           >
             {label}
           </Text>
@@ -186,10 +184,7 @@ const MobileNavItem = ({ label, children, href }: INavItem) => {
           textDecoration: 'none',
         }}
       >
-        <Text
-          fontWeight={href === router.pathname ? 600 : 400}
-          color={useColorModeValue('gray.600', 'gray.200')}
-        >
+        <Text fontWeight={href === router.pathname ? 600 : 400} color='black'>
           {label}
         </Text>
         {children && (

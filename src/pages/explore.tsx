@@ -622,11 +622,13 @@ const GridImage: React.FC<IGridImage> = (props) => {
                 fontSize={{ base: '18px', md: '20px' }}
                 lineHeight={{ base: '21px', md: '24px' }}
                 textAlign='left'
+                color='black'
               >
                 {brand.brandName}
               </Text>
               <Text
                 mt='4px'
+                color='black'
                 textAlign='left'
                 fontWeight='400'
                 fontSize={{ base: '12px', md: '16px' }}

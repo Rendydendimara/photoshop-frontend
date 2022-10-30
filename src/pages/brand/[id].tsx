@@ -173,21 +173,19 @@ const BrandIndex: NextPage = () => {
           xl: '0',
         }}
       >
-        <Box mt='99px' mb='120px' ml={{ base: '15px', md: '40px', xl: '80px' }}>
+        <Box mt='99px' mb='120px' ml={{ base: '15px', md: '60px', xl: '80px' }}>
           <Flex w='full' gap='48px' alignItems='flex-start'>
+            {/* Brand Profile */}
             <Box
               // px={{ base: '15px', md: '40px', lg: '80px' }}
-              w={{ base: '100%', lg: '20%' }}
-              // position='fixed'
+              w={{ base: '100%', md: '25%', xl: '250px' }}
+              // overflowX='hidden'
               // overflowY='scroll'
-              // id='brandInfoSection'
-              // maxH='100vh'
-              // overflowY='scroll'
-              // className='styled-scrollbar'
+              // px='10px'
             >
-              <Box>
+              <Box overflowY='scroll' maxH='100vh' className='styled-scrollbar'>
                 {/* Profile */}
-                <Box>
+                <Box w='240px'>
                   <Flex
                     justifyContent='center'
                     alignItems='center'
@@ -265,7 +263,7 @@ const BrandIndex: NextPage = () => {
                   </Box>
                 </Box>
                 {/* Modules */}
-                <Box mt='32px'>
+                <Box w='240px' mt='32px'>
                   <Text
                     fontWeight='700'
                     fontSize='24px'
@@ -305,7 +303,7 @@ const BrandIndex: NextPage = () => {
                   </Box>
                 </Box>
                 {/* Button Compare */}
-                <Box mt='32px'>
+                <Box w='240px' mt='32px'>
                   {/* <Link href='/compare'> */}
                   <Button
                     leftIcon={<HiOutlinePlusSm />}
@@ -323,9 +321,14 @@ const BrandIndex: NextPage = () => {
                 </Box>
               </Box>
             </Box>
+            {/* Brand Images */}
             <Box
+              // ml={{ base: 0, md: '360px' }}
               //  ml='300px'
-              w={{ base: '100%', lg: '80%' }}
+              overflowY='scroll'
+              maxH='100vh'
+              className='styled-scrollbar'
+              w={{ base: '100%', md: 'fit-content' }}
               // maxH='100vh'
               // overflowY='scroll'
               // className='styled-scrollbar'
@@ -415,7 +418,6 @@ const ListImage: React.FC<IListImage> = (props) => {
         maxW='full'
         overflowX='scroll'
         className='styled-scrollbar'
-        p='3'
       >
         {props.images.map((image, i) => (
           <ImageChakra
