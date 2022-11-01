@@ -205,7 +205,12 @@ const Explore: NextPage = () => {
         <title>{APP_NAME} | Explore</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <AppTemplate>
+      <AppTemplate
+        px={{
+          md: '0px',
+          xl: '0px',
+        }}
+      >
         <Flex
           flexDirection={{ base: 'row', md: 'column' }}
           justifyContent={{ base: 'space-between', md: 'center' }}
@@ -587,10 +592,10 @@ const GridImage: React.FC<IGridImage> = (props) => {
       // padding={{ md: 4 }}
       w='full'
       // gap='48px'
-      // column={[2, 3, 4]}
+      column={[2, 3, 4]}
       minChildWidth={{ base: '155px', md: '240px' }}
-      spacing={{ base: 1, md: '30px', xl: '48px' }}
-      justifyContent={{ base: 'center', md: 'initial' }}
+      gap={{ base: 1, md: '30px', xl: '48px' }}
+      justifyContent={{ base: 'center', md: 'center' }}
     >
       {props.brands.map((brand, i) => (
         <Link href={`/brand/${brand._id}`} key={i}>

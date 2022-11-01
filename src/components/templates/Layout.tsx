@@ -137,7 +137,7 @@ const Layout: React.FC<IProps> = (props) => {
         {props.showNavbarFooter && <Navbar />}
 
         <main className={styles.main}>
-          <Box maxW='1700px' w='full'>
+          <Box maxW='1104px' w='full'>
             {props.children}
           </Box>
         </main>
