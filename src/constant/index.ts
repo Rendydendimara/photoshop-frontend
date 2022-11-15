@@ -11,6 +11,11 @@ export interface INavItem {
 export const ROUTE: INavItem[] = [
   {
     label: 'Home',
+    href: '/',
+    pathname: '/',
+  },
+  {
+    label: 'Explore',
     href: '/explore',
     pathname: '/explore',
   },

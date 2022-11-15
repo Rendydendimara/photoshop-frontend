@@ -1,4 +1,5 @@
 import { Button } from '@chakra-ui/button';
+import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image } from '@chakra-ui/image';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
@@ -9,12 +10,31 @@ import {
   DrawerContent,
   DrawerOverlay,
 } from '@chakra-ui/modal';
-import { ApiGetListBrand } from 'api/brand';
+import {
+  ApiFindBrandByModules,
+  ApiGetDetailBrand,
+  ApiGetListBrand,
+  ApiGetListModules,
+  ApiSearchBrand,
+} from 'api/brand';
 import { ApiGetListCategory } from 'api/category';
+import { BrandIcon } from 'components/atoms/icons/brand-icon';
+import { CategoryIcon } from 'components/atoms/icons/category-icon';
+import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
+import { FlowIcon } from 'components/atoms/icons/flow-icon';
+import BrandReachBottom from 'components/molecules/BrandReachBottom';
+import FilterTools from 'components/molecules/FilterTools';
+import FilterPageView from 'components/molecules/FilterPageView';
+import ListBrand from 'components/organims/ListBrand';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
-import { IBrand } from 'interfaces/IBrand';
+import {
+  IBrand,
+  IListBrandByFlow,
+  IListFlow,
+  ISearchBrand,
+} from 'interfaces/IBrand';
 import { ICategory } from 'interfaces/ICategory';
 import moment from 'moment';
 import type { NextPage } from 'next';
@@ -25,6 +45,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
 import { useOnClickOutside } from 'usehooks-ts';
+import ListBrandFlowView from 'components/organims/ListBrandFlowView';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -34,29 +55,63 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 
 const Explore: NextPage = () => {
+  let timer: any;
+  const [filterPageView, setFilterPageView] = useState({
+    brand: true,
+    category: false,
+    flow: false,
+  });
+
   const height = ['529px', '600px', '350px', '500px', '429px', '400px'];
   const refCategory = useRef(null);
+  const refSidebar: any = useRef(null);
+  const [keywordSearch, setKeywordSearch] = useState('');
   const [openMoreCategory, setOpenMoreCategory] = useState(false);
   const [loadingGetBrand, setLoadingGetBrand] = useState(false);
+  const [isFixedPositionSidebar, setIsFixedPositionSidebar] = useState(false);
   const [listBrand, setListBrand] = useState<IBrand[]>([]);
+  const [listBrandByFlow, setListBrandByFlow] = useState<IListBrandByFlow[]>(
+    []
+  );
   const [listCategory, setListCategory] = useState<ICategory[]>([]);
+  const [listFlow, setListFlow] = useState<IListFlow[]>([]);
   const modalFilterMobile = useDisclosure();
   const [filterBrand, setFilterBrand] = useState({
     selectedCategory: '',
     keyword: [],
   });
+  const [filterBrandV2, setFilterBrandV2] = useState({
+    selectedCategory: '',
+    selectedBrand: '',
+  });
+  const [filterBrandByFlow, setFilterBrandByFlow] = useState<{
+    flows: string[];
+    categories: string[];
+  }>({
+    flows: [],
+    categories: [],
+  });
+  const [resultSearchBrand, setResultSearchBrand] = useState<ISearchBrand>();
   const btnRef: any = useRef();
   const handleClickOutside = () => {
     setOpenMoreCategory(false);
   };
 
   useOnClickOutside(refCategory, handleClickOutside);
-
-  const onOpenAllCategory = () => {
-    if (openMoreCategory) {
-      setOpenMoreCategory(false);
-    } else {
-      setOpenMoreCategory(true);
+  const onChangeFilterPageView = (field: any) => {
+    setFilterPageView({
+      brand: field === 'brand' ? true : false,
+      category: field === 'category' ? true : false,
+      flow: field === 'flow' ? true : false,
+    });
+    if (field === 'brand') {
+      handleGetListBrand({});
+    }
+    if (field === 'flow') {
+      getListBrandByFlow({
+        categories: [],
+        flows: [],
+      });
     }
   };
 
@@ -108,40 +163,24 @@ const Explore: NextPage = () => {
     }
   };
 
-  const renderItemBrand = (brands: IBrand[]) => {
-    return <GridImage brands={brands} />;
+  const getListFlow = async () => {
+    const res = await ApiGetListModules();
+    if (res.status === 200) {
+      setListFlow(res.data.data);
+    }
   };
 
   const renderBrand = () => {
-    // <GridImage />
-    // <Box mt={{ base: '10px', md: '80px' }} />
-    let dataBase: any = [];
-    let dataItem: any = [];
-    let limit = 0;
-    listBrand.map((brand) => {
-      dataItem.push(brand);
-      limit++;
-      if (listBrand.length > 4) {
-        if (limit === 4) {
-          dataBase.push(dataItem);
-          dataItem = [];
-          limit = 0;
-        }
-      }
-    });
-    if (listBrand.length < 4) {
-      dataBase.push(dataItem);
+    if (filterPageView.brand) {
+      return <ListBrand listBrand={listBrand} />;
+    } else if (filterPageView.flow) {
+      return (
+        <ListBrandFlowView
+          activeFlow={filterBrandByFlow.flows}
+          listBrandByFlow={listBrandByFlow}
+        />
+      );
     }
-    return (
-      <Box>
-        {dataBase.map((brandBase: any, i: any) => (
-          <Box key={i}>
-            {renderItemBrand(brandBase)}
-            <Box mt={{ base: '10px', md: '72px' }} />
-          </Box>
-        ))}
-      </Box>
-    );
   };
 
   const handleFilterCategory = (idCategory: string) => {
@@ -153,34 +192,141 @@ const Explore: NextPage = () => {
   };
 
   const handleKeyOnDownKeyword = (e: any) => {
-    if (e.keyCode === 32 || e.keyCode === 13 || e.keyCode === 9) {
-      let newKeyword: any = [...filterBrand.keyword, e.target.value];
-      setFilterBrand({
-        ...filterBrand,
-        keyword: newKeyword,
+    // if (e.keyCode === 32 || e.keyCode === 13 || e.keyCode === 9) {
+    //   let newKeyword: any = [...filterBrand.keyword, e.target.value];
+    //   setFilterBrand({
+    //     ...filterBrand,
+    //     keyword: newKeyword,
+    //   });
+    //   e.target.value = '';
+    //   handleGetListBrand({
+    //     category: filterBrand.selectedCategory,
+    //     keyword: newKeyword,
+    //   });
+    // }
+  };
+
+  const handleSearchingBrand = async (query: string) => {
+    if (query !== '') {
+      const res = await ApiSearchBrand({ keyword: query });
+      if (res.status === 200) {
+        setResultSearchBrand(res.data.data);
+      }
+    } else {
+      handleGetListBrand({});
+      setResultSearchBrand(undefined);
+    }
+  };
+
+  const handleChangeSearch = (e: any) => {
+    setKeywordSearch(e.target.value);
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(handleSearchingBrand, 500, e.target.value);
+  };
+
+  const onClickFilterV2 = async (
+    value: string,
+    field: 'category' | 'brand'
+  ) => {
+    if (field === 'brand') {
+      setFilterBrandV2({
+        selectedCategory: '',
+        selectedBrand: value,
       });
-      e.target.value = '';
-      handleGetListBrand({
-        category: filterBrand.selectedCategory,
-        keyword: newKeyword,
+      const res = await ApiGetDetailBrand(value);
+      if (res.status === 200) {
+        setListBrand([res.data.data]);
+      }
+    } else {
+      handleGetListBrand({ category: value });
+      setFilterBrandV2({
+        selectedCategory: value,
+        selectedBrand: '',
       });
+    }
+  };
+
+  const getListBrandByFlow = async (filter: {
+    flows: string[];
+    categories: string[];
+  }) => {
+    const res = await ApiFindBrandByModules({
+      category: filter.categories,
+      moduleName: filter.flows,
+    });
+    if (res.status === 200) {
+      setListBrandByFlow(res.data.data);
+    } else {
+      setListBrandByFlow([]);
+    }
+  };
+
+  const onChangeFilterFlow = (e: any) => {
+    let newFlows: any[] = [];
+    if (filterBrandByFlow.flows.includes(e.target.name)) {
+      newFlows = filterBrandByFlow.flows.filter(
+        (flow) => flow !== e.target.name
+      );
+    } else {
+      newFlows = [...filterBrandByFlow.flows, e.target.name];
+    }
+    setFilterBrandByFlow({
+      ...filterBrandByFlow,
+      flows: newFlows,
+    });
+    getListBrandByFlow({
+      ...filterBrandByFlow,
+      flows: newFlows,
+    });
+  };
+  const onChangeFilterCategory = (e: any) => {
+    let newCategories: any[] = [];
+    if (filterBrandByFlow.categories.includes(e.target.name)) {
+      newCategories = filterBrandByFlow.categories.filter(
+        (flow) => flow !== e.target.name
+      );
+    } else {
+      newCategories = [...filterBrandByFlow.categories, e.target.name];
+    }
+    setFilterBrandByFlow({
+      ...filterBrandByFlow,
+      categories: newCategories,
+    });
+    getListBrandByFlow({
+      ...filterBrandByFlow,
+      categories: newCategories,
+    });
+  };
+
+  const checkMLSidebar = () => {
+    if (refSidebar?.current?.classList.contains('stickySidebar')) {
+      setIsFixedPositionSidebar(true);
+    } else {
+      setIsFixedPositionSidebar(false);
     }
   };
 
   useEffect(() => {
     // Get the navbar
     let navbar: any;
+    let sidebar: any;
 
     if (typeof window !== 'undefined') {
       navbar = document.getElementById('categoryDeskop');
+      sidebar = document.getElementById('sidebarContainer');
     }
 
     // Get the offset position of the navbar
     let sticky: any = navbar?.offsetTop;
+    let stickySidebar: any = sidebar?.offsetTop;
     // When the user scrolls the page, execute myFunction
     if (typeof window !== 'undefined') {
       window.onscroll = function () {
         handleScroll();
+        // checkMLSidebar();
+        // console.log('useEffect isFixedPositionSidebar', isFixedPositionSidebar);
       };
     }
 
@@ -188,15 +334,33 @@ const Explore: NextPage = () => {
       // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
       if (window.pageYOffset >= sticky) {
         navbar.classList.add('stickyNavbarHome');
+        sidebar.classList.add('stickySidebar');
+        // if (!isFixedPositionSidebar) {
+        //   // setIsFixedPositionSidebar(true);
+        // }
       } else {
         navbar.classList.remove('stickyNavbarHome');
+        sidebar.classList.remove('stickySidebar');
+        // if (isFixedPositionSidebar) {
+        //   // setIsFixedPositionSidebar(false);
+        // }
       }
+      // checkMLSidebar();
     }
   });
+
+  // useEffect(() => {
+  //   // window.onscroll = function () {
+  //   //   checkMLSidebar();
+  //   // console.log('useEffect isFixedPositionSidebar', isFixedPositionSidebar);
+  //   // };
+  //   // console.log('useEffect isFixedPositionSidebar', isFixedPositionSidebar);
+  // });
 
   useEffect(() => {
     handleGetListBrand({});
     handleGetListCategory();
+    getListFlow();
   }, []);
 
   return (
@@ -215,141 +379,25 @@ const Explore: NextPage = () => {
           flexDirection={{ base: 'row', md: 'column' }}
           justifyContent={{ base: 'space-between', md: 'center' }}
           alignItems={{ base: 'flex-start', md: 'center' }}
-          mt={{ base: '20px', xl: '66px' }}
-          // px={{ base: '15px', md: '120px' }}
           w='full'
           gap={{ base: '10px', md: 0 }}
           position='relative'
         >
-          <Box>
-            <InputGroup>
-              <InputLeftElement
-                display={{ base: 'flex', md: 'none' }}
-                pointerEvents='none'
-                children={<BiSearch size={16} color='#B4C6D4' />}
+          <Box
+            w={{ base: 'initial', md: 'full' }}
+            mt={{ base: '20px', xl: '32px' }}
+          >
+            <Flex id='categoryDeskop' justifyContent='center'>
+              <FilterPageView
+                onChangeFilterPageView={onChangeFilterPageView}
+                filterPageView={filterPageView}
+                handleKeyOnDownKeyword={handleKeyOnDownKeyword}
+                handleChangeSearch={handleChangeSearch}
+                value={keywordSearch}
+                onClickFilterV2={onClickFilterV2}
+                filterBrandV2={filterBrandV2}
+                resultSearchBrand={resultSearchBrand}
               />
-              <Input
-                width={{ base: 'full', md: '717px' }}
-                height={{ base: '41px', md: '60px' }}
-                border='1px solid #172A3A'
-                borderColor='#172A3A'
-                borderRadius='12px'
-                onKeyDown={handleKeyOnDownKeyword}
-                placeholder='Ex Gojek, Cart, or Fashion'
-                _placeholder={{
-                  fontWeight: 300,
-                  fontSize: { base: '14px', md: '18px' },
-                  lineHeight: '21px',
-                  color: '#B4C6D5',
-                }}
-              />
-            </InputGroup>
-            {filterBrand.keyword.length > 0 && (
-              <HStack mt='2' spacing='3'>
-                {filterBrand.keyword.map((keyword, i) => (
-                  <Button
-                    rightIcon={
-                      <AiOutlineClose onClick={() => removeKeyword(keyword)} />
-                    }
-                    color='#172A3A'
-                    fontWeight='400'
-                    fontSize={{ sm: '14px', md: '18px' }}
-                    colorScheme='teal'
-                    variant='unstyled'
-                  >
-                    {keyword}
-                  </Button>
-                ))}
-              </HStack>
-            )}
-          </Box>
-
-          <Box w={{ base: 'initial', md: 'full' }} mt={{ base: 0, md: '35px' }}>
-            {/* Category Deskop  */}
-            <Flex
-              id='categoryDeskop'
-              // bgColor='red'
-              bgColor='white'
-              w='full'
-              justifyContent='center'
-              // position='fixed'
-              display={{ base: 'none', md: 'flex' }}
-              alignItems='center'
-              gap='15px'
-            >
-              <Flex
-                bgColor='white'
-                w='full'
-                justifyContent='center'
-                display={{ base: 'none', md: 'flex' }}
-                alignItems='center'
-                gap='15px'
-                maxWidth='1106px'
-              >
-                <Button
-                  onClick={() =>
-                    clearFilterBrand({ isCategory: true, isKeyword: true })
-                  }
-                  p='8px 12px 8px 12px'
-                  color='white'
-                  bgColor={
-                    filterBrand.selectedCategory ? 'gray.500' : '#09BC8A'
-                  }
-                  variant='outline'
-                  fontWeight='400'
-                  fontSize='14px'
-                  border='1px solid #FBFFFE'
-                  borderRadius='24px'
-                >
-                  All
-                </Button>
-                {listCategory.slice(0, 6).map((category, index) => (
-                  <Button
-                    p='8px 12px 8px 12px'
-                    bgColor={
-                      filterBrand.selectedCategory === category._id
-                        ? '#09BC8A'
-                        : 'initial'
-                    }
-                    borderColor='#172A3A'
-                    colorScheme='#172A3A'
-                    border={
-                      filterBrand.selectedCategory === category._id
-                        ? '1px solid whte'
-                        : '1px solid #172A3A'
-                    }
-                    borderRadius='24px'
-                    fontWeight='400'
-                    fontSize='14px'
-                    color={
-                      filterBrand.selectedCategory === category._id
-                        ? 'white'
-                        : '#172A3A'
-                    }
-                    key={index}
-                    onClick={() => handleFilterCategory(category._id)}
-                    variant='outline'
-                  >
-                    {category.name}
-                  </Button>
-                ))}
-                {listCategory.length > 6 && (
-                  <Button
-                    p='8px 12px 8px 12px'
-                    border='1px solid #172A3A'
-                    borderRadius='24px'
-                    fontWeight='400'
-                    fontSize='14px'
-                    color='#172A3A'
-                    variant='outline'
-                    onClick={onOpenAllCategory}
-                    borderColor='#172A3A'
-                    colorScheme='#172A3A'
-                  >
-                    + 3 More
-                  </Button>
-                )}
-              </Flex>
             </Flex>
             {/* Category Mobile */}
             <Box display={{ base: 'initial', md: 'none' }}>
@@ -399,70 +447,6 @@ const Explore: NextPage = () => {
             </Box>
           </Box>
         </Flex>
-        <Center w='full'>
-          <Box
-            mt={{ base: 2, md: 0 }}
-            w={{ base: '95%', md: '867px' }}
-            position='relative'
-          >
-            {openMoreCategory && (
-              <Box
-                minW={{ base: 'full', md: '867px' }}
-                padding={{ base: 2, md: '40px 32px' }}
-                // mt='15px'
-                ref={refCategory}
-                border='1px solid #B4C6D5'
-                borderRadius='8px'
-                // as={motion.div}
-                // initial={false}
-                // animate={openMoreCategory ? 'open' : 'closed'}
-                position='absolute'
-                zIndex='1000000'
-                bgColor='#FCFEFF'
-                // borderRadius='8px'
-                // variants={variants}
-              >
-                <Flex
-                  // justifyContent='space-between'
-                  flexWrap='wrap'
-                  my='3'
-                  // alignItems='center'
-                  gap='15px'
-                >
-                  {listCategory.map((category, index) => (
-                    <Button
-                      bgColor={
-                        filterBrand.selectedCategory === category._id
-                          ? '#09BC8A'
-                          : 'initial'
-                      }
-                      borderColor='#172A3A'
-                      colorScheme='#172A3A'
-                      border={
-                        filterBrand.selectedCategory === category._id
-                          ? '1px solid whte'
-                          : '1px solid #172A3A'
-                      }
-                      borderRadius='24px'
-                      fontWeight='400'
-                      fontSize='14px'
-                      color={
-                        filterBrand.selectedCategory === category._id
-                          ? 'white'
-                          : 'initial'
-                      }
-                      key={index}
-                      onClick={() => handleFilterCategory(category._id)}
-                      variant='outline'
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
-                </Flex>
-              </Box>
-            )}
-          </Box>
-        </Center>
         <Drawer
           isOpen={modalFilterMobile.isOpen}
           placement='bottom'
@@ -568,120 +552,27 @@ const Explore: NextPage = () => {
             </DrawerBody>
           </DrawerContent>
         </Drawer>
-        <Box mt='50px'>
-          {renderBrand()}
-          {/* <GridImage />
-          <Box mt={{ base: '10px', md: '80px' }} />
-          <GridImage />
-          <Box mt={{ base: '10px', md: '80px' }} />
-          <GridImage /> */}
-        </Box>
+        <Flex
+          flexDirection={{ base: 'column', md: 'row' }}
+          mt='32px'
+          gap='60px'
+        >
+          <FilterTools
+            refSidebar={refSidebar}
+            showFlowFilter={filterPageView.flow}
+            listFlow={listFlow}
+            listCategory={listCategory}
+            onChangeFilterFlow={onChangeFilterFlow}
+            onChangeFilterCategory={onChangeFilterCategory}
+          />
+          <Box ml='290px' zIndex='10000'>
+            {renderBrand()}
+            {listBrand.length > 0 && <BrandReachBottom />}
+          </Box>
+        </Flex>
       </AppTemplate>
     </Layout>
   );
 };
 
 export default Explore;
-
-interface IGridImage {
-  brands: IBrand[];
-}
-const GridImage: React.FC<IGridImage> = (props) => {
-  return (
-    <SimpleGrid
-      // padding={{ md: 4 }}
-      w='full'
-      // gap='48px'
-      column={[2, 3, 4]}
-      minChildWidth={{ base: '155px', md: '240px' }}
-      gap={{ base: 1, md: '30px', xl: '48px' }}
-      justifyContent={{ base: 'center', md: 'center' }}
-    >
-      {props.brands.map((brand, i) => (
-        <Link href={`/brand/${brand._id}`} key={i}>
-          <Box
-            mb={{ base: 2, md: 0 }}
-            w={{ base: '155px', md: '240px' }}
-            _hover={{ cursor: 'pointer' }}
-          >
-            <Flex
-              justifyContent='center'
-              alignItems='center'
-              boxShadow='md'
-              width='full'
-              height='190px'
-              borderRadius='8px'
-            >
-              <Image
-                src='/images/shoope.png'
-                alt='shoope logo'
-                width={{ base: '130px', md: '174px' }}
-                height='56px'
-                objectFit='contain'
-                objectPosition='center'
-              />
-            </Flex>
-            <Box mt='18px' padding='8px'>
-              <Text
-                fontWeight={{ base: '600', md: '700' }}
-                fontSize={{ base: '18px', md: '20px' }}
-                lineHeight={{ base: '21px', md: '24px' }}
-                textAlign='left'
-                color='black'
-              >
-                {brand.brandName}
-              </Text>
-              <Text
-                mt='4px'
-                color='black'
-                textAlign='left'
-                fontWeight='400'
-                fontSize={{ base: '12px', md: '16px' }}
-                lineHeight='19px'
-              >
-                Last updated{' '}
-                {brand.updated_at
-                  ? moment(brand.updated_at).format('DD MMM')
-                  : moment(brand.created_at).format('DD MMM')}
-              </Text>
-              {/* <Text
-                mt='12px'
-                textAlign='left'
-                fontWeight='400'
-                fontSize='14px'
-                lineHeight='150%'
-                color='#666666'
-              >
-                UNIQLO is a clothing apparel company, which was originally
-                founded in Yamaguchi, Japan in 1949 as a textiles manufacturer.
-                Now it is a global brand with over 1000 stores around the world.
-                Redefining clothing, with a focus on quality and textiles which
-                has been unwavered since the company's origins in 1949.
-              </Text> */}
-              {brand.tags.length > 0 && (
-                <HStack
-                  flexDirection={{ base: 'column', md: 'row' }}
-                  mt='12px'
-                  alignItems='flex-start'
-                >
-                  {brand.tags.map((tag, i) => (
-                    <Text
-                      margin='0 !important'
-                      fontWeight='400'
-                      fontSize='14px'
-                      lineHeight='17px'
-                      color='#3E97FF'
-                      key={i}
-                    >
-                      #{tag}
-                    </Text>
-                  ))}
-                </HStack>
-              )}
-            </Box>
-          </Box>
-        </Link>
-      ))}
-    </SimpleGrid>
-  );
-};

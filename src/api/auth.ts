@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { BACKEND_URL } from 'constant';
+import { AxiosWithToken } from 'lib/axios';
 
-export const ApiGetListBrand = async (data: {
-  category?: string;
-  notIncludeBrandId?: string[];
-  keyword?: string[];
+export const ApiRegister = async (data: {
+  username: string;
+  email: string;
+  password: string;
 }) => {
   const response = await axios
-    .post(`${BACKEND_URL}/brand/list`, data)
+    .post(`${BACKEND_URL}/auth/register`, data)
     .then((response) => {
       return response;
     })
@@ -21,60 +22,44 @@ export const ApiGetListBrand = async (data: {
   }
 };
 
-export const ApiGetDetailBrand = async (brandId: string) => {
-  const response = await axios
-    .get(`${BACKEND_URL}/brand/detail/${brandId}`)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  if (response) {
-    return response;
-  } else {
-    // return window.location.replace('/500');
-  }
-};
-
-export const ApiSearchBrand = async (data: { keyword: string }) => {
-  const response = await axios
-    .post(`${BACKEND_URL}/brand/search`, data)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  if (response) {
-    return response;
-  } else {
-    // return window.location.replace('/500');
-  }
-};
-
-export const ApiGetListModules = async () => {
-  const response = await axios
-    .get(`${BACKEND_URL}/brand/list-flow`)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  if (response) {
-    return response;
-  } else {
-    // return window.location.replace('/500');
-  }
-};
-
-export const ApiFindBrandByModules = async (data: {
-  moduleName: string[];
-  category: string[];
+export const ApiLogin = async (data: {
+  email_username: string;
+  password: string;
 }) => {
   const response = await axios
-    .post(`${BACKEND_URL}/brand/by-flow`, data)
+    .post(`${BACKEND_URL}/auth/login`, data)
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  if (response) {
+    return response;
+  } else {
+    // return window.location.replace('/500');
+  }
+};
+
+export const ApiLogout = async () => {
+  const response = await AxiosWithToken()
+    .get(`${BACKEND_URL}/auth/logout`)
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  if (response) {
+    return response;
+  } else {
+    // return window.location.replace('/500');
+  }
+};
+
+export const ApiCheckUserLogin = async (token: string) => {
+  const response = await axios
+    .post(`${BACKEND_URL}/auth/check-user-login`, { token })
     .then((response) => {
       return response;
     })

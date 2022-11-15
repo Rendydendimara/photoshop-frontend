@@ -9,7 +9,9 @@ import type { NextComponentType, NextPageContext } from 'next';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 import { GlobalProvider } from 'provider/global-provider';
+import { store } from 'provider/redux/store';
 import { useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
 import '../styles/globals.css';
 import '../styles/normalize.css';
 import '../styles/suitcss-base.css';
@@ -101,14 +103,14 @@ export default function App({ Component, pageProps }: AppRenderProps) {
 
   return (
     <>
-      {/* <Provider> */}
-      <Global styles={GlobalStyles} />
-      <ChakraProvider>
-        <GlobalProvider loading={pageLoading}>
-          <Component {...pageProps} />
-        </GlobalProvider>
-      </ChakraProvider>
-      {/* </Provider> */}
+      <Provider store={store}>
+        <Global styles={GlobalStyles} />
+        <ChakraProvider>
+          <GlobalProvider loading={pageLoading}>
+            <Component {...pageProps} />
+          </GlobalProvider>
+        </ChakraProvider>
+      </Provider>
     </>
   );
 }

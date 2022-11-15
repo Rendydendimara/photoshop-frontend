@@ -10,7 +10,7 @@ export const AxiosWithToken = (options = {}) => {
   const config = token
     ? {
         headers: {
-          'sqlgenie-token': token,
+          'thetruesight-token': token,
         },
       }
     : {};

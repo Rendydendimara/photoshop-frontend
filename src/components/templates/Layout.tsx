@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/layout';
+import { Box, Flex } from '@chakra-ui/layout';
 import Footer from 'components/molecules/Footer';
 import Navbar from 'components/molecules/Navbar';
 import { APP_NAME } from 'constant';
@@ -17,6 +17,7 @@ interface IProps {
 interface IProps {
   showInfoBeta?: boolean;
   showNavbarFooter?: boolean;
+  disableMaxWidth?: boolean;
 }
 
 const Layout: React.FC<IProps> = (props) => {
@@ -134,10 +135,16 @@ const Layout: React.FC<IProps> = (props) => {
           content=''
         /> */}
         </Head>
-        {props.showNavbarFooter && <Navbar />}
+        {props.showNavbarFooter && (
+          <Flex justifyContent='center' w='full'>
+            <Box maxW='1200px' w='full'>
+              <Navbar />
+            </Box>
+          </Flex>
+        )}
 
         <main className={styles.main}>
-          <Box maxW='1104px' w='full'>
+          <Box maxW={props.disableMaxWidth ? 'unset' : '1200px'} w='full'>
             {props.children}
           </Box>
         </main>

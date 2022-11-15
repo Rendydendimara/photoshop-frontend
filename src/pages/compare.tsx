@@ -1,10 +1,10 @@
 import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Image as ChakraImage, Image } from '@chakra-ui/image';
+import { Image } from '@chakra-ui/image';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
 import { Box, Center, Flex, SimpleGrid, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
-import { ApiGetDetailBrand, ApiGetListBrand } from 'api/brand';
+import { ApiGetListBrand } from 'api/brand';
 import BrandItemModal from 'components/molecules/BrandItemModal';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
@@ -14,13 +14,14 @@ import { IBrand } from 'interfaces/IBrand';
 import { getLocalCookie, setLocalCookie } from 'lib/Cookies/AppCookies';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { HiOutlinePlusSm, HiTrash } from 'react-icons/hi';
+import { HiOutlinePlusSm } from 'react-icons/hi';
 import { RiSearchLine } from 'react-icons/ri';
 
 const Compare: NextPage = () => {
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [listIdBrandCompare, setListIdBrandCompare] = useState<string[]>([]);
   const [listIdBrandCompareObject, setListIdBrandCompareObject] = useState<any>(
@@ -72,6 +73,30 @@ const Compare: NextPage = () => {
   const handleOpenBrand = (fieldName: string) => {
     setFieldAdd(fieldName);
     onOpen();
+  };
+
+  const handleCompare = () => {
+    router.push(
+      `/explore-compare?brand1=${listIdBrandCompareObject.brand1}&brand2=${listIdBrandCompareObject.brand2}&brand3=${listIdBrandCompareObject.brand3}`
+    );
+  };
+
+  const checkDisable = () => {
+    let total = 0;
+    if (listIdBrandCompareObject.brand1) {
+      total += 1;
+    }
+    if (listIdBrandCompareObject.brand2) {
+      total += 1;
+    }
+    if (listIdBrandCompareObject.brand3) {
+      total += 1;
+    }
+    return {
+      disable: total > 1,
+      total: total,
+    };
+    // if(listIdBrandCompareObject)
   };
 
   useEffect(() => {
@@ -198,21 +223,34 @@ const Compare: NextPage = () => {
             )}
           </Flex>
           <Box mt='22px'>
-            <Link
+            {/* <Link
               href={`/explore-compare?brand1=${listIdBrandCompareObject.brand1}&brand2=${listIdBrandCompareObject.brand2}&brand3=${listIdBrandCompareObject.brand3}`}
+            > */}
+            <Button
+              disabled={!checkDisable().disable}
+              leftIcon={<HiOutlinePlusSm />}
+              color='#FBFFFE'
+              fontWeight='600'
+              variant='solid'
+              w='full'
+              bgColor='#09BC8A'
+              h='40px'
+              onClick={handleCompare}
             >
-              <Button
-                leftIcon={<HiOutlinePlusSm />}
-                color='#FBFFFE'
-                fontWeight='600'
-                variant='solid'
-                w='full'
-                bgColor='#09BC8A'
-                h='40px'
+              Compare
+            </Button>
+            {checkDisable().total === 1 && (
+              <Text
+                mt='10px'
+                fontWeight='400'
+                fontSize='12px'
+                lineHeight='14px'
+                color='#D36582'
               >
-                Compare
-              </Button>
-            </Link>
+                Oops you can’t compare using one brand, add one more
+              </Text>
+            )}
+            {/* </Link> */}
           </Box>
         </Flex>
         <Modal
@@ -265,11 +303,16 @@ const Compare: NextPage = () => {
                     onClick={() => handleAddBrandCompare(brand._id, fieldAdd)}
                   >
                     <Image
-                      src='/images/shoope.png'
+                      src={
+                        brand.brandImage === undefined ||
+                        brand.brandImage.length === 0
+                          ? './images/shoope.png'
+                          : brand.brandImage
+                      }
                       alt='shoope logo'
                       // width={{ base: 'full', md: '120px' }}
-                      width='120px'
-                      height='120px'
+                      width={{ base: '144px', md: '144px' }}
+                      height='153px'
                       objectFit='contain'
                       objectPosition='center'
                     />
@@ -281,6 +324,16 @@ const Compare: NextPage = () => {
                       mt='4'
                     >
                       {brand.brandName}
+                    </Text>{' '}
+                    <Text
+                      fontWeight='500'
+                      fontSize='12px'
+                      // lineHeight='24px'
+                      textAlign='center'
+                      mt='4px'
+                      color='#B4C6D4'
+                    >
+                      {brand?.modules} Module {brand?.screens} Screen
                     </Text>
                   </Box>
                 ))}

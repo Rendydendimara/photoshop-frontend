@@ -25,40 +25,69 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import { ApiLogout } from 'api/auth';
 import { INavItem, ROUTE } from 'constant/index';
+import { IUser } from 'interfaces/IUser';
+import { localCookieClearToken } from 'lib/Cookies/AppCookies';
 import { useRouter } from 'next/router';
+import { ICombinedState } from 'provider/redux/store';
 import React from 'react';
+import { useSelector } from 'react-redux';
 interface IProps {}
+
+interface IReduxState {
+  user?: IUser;
+}
 
 const Navbar: React.FC<IProps> = () => {
   const { isOpen, onToggle } = useDisclosure();
+
   return (
     <Box>
       <Flex
         bg='white'
         color='gray.600'
         minH={'60px'}
-        pt={{ base: 4, xl: '49px' }}
-        px={{
-          sm: '16px',
-          md: '100px',
-          xl: '167px',
-        }}
+        pt={{ base: 4, xl: '68px' }}
+        // px={{
+        //   sm: '16px',
+        //   md: '100px',
+        //   xl: '167px',
+        // }}
         align={'center'}
+        justifyContent='space-between'
       >
+        <Text
+          textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+          fontFamily={'heading'}
+          color='gray.800'
+        >
+          <Text
+            as='span'
+            fontFamily='Baloo Tamma 2'
+            fontWeight='400'
+            fontSize='32px'
+            lineHeight='55px'
+            color='#172A3A'
+          >
+            The
+          </Text>
+          <Text
+            as='span'
+            fontFamily='Baloo Tamma 2'
+            fontWeight='400'
+            fontSize='32px'
+            lineHeight='55px'
+            color='#09BC8A'
+          >
+            truesight
+          </Text>
+        </Text>
         <Flex
           justify={{ base: 'space-between', md: 'flex-end' }}
           alignItems='center'
-          w='full'
+          // w='full'
         >
-          <Text
-            display={{ base: 'initial', md: 'none' }}
-            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
-            color='gray.800'
-          >
-            Logo
-          </Text>
           <Flex display={{ base: 'flex', md: 'none' }}>
             <IconButton
               onClick={onToggle}
@@ -86,6 +115,19 @@ const Navbar: React.FC<IProps> = () => {
 const DesktopNav = () => {
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
   const router = useRouter();
+  const { user } = useSelector<ICombinedState, IReduxState>((state) => {
+    return {
+      user: state.user.user,
+    };
+  });
+
+  const handleLogout = async () => {
+    const res = await ApiLogout();
+    if (res.status === 200) {
+      localCookieClearToken();
+      router.replace('/explore');
+    }
+  };
 
   return (
     <Stack direction={'row'} spacing={4}>
@@ -127,6 +169,31 @@ const DesktopNav = () => {
           </Popover>
         </Box>
       ))}
+      {!user ? (
+        <Box>
+          <Popover trigger={'hover'} placement={'bottom-start'}>
+            <PopoverTrigger>
+              <ChakraLink
+                p={2}
+                href={'/login'}
+                fontSize='16px'
+                lineHeight='19px'
+                fontWeight='400'
+                color='green'
+                _hover={{
+                  textDecoration: 'none',
+                }}
+              >
+                Login
+              </ChakraLink>
+            </PopoverTrigger>
+          </Popover>
+        </Box>
+      ) : (
+        <Text color='red' _hover={{ cursor: 'pointer' }} onClick={handleLogout}>
+          Logout
+        </Text>
+      )}
     </Stack>
   );
 };

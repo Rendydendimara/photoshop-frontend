@@ -122,10 +122,19 @@ a {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 100;
-  padding: 25px 18px 25px 18px;
+  z-index: 100000;
+  /* padding: 25px 18px 25px 18px; */
   left: 0;
   right: 0;
+  /* max-width: 1106px; */
+}
+
+.stickySidebar {
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 110px;
+  /* padding: 25px 18px 25px 18px; */
   /* max-width: 1106px; */
 }
 
@@ -137,4 +146,8 @@ a {
   left: 60px;
   overflow-y: scroll;
   /* max-width: 1106px; */
+}
+
+.showPointerOnHover:hover {
+  cursor: pointer;
 }

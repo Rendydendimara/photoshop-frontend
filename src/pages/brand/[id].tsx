@@ -32,8 +32,11 @@ import {
   localCookieSaveToken,
   setLocalCookie,
 } from 'lib/Cookies/AppCookies';
+import { MoreIcon } from 'components/atoms/icons/more-icon';
+import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 
 const BrandIndex: NextPage = () => {
+  const [showContentBrand, setShowContentBrand] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [brand, setBrand] = useState<IBrand>();
@@ -71,6 +74,7 @@ const BrandIndex: NextPage = () => {
   const getImageBrand = async (filter: {
     brandId: string;
     moduleFolder?: string;
+    flows?: string[];
   }) => {
     const res = await ApiGetListImageByBrandId(filter);
     if (res.status === 200) {
@@ -80,10 +84,19 @@ const BrandIndex: NextPage = () => {
         images: IImage[];
       }[] = [];
       for (const module in data) {
-        temp.push({
-          moduleName: module,
-          images: data[module],
-        });
+        if (filter.flows && filter.flows.length > 0) {
+          if (filter.flows.includes(module)) {
+            temp.push({
+              moduleName: module,
+              images: data[module],
+            });
+          }
+        } else {
+          temp.push({
+            moduleName: module,
+            images: data[module],
+          });
+        }
       }
       setImagesBrand(temp);
     }
@@ -97,6 +110,7 @@ const BrandIndex: NextPage = () => {
   };
 
   const handleChangeModuleCheckbox = (e: any) => {
+    getImageBrand({ brandId: brandId });
     if (e.target.checked) {
       setListCheckedModule([...listCheckedModule, e.target.name]);
     } else {
@@ -151,12 +165,19 @@ const BrandIndex: NextPage = () => {
   // });
 
   useEffect(() => {
-    const { id }: any = router.query;
+    const { id, showContent, flows }: any = router.query;
+    // showContent
     if (id) {
       setBrandId(id);
       getDetailBrand(id);
       getListModuleBrand(id);
-      getImageBrand({ brandId: id });
+      getImageBrand({
+        brandId: id,
+        flows: flows ? flows.split(',') : undefined,
+      });
+    }
+    if (showContent === 'true') {
+      setShowContentBrand(true);
     }
   }, [router.query]);
 
@@ -173,124 +194,188 @@ const BrandIndex: NextPage = () => {
           xl: '0',
         }}
       >
-        <Box mt='99px' mb='120px' ml={{ base: '15px', md: '60px', xl: '80px' }}>
-          <Flex w='full' gap='48px' alignItems='flex-start'>
-            {/* Brand Profile */}
-            <Box
-              // px={{ base: '15px', md: '40px', lg: '80px' }}
-              w={{ base: '100%', md: '25%', xl: '250px' }}
-              // overflowX='hidden'
-              // overflowY='scroll'
-              // px='10px'
+        <Box mt='32px' mb='260px'>
+          {/* Brand Info */}
+          <Flex id='categoryDeskop' justifyContent='center'>
+            <Flex
+              maxW='1200px'
+              // bgColor='red'
+              bgColor='white'
+              w='full'
+              justifyContent='space-between'
+              // position='fixed'
+              display={{ base: 'none', md: 'flex' }}
+              alignItems='center'
+              p='12px'
+              boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+              borderRadius='8px'
             >
-              <Box overflowY='scroll' maxH='100vh' className='styled-scrollbar'>
-                {/* Profile */}
-                <Box w='240px'>
-                  <Flex
-                    justifyContent='center'
-                    alignItems='center'
-                    boxShadow='md'
-                    width='240px'
-                    height='190px'
-                    borderRadius='8px'
-                  >
-                    <Image
-                      src='/images/shoope.png'
-                      alt='shoope logo'
-                      width='174px'
-                      height='56px'
-                      objectFit='contain'
-                      objectPosition='center'
-                    />
-                  </Flex>
-                  <Box mt='18px' padding='8px'>
-                    <Text
-                      mb='20px'
-                      fontWeight='700'
-                      fontSize='24px'
-                      color='#09BC8A'
-                      lineHeight='28px'
-                    >
-                      About
-                    </Text>
-                    <Text
-                      fontWeight='700'
-                      fontSize='20px'
-                      lineHeight='24px'
-                      textAlign='left'
-                    >
-                      {brand?.brandName}
-                    </Text>
-                    <Text
-                      mt='4px'
-                      textAlign='left'
-                      fontWeight='400'
-                      fontSize='16px'
-                      lineHeight='19px'
-                    >
-                      Last updated{' '}
-                      {brand?.updated_at
-                        ? moment(brand.updated_at).format('DD MMM')
-                        : moment(brand?.created_at).format('DD MMM')}
-                    </Text>
-                    {brand?.description && (
-                      <Text
-                        mt='12px'
-                        textAlign='left'
-                        fontWeight='400'
-                        fontSize='14px'
-                        lineHeight='150%'
-                        color='#666666'
-                      >
-                        {brand?.description}
-                      </Text>
-                    )}
-                    {brand && brand.tags.length > 0 && (
-                      <HStack spacing={2} mt='12px'>
-                        {brand.tags.map((tag, i) => (
-                          <Text
-                            fontWeight='400'
-                            fontSize='14px'
-                            lineHeight='17px'
-                            color='#3E97FF'
-                            key={i}
-                          >
-                            #{tag}
-                          </Text>
-                        ))}
-                      </HStack>
-                    )}
-                  </Box>
-                </Box>
-                {/* Modules */}
-                <Box w='240px' mt='32px'>
+              <Box>
+                <Image
+                  src={
+                    brand?.brandImage === undefined ||
+                    brand?.brandImage.length === 0
+                      ? '/images/shoope.png'
+                      : brand.brandImage
+                  }
+                  alt='shoope logo'
+                  width='130px'
+                  height='56px'
+                  objectFit='contain'
+                  objectPosition='center'
+                />
+                <Flex gap='4px' mt='8px' alignItems='center'>
                   <Text
-                    fontWeight='700'
-                    fontSize='24px'
-                    lineHeight='28px'
-                    color='#09BC8A'
+                    fontWeight='600'
+                    fontSize='14px'
+                    lineHeight='17px'
+                    color='#172A3A'
                   >
-                    Modules
+                    {brand?.brandName}
                   </Text>
-                  <Box
-                    mt='20px'
-                    padding='32px 24px'
-                    background='#FBFBFB'
-                    boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-                    display='flex'
-                    flexDirection='column'
-                    gap='20px'
+
+                  <Text
+                    fontWeight='400'
+                    fontSize='12px'
+                    lineHeight='14px'
+                    color='#8FA2B1'
                   >
-                    {moduleBrand.map((module, i) => (
+                    - Online Groceries
+                  </Text>
+                </Flex>
+              </Box>
+              <Flex gap='12px'>
+                <Button
+                  color='white'
+                  fontSize='20px'
+                  fontWeight='500'
+                  variant='solid'
+                  w='120px'
+                  bgColor='#09BC8A'
+                  h='48px'
+                  onClick={handleCompare}
+                >
+                  Compare
+                </Button>
+                <IconButton
+                  h='auto'
+                  bgColor='transparent'
+                  width='56px'
+                  border='1px solid #8FA2B1'
+                  borderRadius='8px'
+                  aria-label='More'
+                  icon={<MoreIcon />}
+                />
+              </Flex>
+            </Flex>
+          </Flex>
+          {/* Brand Data */}
+          <Flex
+            mt='52px'
+            w='full'
+            gap='48px'
+            alignItems='flex-start'
+            zIndex='10'
+          >
+            <Box w={{ base: '100%', md: '25%', xl: '250px' }}>
+              {/* Content */}
+              {showContentBrand && (
+                <Box
+                  padding='38px 32px 22px 28px'
+                  boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                  borderRadius='8px'
+                  w='240px'
+                  mb='32px'
+                >
+                  <Text
+                    fontWeight='500'
+                    fontSize='16px'
+                    lineHeight='19px'
+                    color='#172A3A'
+                  >
+                    Content
+                  </Text>
+                  <Flex flexDirection='column' gap='20px' mt='32px'>
+                    <Flex justifyContent='space-between' alignItems='center'>
+                      <Checkbox icon={<CheckboxIcon />}>
+                        <Text
+                          fontWeight='400'
+                          fontSize='14px'
+                          lineHeight='17px'
+                          color='#172A3A'
+                          as='span'
+                          ml='4px'
+                          textTransform='capitalize'
+                        >
+                          Images
+                        </Text>
+                      </Checkbox>
+                      <Text
+                        fontWeight='400'
+                        fontSize='12px'
+                        lineHeight='14px'
+                        color='#8FA2B1'
+                      >
+                        (5)
+                      </Text>
+                    </Flex>
+                    <Flex justifyContent='space-between' alignItems='center'>
+                      <Checkbox icon={<CheckboxIcon />}>
+                        <Text
+                          fontWeight='400'
+                          fontSize='14px'
+                          lineHeight='17px'
+                          color='#172A3A'
+                          as='span'
+                          ml='4px'
+                          textTransform='capitalize'
+                        >
+                          Video
+                        </Text>
+                      </Checkbox>
+                      <Text
+                        fontWeight='400'
+                        fontSize='12px'
+                        lineHeight='14px'
+                        color='#8FA2B1'
+                      >
+                        (5)
+                      </Text>
+                    </Flex>
+                  </Flex>
+                </Box>
+              )}
+              {/* Modules */}
+              <Box
+                padding='38px 32px 22px 28px'
+                boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                borderRadius='8px'
+                w='240px'
+              >
+                <Text
+                  fontWeight='500'
+                  fontSize='16px'
+                  lineHeight='19px'
+                  color='#172A3A'
+                >
+                  Flow
+                </Text>
+                <Flex flexDirection='column' gap='20px' mt='32px'>
+                  {moduleBrand.map((module, i) => (
+                    <Flex
+                      justifyContent='space-between'
+                      alignItems='center'
+                      key={i}
+                    >
                       <Checkbox
                         name={module._id}
                         onChange={handleChangeModuleCheckbox}
-                        key={i}
+                        icon={<CheckboxIcon />}
                       >
                         <Text
-                          fontWeight='500'
+                          fontWeight='400'
                           fontSize='14px'
-                          lineHeight='150%'
+                          lineHeight='17px'
                           color='#172A3A'
                           as='span'
                           ml='4px'
@@ -299,39 +384,26 @@ const BrandIndex: NextPage = () => {
                           {module._id}
                         </Text>
                       </Checkbox>
-                    ))}
-                  </Box>
-                </Box>
-                {/* Button Compare */}
-                <Box w='240px' mt='32px'>
-                  {/* <Link href='/compare'> */}
-                  <Button
-                    leftIcon={<HiOutlinePlusSm />}
-                    color='#FBFFFE'
-                    fontWeight='600'
-                    variant='solid'
-                    w='full'
-                    bgColor='#09BC8A'
-                    h='40px'
-                    onClick={handleCompare}
-                  >
-                    Compare
-                  </Button>
-                  {/* </Link> */}
-                </Box>
+                      <Text
+                        fontWeight='400'
+                        fontSize='12px'
+                        lineHeight='14px'
+                        color='#8FA2B1'
+                      >
+                        (5)
+                      </Text>
+                    </Flex>
+                  ))}
+                </Flex>
               </Box>
             </Box>
             {/* Brand Images */}
             <Box
-              // ml={{ base: 0, md: '360px' }}
-              //  ml='300px'
               overflowY='scroll'
               maxH='100vh'
               className='styled-scrollbar'
-              w={{ base: '100%', md: 'fit-content' }}
-              // maxH='100vh'
-              // overflowY='scroll'
-              // className='styled-scrollbar'
+              position='absolute'
+              left='30%'
             >
               {filterBrandImages().map((imgBrand, i) => (
                 <Box key={i}>
@@ -346,6 +418,54 @@ const BrandIndex: NextPage = () => {
             </Box>
           </Flex>
         </Box>
+        {/* Samiliar Brand */}
+        <Flex
+          gap='42px'
+          justifyContent='center'
+          alignItems='center'
+          flexDirection='column'
+          w='full'
+          bgColor='#FBFFFE'
+          py='48px'
+          zIndex='1'
+          mb='70px'
+        >
+          <Text
+            fontWeight='700'
+            fontSize='16px'
+            lineHeight='19px'
+            color='#09BC8A'
+          >
+            Simillar Brand
+          </Text>
+          <Flex alignItems='center' gap='32px' justifyContent='center'>
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <Flex
+                key={item}
+                boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                borderRadius='12px'
+                justifyContent='center'
+                alignItems='center'
+                width='122px'
+                height='97px'
+              >
+                <Image
+                  src={
+                    brand?.brandImage === undefined ||
+                    brand?.brandImage.length === 0
+                      ? '/images/shoope.png'
+                      : brand.brandImage
+                  }
+                  alt='shoope logo'
+                  width='74px'
+                  height='100%'
+                  objectFit='contain'
+                  objectPosition='center'
+                />
+              </Flex>
+            ))}
+          </Flex>
+        </Flex>
         <Modal onClose={onClose} isOpen={isOpen} isCentered size='6xl'>
           <ModalOverlay bg='blackAlpha.300' backdropFilter='blur(10px)' />
           <ModalContent
@@ -401,15 +521,6 @@ const ListImage: React.FC<IListImage> = (props) => {
         lineHeight='24px'
       >
         {props.moduleName}
-      </Text>
-      <Text
-        mt='4px'
-        color='#000'
-        fontWeight='400'
-        fontSize='14px'
-        lineHeight='17px'
-      >
-        {props.images.length} Screen
       </Text>
       <Flex
         mt='24px'

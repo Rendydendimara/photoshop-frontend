@@ -12,6 +12,7 @@ import '@fontsource/rubik/600.css';
 import '@fontsource/rubik/700.css';
 import '@fontsource/rubik/800.css';
 import '@fontsource/rubik/900.css';
+import '@fontsource/baloo-tamma-2';
 // import '@fontsource/roboto';
 
 interface ChakraProps {

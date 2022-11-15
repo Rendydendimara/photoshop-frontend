@@ -37,16 +37,38 @@ const BrandItemModal: React.FC<IBrandSelected> = (props) => {
         minW='240px'
         minH='190px'
       >
-        <ChakraImage alt='shoope' src='/images/shoope.png' />{' '}
+        <ChakraImage
+          alt='shoope'
+          src={
+            brand?.brandImage === undefined || brand?.brandImage.length === 0
+              ? './images/shoope.png'
+              : brand.brandImage
+          }
+          width={{ base: '144px', md: '144px' }}
+          height='153px'
+          objectFit='contain'
+          objectPosition='center'
+        />{' '}
       </Flex>
       <Text
-        fontWeight='700'
+        fontWeight='500'
         fontSize='14px'
-        lineHeight='24px'
+        // lineHeight='24px'
         textAlign='center'
-        mt='4'
+        mt='12px'
+        color='#172A3A'
       >
         {brand?.brandName}
+      </Text>
+      <Text
+        fontWeight='500'
+        fontSize='12px'
+        // lineHeight='24px'
+        textAlign='center'
+        mt='4px'
+        color='#B4C6D4'
+      >
+        {brand?.modules} Module {brand?.screens} Screen
       </Text>
       <Center>
         <Button
