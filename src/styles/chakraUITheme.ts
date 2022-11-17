@@ -29,6 +29,9 @@ const theme = extendTheme({
       },
     },
   },
+  colorScheme: {
+    black: '#172A3A',
+  },
   colors: {
     brand: {
       100: '#f7fafc',

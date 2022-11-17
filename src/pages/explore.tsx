@@ -332,7 +332,7 @@ const Explore: NextPage = () => {
 
     function handleScroll() {
       // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
-      if (window.pageYOffset >= sticky) {
+      if (window.pageYOffset >= sticky + 140) {
         navbar.classList.add('stickyNavbarHome');
         sidebar.classList.add('stickySidebar');
         // if (!isFixedPositionSidebar) {
@@ -564,6 +564,7 @@ const Explore: NextPage = () => {
             listCategory={listCategory}
             onChangeFilterFlow={onChangeFilterFlow}
             onChangeFilterCategory={onChangeFilterCategory}
+            filterBrandByFlow={filterBrandByFlow}
           />
           <Box ml='290px' zIndex='10000'>
             {renderBrand()}

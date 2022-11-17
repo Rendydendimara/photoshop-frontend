@@ -151,3 +151,16 @@ a {
 .showPointerOnHover:hover {
   cursor: pointer;
 }
+
+/* .checboxBlack > span:checked {
+} */
+/* .chakra-checkbox__control {
+  background: black;
+  border-color: black;
+  color: var(--chakra-colors-white);
+}
+input[type='checkbox']:checked > span {
+  background: black;
+  border-color: black;
+  color: var(--chakra-colors-white);
+} */

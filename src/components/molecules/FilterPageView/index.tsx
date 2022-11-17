@@ -4,6 +4,7 @@ import { Box, Flex, Text } from '@chakra-ui/layout';
 import { BrandIcon } from 'components/atoms/icons/brand-icon';
 import { CategoryIcon } from 'components/atoms/icons/category-icon';
 import { FlowIcon } from 'components/atoms/icons/flow-icon';
+import { SearchIcon } from 'components/atoms/icons/search-icon';
 import { ISearchBrand } from 'interfaces/IBrand';
 import { useRef, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
@@ -102,15 +103,15 @@ const FilterPageView: React.FC<IProps> = (props) => {
       <Box w='full' maxW='320px' position='relative' bgColor='white'>
         <InputGroup bgColor='#FAFAFA'>
           <InputLeftElement
-            display={{ base: 'flex', md: 'none' }}
+            // display={{ base: 'flex', md: 'none' }}
             pointerEvents='none'
-            children={<BiSearch size={16} color='#B4C6D4' />}
+            mt='4px'
+            children={<SearchIcon showHover />}
           />
           <Input
             width='full'
             height={{ base: '41px', md: '49px' }}
-            border='1px solid #172A3A'
-            borderColor='#172A3A'
+            borderColor='transparent'
             onChange={props.handleChangeSearch}
             borderRadius='12px'
             onKeyDown={props.handleKeyOnDownKeyword}

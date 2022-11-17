@@ -1,6 +1,7 @@
 import { Checkbox } from '@chakra-ui/checkbox';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { ApiGetListModules } from 'api/brand';
+import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { IListFlow } from 'interfaces/IBrand';
 import { ICategory } from 'interfaces/ICategory';
@@ -13,6 +14,10 @@ interface IProps {
   listCategory: ICategory[];
   onChangeFilterFlow: (e: any) => void;
   onChangeFilterCategory: (e: any) => void;
+  filterBrandByFlow: {
+    flows: string[];
+    categories: string[];
+  };
 }
 
 const FilterTools: React.FC<IProps> = (props) => {
@@ -47,7 +52,14 @@ const FilterTools: React.FC<IProps> = (props) => {
               alignItems='center'
             >
               <Checkbox
-                icon={<CheckboxIcon />}
+                colorScheme=''
+                icon={
+                  props.filterBrandByFlow.categories.includes(category._id) ? (
+                    <CheckboxCheckedIcon />
+                  ) : (
+                    <CheckboxIcon />
+                  )
+                }
                 name={category._id}
                 onChange={props.onChangeFilterCategory}
                 // key={i}
@@ -107,7 +119,14 @@ const FilterTools: React.FC<IProps> = (props) => {
                 alignItems='center'
               >
                 <Checkbox
-                  icon={<CheckboxIcon />}
+                  colorScheme=''
+                  icon={
+                    props.filterBrandByFlow.flows.includes(flow._id) ? (
+                      <CheckboxCheckedIcon />
+                    ) : (
+                      <CheckboxIcon />
+                    )
+                  }
                   name={flow._id}
                   onChange={props.onChangeFilterFlow}
                   key={i}

@@ -126,7 +126,7 @@ const GridImage: React.FC<IGridImage> = (props) => {
             <Box mt='12px' padding='8px'>
               <Text
                 fontWeight='500'
-                fontSize={{ base: '18px', md: '20px' }}
+                fontSize={{ base: '18px', md: '14px' }}
                 // lineHeight='14px'
                 textAlign='center'
                 color='#172A3A'

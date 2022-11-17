@@ -34,9 +34,11 @@ import {
 } from 'lib/Cookies/AppCookies';
 import { MoreIcon } from 'components/atoms/icons/more-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
+import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 
 const BrandIndex: NextPage = () => {
   const [showContentBrand, setShowContentBrand] = useState(false);
+  const [mtSamiliarBrand, setMtSamiliarBrand] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [brand, setBrand] = useState<IBrand>();
@@ -52,6 +54,17 @@ const BrandIndex: NextPage = () => {
   const [listImageSelectedModule, setListImageSelectedModule] = useState<
     IImage[]
   >([]);
+  const [filterContent, setFilterContent] = useState<string[]>([]);
+
+  const onChangeFilterContent = (e: any) => {
+    let newFilter: any[] = [];
+    if (filterContent.includes(e.target.name)) {
+      newFilter = filterContent.filter((flow) => flow !== e.target.name);
+    } else {
+      newFilter = [...filterContent, e.target.name];
+    }
+    setFilterContent(newFilter);
+  };
 
   const onOpenImage = async (moduleName: string) => {
     onOpen();
@@ -181,6 +194,11 @@ const BrandIndex: NextPage = () => {
     }
   }, [router.query]);
 
+  useEffect(() => {
+    let box: any = document.querySelector('#brandImage');
+    setMtSamiliarBrand(box?.offsetHeight ?? 0);
+  });
+
   return (
     <Layout showNavbarFooter>
       <Head>
@@ -297,7 +315,18 @@ const BrandIndex: NextPage = () => {
                   </Text>
                   <Flex flexDirection='column' gap='20px' mt='32px'>
                     <Flex justifyContent='space-between' alignItems='center'>
-                      <Checkbox icon={<CheckboxIcon />}>
+                      <Checkbox
+                        colorScheme=''
+                        onChange={onChangeFilterContent}
+                        icon={
+                          filterContent.includes('images') ? (
+                            <CheckboxCheckedIcon />
+                          ) : (
+                            <CheckboxIcon />
+                          )
+                        }
+                        name='images'
+                      >
                         <Text
                           fontWeight='400'
                           fontSize='14px'
@@ -320,7 +349,18 @@ const BrandIndex: NextPage = () => {
                       </Text>
                     </Flex>
                     <Flex justifyContent='space-between' alignItems='center'>
-                      <Checkbox icon={<CheckboxIcon />}>
+                      <Checkbox
+                        colorScheme=''
+                        onChange={onChangeFilterContent}
+                        icon={
+                          filterContent.includes('video') ? (
+                            <CheckboxCheckedIcon />
+                          ) : (
+                            <CheckboxIcon />
+                          )
+                        }
+                        name='video'
+                      >
                         <Text
                           fontWeight='400'
                           fontSize='14px'
@@ -370,7 +410,15 @@ const BrandIndex: NextPage = () => {
                       <Checkbox
                         name={module._id}
                         onChange={handleChangeModuleCheckbox}
-                        icon={<CheckboxIcon />}
+                        className='checboxBlack'
+                        colorScheme=''
+                        icon={
+                          listCheckedModule.includes(module._id) ? (
+                            <CheckboxCheckedIcon />
+                          ) : (
+                            <CheckboxIcon />
+                          )
+                        }
                       >
                         <Text
                           fontWeight='400'
@@ -390,7 +438,7 @@ const BrandIndex: NextPage = () => {
                         lineHeight='14px'
                         color='#8FA2B1'
                       >
-                        (5)
+                        ({module.count})
                       </Text>
                     </Flex>
                   ))}
@@ -401,9 +449,10 @@ const BrandIndex: NextPage = () => {
             <Box
               overflowY='scroll'
               maxH='100vh'
+              id='brandImage'
               className='styled-scrollbar'
               position='absolute'
-              left='30%'
+              left={{ base: '30%', '2xl': '42%' }}
             >
               {filterBrandImages().map((imgBrand, i) => (
                 <Box key={i}>
@@ -429,6 +478,7 @@ const BrandIndex: NextPage = () => {
           py='48px'
           zIndex='1'
           mb='70px'
+          mt={`${mtSamiliarBrand - 300}px`}
         >
           <Text
             fontWeight='700'
@@ -479,7 +529,13 @@ const BrandIndex: NextPage = () => {
             overflow='scroll'
           >
             <ModalBody w='full' border='unset'>
-              <Flex mt='24px' gap='48px' w='full' h='100%'>
+              <Flex
+                mt='24px'
+                gap='48px'
+                w='full'
+                h='100%'
+                justifyContent='center'
+              >
                 {listImageSelectedModule.map((image, i) => (
                   <ImageChakra
                     src={image.imagePath}
