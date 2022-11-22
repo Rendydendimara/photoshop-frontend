@@ -26,6 +26,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { ApiLogout } from 'api/auth';
+import { AppLogoIcon } from 'components/atoms/icons/app-logo-icon';
 import { INavItem, ROUTE } from 'constant/index';
 import { IUser } from 'interfaces/IUser';
 import { localCookieClearToken } from 'lib/Cookies/AppCookies';
@@ -57,32 +58,9 @@ const Navbar: React.FC<IProps> = () => {
         align={'center'}
         justifyContent='space-between'
       >
-        <Text
-          textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-          fontFamily={'heading'}
-          color='gray.800'
-        >
-          <Text
-            as='span'
-            fontFamily='Baloo Tamma 2'
-            fontWeight='400'
-            fontSize='32px'
-            lineHeight='55px'
-            color='#172A3A'
-          >
-            The
-          </Text>
-          <Text
-            as='span'
-            fontFamily='Baloo Tamma 2'
-            fontWeight='400'
-            fontSize='32px'
-            lineHeight='55px'
-            color='#09BC8A'
-          >
-            truesight
-          </Text>
-        </Text>
+        <ChakraLink href='/' _hover={{ cursor: 'pointer' }}>
+          <AppLogoIcon />
+        </ChakraLink>
         <Flex
           justify={{ base: 'space-between', md: 'flex-end' }}
           alignItems='center'
@@ -140,8 +118,10 @@ const DesktopNav = () => {
                 href={navItem.href ?? '#'}
                 fontSize='16px'
                 lineHeight='19px'
-                fontWeight={navItem.pathname === router.pathname ? 600 : 400}
-                color='black'
+                fontWeight={500}
+                color={
+                  navItem.pathname === router.pathname ? '#09BC8A' : '#172A3A'
+                }
                 _hover={{
                   textDecoration: 'none',
                 }}
@@ -199,6 +179,7 @@ const DesktopNav = () => {
 };
 
 const DesktopSubNav = ({ label, href, subLabel }: INavItem) => {
+  const router = useRouter();
   return (
     <ChakraLink
       href={href}
@@ -214,7 +195,7 @@ const DesktopSubNav = ({ label, href, subLabel }: INavItem) => {
             transition={'all .3s ease'}
             _groupHover={{ color: 'pink.400' }}
             fontWeight={500}
-            color='black'
+            color={href === router.pathname ? '#09BC8A' : '#172A3A'}
           >
             {label}
           </Text>
@@ -251,7 +232,10 @@ const MobileNavItem = ({ label, children, href }: INavItem) => {
           textDecoration: 'none',
         }}
       >
-        <Text fontWeight={href === router.pathname ? 600 : 400} color='black'>
+        <Text
+          fontWeight={500}
+          color={href === router.pathname ? '#09BC8A' : '#172A3A'}
+        >
           {label}
         </Text>
         {children && (

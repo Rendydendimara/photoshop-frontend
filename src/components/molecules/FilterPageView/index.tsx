@@ -59,32 +59,34 @@ const FilterPageView: React.FC<IProps> = (props) => {
           fill={props.filterPageView.brand ? '#09BC8A' : '#B4C6D4'}
           onClick={() => props.onChangeFilterPageView('brand')}
         />
-        <CategoryIcon
+        <FlowIcon
           showHover
           fill={props.filterPageView.flow ? '#09BC8A' : '#B4C6D4'}
           onClick={() => props.onChangeFilterPageView('flow')}
         />
-        <FlowIcon
+        <CategoryIcon
           showHover
           fill={props.filterPageView.category ? '#09BC8A' : '#B4C6D4'}
           onClick={() => props.onChangeFilterPageView('category')}
         />
         <svg
-          width='1'
+          width='2'
           height='27'
-          viewBox='0 0 1 27'
+          viewBox='0 0 2 27'
           fill='none'
           xmlns='http://www.w3.org/2000/svg'
         >
           <line
-            x1='0.5'
-            y1='1'
-            x2='0.499999'
-            y2='26'
-            stroke='#172A3A'
+            x1='1'
+            y1='1.5'
+            x2='0.999999'
+            y2='25.5'
+            stroke='#EEF4F9'
+            stroke-width='2'
             stroke-linecap='round'
           />
         </svg>
+
         <Text
           fontWeight='500'
           fontSize='16px'

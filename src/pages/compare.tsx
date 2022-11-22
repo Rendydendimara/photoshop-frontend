@@ -12,6 +12,7 @@ import { APP_NAME } from 'constant';
 import { LOCAL_COMPARE } from 'constant/local';
 import { IBrand } from 'interfaces/IBrand';
 import { getLocalCookie, setLocalCookie } from 'lib/Cookies/AppCookies';
+import { every, filter, includes, some } from 'lodash';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -20,8 +21,10 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlinePlusSm } from 'react-icons/hi';
 import { RiSearchLine } from 'react-icons/ri';
 
+let searchTimer: any;
 const Compare: NextPage = () => {
   const router = useRouter();
+  const [search, setSearch] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [listIdBrandCompare, setListIdBrandCompare] = useState<string[]>([]);
   const [listIdBrandCompareObject, setListIdBrandCompareObject] = useState<any>(
@@ -33,6 +36,9 @@ const Compare: NextPage = () => {
   );
   const [fieldAdd, setFieldAdd] = useState('');
   const [listBrandCompetitor, setListBrandCompetitor] = useState<IBrand[]>([]);
+  const [listBrandCompetitorStatic, setListBrandCompetitorStatic] = useState<
+    IBrand[]
+  >([]);
   // setLocal(LOCAL_COMPARE[1].brandId, brandId);
   // setLocal(LOCAL_COMPARE[1].listModule, listCheckedModule);
   // console.log(getLocalCookie(LOCAL_COMPARE[1].brandId));
@@ -67,6 +73,7 @@ const Compare: NextPage = () => {
     const res = await ApiGetListBrand(filter);
     if (res.status === 200) {
       setListBrandCompetitor(res.data.data);
+      setListBrandCompetitorStatic(res.data.data);
     }
   };
 
@@ -97,6 +104,41 @@ const Compare: NextPage = () => {
       total: total,
     };
     // if(listIdBrandCompareObject)
+  };
+
+  const onChangeSearch = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+    setSearch(e.target.value);
+    if (searchTimer) {
+      clearTimeout(searchTimer);
+    }
+    searchTimer = setTimeout(searching, 500, e.target.value);
+  };
+
+  const searching = (query: string): void => {
+    if (query != '') {
+      const searchQuery = query.toLowerCase();
+      const temp = filter(listBrandCompetitorStatic, (brand: IBrand) => {
+        let passFilter: boolean[] = [];
+        // SEARCH
+        if ((searchQuery?.length ?? 0) > 0) {
+          const haystack = [brand.brandName.toLowerCase()];
+          passFilter.push(some(haystack, (el) => includes(el, searchQuery)));
+        } else {
+          passFilter.push(true);
+        }
+        // FINAL CHECKING
+        if (passFilter.length > 0) {
+          return every(passFilter, Boolean);
+        } else {
+          return true;
+        }
+      });
+      setListBrandCompetitor(temp);
+    } else {
+      setListBrandCompetitor(listBrandCompetitorStatic);
+    }
   };
 
   useEffect(() => {
@@ -289,11 +331,13 @@ const Compare: NextPage = () => {
                         fontSize: '14px',
                         color: '#B4C6D5',
                       }}
+                      value={search}
+                      onChange={onChangeSearch}
                     />
                   </InputGroup>
                 </Center>
               </Flex>
-              <SimpleGrid mt='17px' columns={[1, 3, 5]} spacing='12px'>
+              <SimpleGrid mt='17px' columns={[1, 3, 4]} spacing='12px'>
                 {listBrandCompetitor.map((brand, i) => (
                   <Box
                     key={i}

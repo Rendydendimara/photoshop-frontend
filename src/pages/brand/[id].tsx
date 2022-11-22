@@ -199,6 +199,34 @@ const BrandIndex: NextPage = () => {
     setMtSamiliarBrand(box?.offsetHeight ?? 0);
   });
 
+  useEffect(() => {
+    // Get the navbar
+    let navbar: any;
+    let sidebar: any;
+
+    if (typeof window !== 'undefined') {
+      navbar = document.getElementById('categoryDeskop');
+    }
+
+    // Get the offset position of the navbar
+    let sticky: any = navbar?.offsetTop;
+    // When the user scrolls the page, execute myFunction
+    if (typeof window !== 'undefined') {
+      window.onscroll = function () {
+        handleScroll();
+      };
+    }
+
+    function handleScroll() {
+      // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+      if (window.pageYOffset >= sticky + 57) {
+        navbar.classList.add('stickyNavbarHome');
+      } else {
+        navbar.classList.remove('stickyNavbarHome');
+      }
+    }
+  });
+
   return (
     <Layout showNavbarFooter>
       <Head>
@@ -227,6 +255,7 @@ const BrandIndex: NextPage = () => {
               p='12px'
               boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
               borderRadius='8px'
+              id='categoryDeskop'
             >
               <Box>
                 <Image
@@ -599,6 +628,9 @@ const ListImage: React.FC<IListImage> = (props) => {
             _hover={{
               cursor: 'pointer',
             }}
+            borderRadius='8px'
+            border='2px solid #172A3A'
+            marginRight={i + 1 === props.images.length ? '10px' : 0}
           />
         ))}
       </Flex>

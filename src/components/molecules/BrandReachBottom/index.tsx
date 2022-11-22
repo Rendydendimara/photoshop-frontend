@@ -7,18 +7,19 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
     <Flex
       mb='84px'
       flexDirection='column'
-      mt='245px'
+      mt='152px'
       w='full'
       alignItems='center'
     >
       <Text
-        mb='29px'
+        mb='59px'
         fontWeight='500'
         fontSize='32px'
         lineHeight='38px'
-        color='#B4C6D4'
+        color='#97A5B0'
+        letterSpacing='0.05em'
       >
-        Oops you already reach the bottom
+        you already reach the bottom
       </Text>
       <svg
         width='173'
@@ -137,10 +138,11 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
       </svg>
       <Button
         mt='19px'
-        colorScheme='green'
+        color='white'
+        bgColor='#09BC8A'
         fontWeight='500'
         fontSize='14px'
-        width='228px'
+        width='319px'
         height='41px'
       >
         Search Again
@@ -148,10 +150,11 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
       <Button
         variant='outline'
         mt='12px'
-        colorScheme='green'
+        borderColor='#09BC8A'
         fontWeight='500'
+        color='#09BC8A'
         fontSize='14px'
-        width='228px'
+        width='319px'
         height='41px'
       >
         Request Screen

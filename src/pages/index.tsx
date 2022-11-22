@@ -1,5 +1,6 @@
 import { Button } from '@chakra-ui/button';
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/layout';
+import { AllBrandIcon } from 'components/atoms/icons/all-brand-icon';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
@@ -77,7 +78,8 @@ const Home: NextPage = () => {
               gap='10px'
               justifyContent='flex-end'
             >
-              <Flex flexDirection='column' gap='10px'>
+              <AllBrandIcon />
+              {/* <Flex flexDirection='column' gap='10px'>
                 <BoxImage noBG />
                 <BoxImage noBG />
                 <BoxImage noBG />
@@ -106,7 +108,7 @@ const Home: NextPage = () => {
                 <BoxImage />
                 <BoxImage />
                 <BoxImage />
-              </Flex>
+              </Flex> */}
             </Flex>
           </Flex>
         </Box>

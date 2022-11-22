@@ -32,7 +32,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
-import { useOnClickOutside } from 'usehooks-ts';
+import { useHover, useOnClickOutside } from 'usehooks-ts';
 
 interface IProps {
   listBrand: IBrand[];
@@ -95,92 +95,112 @@ const GridImage: React.FC<IGridImage> = (props) => {
       // justifyContent={{ base: 'center', md: 'center' }}
     >
       {props.brands.map((brand, i) => (
-        <Link href={`/brand/${brand._id}`} key={i}>
-          <Box
-            mb={{ base: 2, md: 0 }}
-            w={{ base: '155px', md: '192px' }}
-            _hover={{ cursor: 'pointer' }}
-          >
-            <Flex
-              justifyContent='center'
-              alignItems='center'
-              boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-              width='full'
-              height='190px'
-              borderRadius='8px'
-            >
-              <Image
-                src={
-                  brand.brandImage === undefined ||
-                  brand.brandImage.length === 0
-                    ? './images/shoope.png'
-                    : brand.brandImage
-                }
-                alt='shoope logo'
-                width={{ base: '144px', md: '144px' }}
-                height='153px'
-                objectFit='contain'
-                objectPosition='center'
-              />
-            </Flex>
-            <Box mt='12px' padding='8px'>
-              <Text
-                fontWeight='500'
-                fontSize={{ base: '18px', md: '14px' }}
-                // lineHeight='14px'
-                textAlign='center'
-                color='#172A3A'
-              >
-                {brand.brandName}
-              </Text>
-              <Text
-                mt='4px'
-                color='#B4C6D5'
-                textAlign='center'
-                fontWeight='400'
-                fontSize='12px'
-                lineHeight='14px'
-              >
-                {brand.modules} Module {brand.screens} Screen
-              </Text>
-              {/* <Text
-                mt='12px'
-                textAlign='left'
-                fontWeight='400'
-                fontSize='14px'
-                lineHeight='150%'
-                color='#666666'
-              >
-                UNIQLO is a clothing apparel company, which was originally
-                founded in Yamaguchi, Japan in 1949 as a textiles manufacturer.
-                Now it is a global brand with over 1000 stores around the world.
-                Redefining clothing, with a focus on quality and textiles which
-                has been unwavered since the company's origins in 1949.
-              </Text> */}
-              {brand.tags.length > 0 && (
-                <HStack
-                  flexDirection={{ base: 'column', md: 'row' }}
-                  mt='12px'
-                  alignItems='flex-start'
-                >
-                  {brand.tags.map((tag, i) => (
-                    <Text
-                      margin='0 !important'
-                      fontWeight='400'
-                      fontSize='14px'
-                      lineHeight='17px'
-                      color='#3E97FF'
-                      key={i}
-                    >
-                      #{tag}
-                    </Text>
-                  ))}
-                </HStack>
-              )}
-            </Box>
-          </Box>
-        </Link>
+        <BrandItem key={i} brand={brand} />
       ))}
     </Flex>
+  );
+};
+
+interface BrandItem {
+  brand: IBrand;
+}
+
+const BrandItem: React.FC<BrandItem> = (props) => {
+  const hoverRef = useRef(null);
+  const isHover = useHover(hoverRef);
+
+  return (
+    <Link href={`/brand/${props.brand._id}`}>
+      <Box
+        mb={{ base: 2, md: 0 }}
+        w={{ base: '155px', md: '192px' }}
+        _hover={{ cursor: 'pointer' }}
+        ref={hoverRef}
+      >
+        <Flex
+          justifyContent='center'
+          alignItems='center'
+          width='full'
+          height='152px'
+          borderRadius='12px'
+          border={isHover ? '1px solid #E8E8E8' : '1px solid #EFEFEF'}
+          bgColor='#FBFBFB'
+          boxShadow={
+            isHover
+              ? '0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+              : 'unset'
+          }
+        >
+          <Image
+            src={
+              props.brand.brandImage === undefined ||
+              props.brand.brandImage.length === 0
+                ? './images/shoope.png'
+                : props.brand.brandImage
+            }
+            alt='shoope logo'
+            width={{ base: '144px', md: '144px' }}
+            height='153px'
+            objectFit='contain'
+            objectPosition='center'
+          />
+        </Flex>
+        <Box mt='12px' padding='8px'>
+          <Text
+            fontWeight='500'
+            fontSize={{ base: '18px', md: '14px' }}
+            // lineHeight='14px'
+            textAlign='center'
+            color={isHover ? '#09BC8A' : '#172A3A'}
+          >
+            {props.brand.brandName}
+          </Text>
+          <Text
+            mt='4px'
+            color='#B4C6D5'
+            textAlign='center'
+            fontWeight='400'
+            fontSize='12px'
+            lineHeight='14px'
+          >
+            {props.brand.modules} Module {props.brand.screens} Screen
+          </Text>
+          {/* <Text
+          mt='12px'
+          textAlign='left'
+          fontWeight='400'
+          fontSize='14px'
+          lineHeight='150%'
+          color='#666666'
+        >
+          UNIQLO is a clothing apparel company, which was originally
+          founded in Yamaguchi, Japan in 1949 as a textiles manufacturer.
+          Now it is a global props.brand with over 1000 stores around the world.
+          Redefining clothing, with a focus on quality and textiles which
+          has been unwavered since the company's origins in 1949.
+        </Text> */}
+          {props.brand.tags.length > 0 && (
+            <HStack
+              flexDirection={{ base: 'column', md: 'row' }}
+              mt='12px'
+              alignItems='flex-start'
+            >
+              {props.brand.tags.map((tag, i) => (
+                <Text
+                  margin='0 !important'
+                  fontWeight='400'
+                  fontSize='14px'
+                  lineHeight='17px'
+                  color='#3E97FF'
+                  key={i}
+                >
+                  #{tag}
+                </Text>
+              ))}
+            </HStack>
+          )}
+        </Box>
+      </Box>
+    </Link>
   );
 };

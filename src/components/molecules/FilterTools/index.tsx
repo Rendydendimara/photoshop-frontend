@@ -22,7 +22,7 @@ interface IProps {
 
 const FilterTools: React.FC<IProps> = (props) => {
   return (
-    <Box ref={props.refSidebar} id='sidebarContainer' position='fixed'>
+    <Box ref={props.refSidebar} id='sidebarContainer'>
       <Box
         w='236px'
         padding='37px 28px'
@@ -72,6 +72,7 @@ const FilterTools: React.FC<IProps> = (props) => {
                   as='span'
                   ml='4px'
                   textTransform='capitalize'
+                  _hover={{ color: '#09BC8A' }}
                 >
                   {category.name}
                 </Text>
@@ -80,7 +81,11 @@ const FilterTools: React.FC<IProps> = (props) => {
                 fontWeight='400'
                 fontSize='12px'
                 lineHeight='14px'
-                color='#8FA2B1'
+                color={
+                  props.filterBrandByFlow.categories.includes(category._id)
+                    ? '#8FA2B1'
+                    : '#172A3A'
+                }
               >
                 ({category.totalBrand})
               </Text>

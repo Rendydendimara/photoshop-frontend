@@ -332,11 +332,11 @@ const Explore: NextPage = () => {
 
     function handleScroll() {
       // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
-      if (window.pageYOffset >= sticky + 140) {
+      if (window.pageYOffset >= sticky + 57) {
         navbar.classList.add('stickyNavbarHome');
         sidebar.classList.add('stickySidebar');
         // if (!isFixedPositionSidebar) {
-        //   // setIsFixedPositionSidebar(true);
+        // setIsFixedPositionSidebar(true);
         // }
       } else {
         navbar.classList.remove('stickyNavbarHome');
@@ -348,6 +348,11 @@ const Explore: NextPage = () => {
       // checkMLSidebar();
     }
   });
+  useEffect(() => {
+    let timer: any;
+    timer = setInterval(checkMLSidebar, 50);
+    return () => clearInterval(timer);
+  }, []);
 
   // useEffect(() => {
   //   // window.onscroll = function () {
@@ -566,7 +571,7 @@ const Explore: NextPage = () => {
             onChangeFilterCategory={onChangeFilterCategory}
             filterBrandByFlow={filterBrandByFlow}
           />
-          <Box ml='290px' zIndex='10000'>
+          <Box ml={isFixedPositionSidebar ? '290px' : 0} zIndex='10000'>
             {renderBrand()}
             {listBrand.length > 0 && <BrandReachBottom />}
           </Box>
