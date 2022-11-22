@@ -258,7 +258,7 @@ const BrandIndex: NextPage = () => {
               id='categoryDeskop'
             >
               <Box>
-                <Image
+                <ImageChakra
                   src={
                     brand?.brandImage === undefined ||
                     brand?.brandImage.length === 0
@@ -354,6 +354,7 @@ const BrandIndex: NextPage = () => {
                             <CheckboxIcon />
                           )
                         }
+                        border='none'
                         name='images'
                       >
                         <Text
@@ -388,6 +389,7 @@ const BrandIndex: NextPage = () => {
                             <CheckboxIcon />
                           )
                         }
+                        border='none'
                         name='video'
                       >
                         <Text
@@ -441,6 +443,7 @@ const BrandIndex: NextPage = () => {
                         onChange={handleChangeModuleCheckbox}
                         className='checboxBlack'
                         colorScheme=''
+                        border='none'
                         icon={
                           listCheckedModule.includes(module._id) ? (
                             <CheckboxCheckedIcon />

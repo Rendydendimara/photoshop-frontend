@@ -60,6 +60,7 @@ const FilterTools: React.FC<IProps> = (props) => {
                     <CheckboxIcon />
                   )
                 }
+                border='none'
                 name={category._id}
                 onChange={props.onChangeFilterCategory}
                 // key={i}
@@ -132,6 +133,7 @@ const FilterTools: React.FC<IProps> = (props) => {
                       <CheckboxIcon />
                     )
                   }
+                  border='none'
                   name={flow._id}
                   onChange={props.onChangeFilterFlow}
                   key={i}
