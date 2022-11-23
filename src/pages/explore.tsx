@@ -562,15 +562,17 @@ const Explore: NextPage = () => {
           mt='32px'
           gap='60px'
         >
-          <FilterTools
-            refSidebar={refSidebar}
-            showFlowFilter={filterPageView.flow}
-            listFlow={listFlow}
-            listCategory={listCategory}
-            onChangeFilterFlow={onChangeFilterFlow}
-            onChangeFilterCategory={onChangeFilterCategory}
-            filterBrandByFlow={filterBrandByFlow}
-          />
+          <Box>
+            <FilterTools
+              refSidebar={refSidebar}
+              showFlowFilter={filterPageView.flow}
+              listFlow={listFlow}
+              listCategory={listCategory}
+              onChangeFilterFlow={onChangeFilterFlow}
+              onChangeFilterCategory={onChangeFilterCategory}
+              filterBrandByFlow={filterBrandByFlow}
+            />
+          </Box>
           <Box ml={isFixedPositionSidebar ? '290px' : 0} zIndex='10000'>
             {renderBrand()}
             {listBrand.length > 0 && <BrandReachBottom />}
