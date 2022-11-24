@@ -348,11 +348,11 @@ const Explore: NextPage = () => {
       // checkMLSidebar();
     }
   });
-  useEffect(() => {
-    let timer: any;
-    timer = setInterval(checkMLSidebar, 50);
-    return () => clearInterval(timer);
-  }, []);
+  // useEffect(() => {
+  //   let timer: any;
+  //   timer = setInterval(checkMLSidebar, 50);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   // useEffect(() => {
   //   // window.onscroll = function () {
@@ -560,9 +560,9 @@ const Explore: NextPage = () => {
         <Flex
           flexDirection={{ base: 'column', md: 'row' }}
           mt='32px'
-          gap='60px'
+          gap='64px'
         >
-          <Box width='332px' height='500px'>
+          <Box width='236px' height='500px'>
             <FilterTools
               refSidebar={refSidebar}
               showFlowFilter={filterPageView.flow}
