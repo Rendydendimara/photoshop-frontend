@@ -562,7 +562,7 @@ const Explore: NextPage = () => {
           mt='32px'
           gap='60px'
         >
-          <Box>
+          <Box width='332px' height='500px'>
             <FilterTools
               refSidebar={refSidebar}
               showFlowFilter={filterPageView.flow}
@@ -573,7 +573,7 @@ const Explore: NextPage = () => {
               filterBrandByFlow={filterBrandByFlow}
             />
           </Box>
-          <Box ml={isFixedPositionSidebar ? '290px' : 0} zIndex='10000'>
+          <Box zIndex='10000'>
             {renderBrand()}
             {listBrand.length > 0 && <BrandReachBottom />}
           </Box>
