@@ -173,7 +173,7 @@ const Compare: NextPage = () => {
           h='90vh'
         >
           <Box mb='44px'>
-            <Text fontWeight='600' lineHeight='24px' fontSize='20px'>
+            <Text color='#172A3A' fontWeight='600' fontSize='48px'>
               Compare Competitor
             </Text>
           </Box>

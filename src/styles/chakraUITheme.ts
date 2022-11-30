@@ -63,8 +63,8 @@ const theme = extendTheme({
   breakpoints,
   // use custom font-family
   fonts: {
-    heading: 'Rubik',
-    body: 'Rubik',
+    heading: 'Poppins',
+    body: 'Poppins',
   },
 });
 

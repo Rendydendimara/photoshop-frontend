@@ -54,6 +54,33 @@ const KeyCodes = {
 };
 const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 
+const FILTER_PRICE = [
+  {
+    value: 'FREE',
+    name: 'FREE',
+    count: 5,
+  },
+  {
+    value: '$$$$',
+    name: '$$$$',
+    count: 5,
+  },
+  {
+    value: '$$$',
+    name: '$$$',
+    count: 5,
+  },
+  {
+    value: '$$',
+    name: '$$',
+    count: 5,
+  },
+  {
+    value: '$',
+    name: '$',
+    count: 5,
+  },
+];
 const Explore: NextPage = () => {
   let timer: any;
   const [filterPageView, setFilterPageView] = useState({
@@ -83,13 +110,16 @@ const Explore: NextPage = () => {
   const [filterBrandV2, setFilterBrandV2] = useState({
     selectedCategory: '',
     selectedBrand: '',
+    selectedPrice: '',
   });
   const [filterBrandByFlow, setFilterBrandByFlow] = useState<{
     flows: string[];
     categories: string[];
+    price: string[];
   }>({
     flows: [],
     categories: [],
+    price: [],
   });
   const [resultSearchBrand, setResultSearchBrand] = useState<ISearchBrand>();
   const btnRef: any = useRef();
@@ -228,22 +258,30 @@ const Explore: NextPage = () => {
 
   const onClickFilterV2 = async (
     value: string,
-    field: 'category' | 'brand'
+    field: 'category' | 'brand' | 'price'
   ) => {
     if (field === 'brand') {
       setFilterBrandV2({
         selectedCategory: '',
         selectedBrand: value,
+        selectedPrice: '',
       });
       const res = await ApiGetDetailBrand(value);
       if (res.status === 200) {
         setListBrand([res.data.data]);
       }
-    } else {
+    } else if (field === 'category') {
       handleGetListBrand({ category: value });
       setFilterBrandV2({
         selectedCategory: value,
         selectedBrand: '',
+        selectedPrice: '',
+      });
+    } else {
+      setFilterBrandV2({
+        selectedCategory: '',
+        selectedBrand: '',
+        selectedPrice: value,
       });
     }
   };
@@ -297,6 +335,20 @@ const Explore: NextPage = () => {
     getListBrandByFlow({
       ...filterBrandByFlow,
       categories: newCategories,
+    });
+  };
+  const onChangeFilterPrice = (e: any) => {
+    let newPrice: any[] = [];
+    if (filterBrandByFlow.price.includes(e.target.name)) {
+      newPrice = filterBrandByFlow.price.filter(
+        (flow) => flow !== e.target.name
+      );
+    } else {
+      newPrice = [...filterBrandByFlow.price, e.target.name];
+    }
+    setFilterBrandByFlow({
+      ...filterBrandByFlow,
+      price: newPrice,
     });
   };
 
@@ -571,6 +623,8 @@ const Explore: NextPage = () => {
               onChangeFilterFlow={onChangeFilterFlow}
               onChangeFilterCategory={onChangeFilterCategory}
               filterBrandByFlow={filterBrandByFlow}
+              FILTER_PRICE={FILTER_PRICE}
+              onChangeFilterPrice={onChangeFilterPrice}
             />
           </Box>
           <Box zIndex='10000'>

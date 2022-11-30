@@ -63,6 +63,10 @@ const Home: NextPage = () => {
                   width='210px'
                   height='56px'
                   bgColor='#09BC8A'
+                  boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                  _hover={{
+                    bgColor: '#07A377',
+                  }}
                   borderRadius='12px'
                   color='white'
                   fontWeight='500'

@@ -145,7 +145,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
             objectPosition='center'
           />
         </Flex>
-        <Box mt='12px' padding='8px'>
+        <Box mt='8px'>
           <Text
             fontWeight='500'
             fontSize={{ base: '18px', md: '14px' }}

@@ -19,7 +19,7 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
         color='#97A5B0'
         letterSpacing='0.05em'
       >
-        you already reach the bottom
+        Oops you already reach the bottom
       </Text>
       <svg
         width='173'
@@ -144,6 +144,9 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
         fontSize='14px'
         width='319px'
         height='41px'
+        _hover={{
+          bgColor: '#07A377',
+        }}
       >
         Search Again
       </Button>

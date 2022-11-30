@@ -49,11 +49,11 @@ const FilterPageView: React.FC<IProps> = (props) => {
       // position='fixed'
       display={{ base: 'none', md: 'flex' }}
       alignItems='center'
-      p='12px'
+      px='12apx'
       boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
       borderRadius='8px'
     >
-      <Flex alignItems='center' gap='12px' px='16px' py='9px'>
+      <Flex alignItems='center' gap='12px' px='16px' py='15px'>
         <BrandIcon
           showHover
           fill={props.filterPageView.brand ? '#09BC8A' : '#B4C6D4'}
@@ -86,7 +86,6 @@ const FilterPageView: React.FC<IProps> = (props) => {
             stroke-linecap='round'
           />
         </svg>
-
         <Text
           fontWeight='500'
           fontSize='16px'
@@ -102,7 +101,7 @@ const FilterPageView: React.FC<IProps> = (props) => {
             : ''}
         </Text>
       </Flex>
-      <Box w='full' maxW='320px' position='relative' bgColor='white'>
+      <Box py='12px' w='full' maxW='320px' position='relative' bgColor='white'>
         <InputGroup bgColor='#FAFAFA'>
           <InputLeftElement
             // display={{ base: 'flex', md: 'none' }}

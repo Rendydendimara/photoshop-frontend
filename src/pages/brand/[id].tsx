@@ -35,7 +35,21 @@ import {
 import { MoreIcon } from 'components/atoms/icons/more-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
+import FilterCheckbox from 'components/molecules/FilterCheckbox';
+import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 
+const FILTER_CONTENT = [
+  {
+    value: 'images',
+    name: 'Images',
+    count: 5,
+  },
+  {
+    value: 'video',
+    name: 'Video',
+    count: 5,
+  },
+];
 const BrandIndex: NextPage = () => {
   const [showContentBrand, setShowContentBrand] = useState(false);
   const [mtSamiliarBrand, setMtSamiliarBrand] = useState(0);
@@ -294,7 +308,7 @@ const BrandIndex: NextPage = () => {
               <Flex gap='12px'>
                 <Button
                   color='white'
-                  fontSize='20px'
+                  fontSize='16px'
                   fontWeight='500'
                   variant='solid'
                   w='120px'
@@ -327,155 +341,64 @@ const BrandIndex: NextPage = () => {
             <Box w={{ base: '100%', md: '25%', xl: '250px' }}>
               {/* Content */}
               {showContentBrand && (
-                <Box
-                  padding='38px 32px 22px 28px'
-                  boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-                  borderRadius='8px'
-                  w='240px'
-                  mb='32px'
-                >
-                  <Text
-                    fontWeight='500'
-                    fontSize='16px'
-                    lineHeight='19px'
-                    color='#172A3A'
-                  >
-                    Content
-                  </Text>
-                  <Flex flexDirection='column' gap='20px' mt='32px'>
-                    <Flex justifyContent='space-between' alignItems='center'>
-                      <Checkbox
-                        colorScheme=''
-                        onChange={onChangeFilterContent}
+                <Box mb='32px'>
+                  <FilterCheckbox labelName='Content' width='240px'>
+                    {FILTER_CONTENT.map((content, i) => (
+                      <CheckboxItem
+                        key={i}
+                        marginBtm={i + 1 === FILTER_CONTENT.length ? 0 : '24px'}
                         icon={
-                          filterContent.includes('images') ? (
+                          filterContent.includes(content.value) ? (
                             <CheckboxCheckedIcon />
                           ) : (
                             <CheckboxIcon />
                           )
                         }
-                        border='none'
-                        name='images'
-                      >
-                        <Text
-                          fontWeight='400'
-                          fontSize='14px'
-                          lineHeight='17px'
-                          color='#172A3A'
-                          as='span'
-                          ml='4px'
-                          textTransform='capitalize'
-                        >
-                          Images
-                        </Text>
-                      </Checkbox>
-                      <Text
-                        fontWeight='400'
-                        fontSize='12px'
-                        lineHeight='14px'
-                        color='#8FA2B1'
-                      >
-                        (5)
-                      </Text>
-                    </Flex>
-                    <Flex justifyContent='space-between' alignItems='center'>
-                      <Checkbox
-                        colorScheme=''
+                        value={content.value}
                         onChange={onChangeFilterContent}
-                        icon={
-                          filterContent.includes('video') ? (
-                            <CheckboxCheckedIcon />
-                          ) : (
-                            <CheckboxIcon />
-                          )
+                        fontWeight={
+                          filterContent.includes(content.value) ? '600' : '400'
                         }
-                        border='none'
-                        name='video'
-                      >
-                        <Text
-                          fontWeight='400'
-                          fontSize='14px'
-                          lineHeight='17px'
-                          color='#172A3A'
-                          as='span'
-                          ml='4px'
-                          textTransform='capitalize'
-                        >
-                          Video
-                        </Text>
-                      </Checkbox>
-                      <Text
-                        fontWeight='400'
-                        fontSize='12px'
-                        lineHeight='14px'
-                        color='#8FA2B1'
-                      >
-                        (5)
-                      </Text>
-                    </Flex>
-                  </Flex>
+                        name={content.name}
+                        colorCount={
+                          filterContent.includes(content.value)
+                            ? '#172A3A'
+                            : '#8FA2B1'
+                        }
+                        totalCount={content.count}
+                      />
+                    ))}
+                  </FilterCheckbox>
                 </Box>
               )}
               {/* Modules */}
-              <Box
-                padding='38px 32px 22px 28px'
-                boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-                borderRadius='8px'
-                w='240px'
-              >
-                <Text
-                  fontWeight='500'
-                  fontSize='16px'
-                  lineHeight='19px'
-                  color='#172A3A'
-                >
-                  Flow
-                </Text>
-                <Flex flexDirection='column' gap='20px' mt='32px'>
-                  {moduleBrand.map((module, i) => (
-                    <Flex
-                      justifyContent='space-between'
-                      alignItems='center'
-                      key={i}
-                    >
-                      <Checkbox
-                        name={module._id}
-                        onChange={handleChangeModuleCheckbox}
-                        className='checboxBlack'
-                        colorScheme=''
-                        border='none'
-                        icon={
-                          listCheckedModule.includes(module._id) ? (
-                            <CheckboxCheckedIcon />
-                          ) : (
-                            <CheckboxIcon />
-                          )
-                        }
-                      >
-                        <Text
-                          fontWeight='400'
-                          fontSize='14px'
-                          lineHeight='17px'
-                          color='#172A3A'
-                          as='span'
-                          ml='4px'
-                          textTransform='capitalize'
-                        >
-                          {module._id}
-                        </Text>
-                      </Checkbox>
-                      <Text
-                        fontWeight='400'
-                        fontSize='12px'
-                        lineHeight='14px'
-                        color='#8FA2B1'
-                      >
-                        ({module.count})
-                      </Text>
-                    </Flex>
-                  ))}
-                </Flex>
-              </Box>
+              <FilterCheckbox labelName='Flow' width='240px'>
+                {moduleBrand.map((module, i) => (
+                  <CheckboxItem
+                    key={i}
+                    marginBtm={i + 1 === moduleBrand.length ? 0 : '24px'}
+                    icon={
+                      listCheckedModule.includes(module._id) ? (
+                        <CheckboxCheckedIcon />
+                      ) : (
+                        <CheckboxIcon />
+                      )
+                    }
+                    value={module._id}
+                    onChange={onChangeFilterContent}
+                    fontWeight={
+                      listCheckedModule.includes(module._id) ? '600' : '400'
+                    }
+                    name={module._id}
+                    colorCount={
+                      listCheckedModule.includes(module._id)
+                        ? '#172A3A'
+                        : '#8FA2B1'
+                    }
+                    totalCount={module.count}
+                  />
+                ))}
+              </FilterCheckbox>
             </Box>
             {/* Brand Images */}
             <Box
@@ -549,7 +472,7 @@ const BrandIndex: NextPage = () => {
           </Flex>
         </Flex>
         <Modal onClose={onClose} isOpen={isOpen} isCentered size='6xl'>
-          <ModalOverlay bg='blackAlpha.300' backdropFilter='blur(10px)' />
+          <ModalOverlay bg='rgba(9, 9, 9, 0.8)' />
           <ModalContent
             className='styled-scrollbar'
             bgColor='transparent'

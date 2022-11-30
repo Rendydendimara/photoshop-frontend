@@ -1,11 +1,10 @@
-import { Checkbox } from '@chakra-ui/checkbox';
-import { Box, Flex, Text } from '@chakra-ui/layout';
-import { ApiGetListModules } from 'api/brand';
+import { Box } from '@chakra-ui/layout';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { IListFlow } from 'interfaces/IBrand';
 import { ICategory } from 'interfaces/ICategory';
-import { useState } from 'react';
+import FilterCheckbox from '../FilterCheckbox';
+import CheckboxItem from '../FilterCheckbox/CheckboxItem';
 
 interface IProps {
   refSidebar: any;
@@ -14,155 +13,111 @@ interface IProps {
   listCategory: ICategory[];
   onChangeFilterFlow: (e: any) => void;
   onChangeFilterCategory: (e: any) => void;
+  onChangeFilterPrice: (e: any) => void;
   filterBrandByFlow: {
     flows: string[];
     categories: string[];
+    price: string[];
   };
+  FILTER_PRICE: any[];
 }
 
 const FilterTools: React.FC<IProps> = (props) => {
   return (
     <Box ref={props.refSidebar} id='sidebarContainer'>
-      <Box
-        w='236px'
-        padding='37px 28px'
-        maxWidth='236px'
-        backgroundColor='white'
-        boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-        borderRadius='8px'
-        height='fit-content'
-        maxH={{ md: '320px', xl: '400px' }}
-        overflowY='scroll'
-        className='styled-scrollbar'
-      >
-        <Text
-          fontWeight='500'
-          fontSize='16px'
-          lineHeight='19px'
-          color='#172A3A'
-        >
-          Categories
-        </Text>
-        <Box w='full' mt='32px'>
-          {props.listCategory.map((category, i) => (
-            <Flex
-              justifyContent='space-between'
-              mb={i + 1 === props.listCategory.length ? 0 : '24px'}
-              key={i}
-              alignItems='center'
-            >
-              <Checkbox
-                colorScheme=''
+      <FilterCheckbox labelName='Categories'>
+        {props.listCategory.map((category, i) => (
+          <CheckboxItem
+            key={i}
+            marginBtm={i + 1 === props.listCategory.length ? 0 : '24px'}
+            icon={
+              props.filterBrandByFlow.categories.includes(category._id) ? (
+                <CheckboxCheckedIcon />
+              ) : (
+                <CheckboxIcon />
+              )
+            }
+            value={category._id}
+            onChange={props.onChangeFilterCategory}
+            fontWeight={
+              props.filterBrandByFlow.categories.includes(category._id)
+                ? '600'
+                : '400'
+            }
+            name={category.name}
+            colorCount={
+              props.filterBrandByFlow.categories.includes(category._id)
+                ? '#172A3A'
+                : '#8FA2B1'
+            }
+            totalCount={category.totalBrand}
+          />
+        ))}
+      </FilterCheckbox>
+      {props.showFlowFilter && (
+        <Box mt='24px'>
+          <FilterCheckbox labelName='Flow'>
+            {props.listFlow.map((flow, i) => (
+              <CheckboxItem
+                key={i}
+                marginBtm={i + 1 === props.listFlow.length ? 0 : '24px'}
                 icon={
-                  props.filterBrandByFlow.categories.includes(category._id) ? (
+                  props.filterBrandByFlow.flows.includes(flow._id) ? (
                     <CheckboxCheckedIcon />
                   ) : (
                     <CheckboxIcon />
                   )
                 }
-                border='none'
-                name={category._id}
-                onChange={props.onChangeFilterCategory}
-                // key={i}
-              >
-                <Text
-                  fontWeight='500'
-                  fontSize='14px'
-                  lineHeight='150%'
-                  color='#172A3A'
-                  as='span'
-                  ml='4px'
-                  textTransform='capitalize'
-                  _hover={{ color: '#09BC8A' }}
-                >
-                  {category.name}
-                </Text>
-              </Checkbox>
-              <Text
-                fontWeight='400'
-                fontSize='12px'
-                lineHeight='14px'
-                color={
-                  props.filterBrandByFlow.categories.includes(category._id)
-                    ? '#8FA2B1'
-                    : '#172A3A'
+                value={flow._id}
+                onChange={props.onChangeFilterFlow}
+                fontWeight={
+                  props.filterBrandByFlow.flows.includes(flow._id)
+                    ? '600'
+                    : '400'
                 }
-              >
-                ({category.totalBrand})
-              </Text>
-            </Flex>
-          ))}
-        </Box>
-      </Box>
-      {props.showFlowFilter && (
-        <Box
-          w='236px'
-          padding='37px 28px'
-          maxWidth='236px'
-          backgroundColor='white'
-          boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-          borderRadius='8px'
-          height='fit-content'
-          mt='24px'
-          maxH={{ md: '320px', xl: '400px' }}
-          overflowY='scroll'
-          className='styled-scrollbar'
-        >
-          <Text
-            fontWeight='500'
-            fontSize='16px'
-            lineHeight='19px'
-            color='#172A3A'
-          >
-            Flow
-          </Text>
-          <Box w='full' mt='32px'>
-            {props.listFlow.map((flow, i) => (
-              <Flex
-                key={i}
-                justifyContent='space-between'
-                mb={i + 1 === props.listFlow.length ? 0 : '24px'}
-                alignItems='center'
-              >
-                <Checkbox
-                  colorScheme=''
-                  icon={
-                    props.filterBrandByFlow.flows.includes(flow._id) ? (
-                      <CheckboxCheckedIcon />
-                    ) : (
-                      <CheckboxIcon />
-                    )
-                  }
-                  border='none'
-                  name={flow._id}
-                  onChange={props.onChangeFilterFlow}
-                  key={i}
-                >
-                  <Text
-                    fontWeight='500'
-                    fontSize='14px'
-                    lineHeight='150%'
-                    color='#172A3A'
-                    as='span'
-                    ml='4px'
-                    textTransform='capitalize'
-                  >
-                    {flow._id}
-                  </Text>
-                </Checkbox>
-                <Text
-                  fontWeight='400'
-                  fontSize='12px'
-                  lineHeight='14px'
-                  color='#8FA2B1'
-                >
-                  ({flow.count})
-                </Text>
-              </Flex>
+                name={flow._id}
+                colorCount={
+                  props.filterBrandByFlow.flows.includes(flow._id)
+                    ? '#172A3A'
+                    : '#8FA2B1'
+                }
+                totalCount={flow.count}
+              />
             ))}
-          </Box>
+          </FilterCheckbox>
         </Box>
       )}
+      <Box mt='24px'>
+        <FilterCheckbox labelName='Price'>
+          {props.FILTER_PRICE.map((price, i) => (
+            <CheckboxItem
+              key={i}
+              marginBtm={i + 1 === props.FILTER_PRICE.length ? 0 : '24px'}
+              icon={
+                props.filterBrandByFlow.price.includes(price.value) ? (
+                  <CheckboxCheckedIcon />
+                ) : (
+                  <CheckboxIcon />
+                )
+              }
+              value={price.value}
+              onChange={props.onChangeFilterPrice}
+              fontWeight={
+                props.filterBrandByFlow.price.includes(price.value)
+                  ? '600'
+                  : '400'
+              }
+              name={price.name}
+              colorCount={
+                props.filterBrandByFlow.price.includes(price.value)
+                  ? '#172A3A'
+                  : '#8FA2B1'
+              }
+              totalCount={price.count}
+            />
+          ))}
+        </FilterCheckbox>
+      </Box>
     </Box>
   );
 };

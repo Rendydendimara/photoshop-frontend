@@ -49,7 +49,7 @@ const Navbar: React.FC<IProps> = () => {
         bg='white'
         color='gray.600'
         minH={'60px'}
-        pt={{ base: 4, xl: '68px' }}
+        pt={{ base: 4, xl: '48px' }}
         // px={{
         //   sm: '16px',
         //   md: '100px',
