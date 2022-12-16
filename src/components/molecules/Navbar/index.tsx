@@ -44,7 +44,7 @@ const Navbar: React.FC<IProps> = () => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Box>
+    <Box px={{ base: '16px', md: 'unset' }} mb={{ base: '60px', md: 'unset' }}>
       <Flex
         bg='white'
         color='gray.600'

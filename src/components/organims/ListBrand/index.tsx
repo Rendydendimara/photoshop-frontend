@@ -84,20 +84,20 @@ interface IGridImage {
 }
 const GridImage: React.FC<IGridImage> = (props) => {
   return (
-    <Flex
+    <SimpleGrid
       // padding={{ md: 4 }}
       w='full'
+      column={[2, 3, 4]}
       // gap='48px'
-      // column={[2, 3, 4]}
-      // minChildWidth={{ base: '155px', md: '192px' }}
-      gap={{ base: 3, md: '30px', xl: '44px' }}
-      flexWrap='wrap'
-      // justifyContent={{ base: 'center', md: 'center' }}
+      minChildWidth={{ base: '156px' }}
+      gap={{ base: '16px', md: '30px', xl: '40px' }}
+      // flexWrap='wrap'
+      // justifyContent={{ base: 'center', md: 'initial' }}
     >
       {props.brands.map((brand, i) => (
         <BrandItem key={i} brand={brand} />
       ))}
-    </Flex>
+    </SimpleGrid>
   );
 };
 
@@ -113,14 +113,13 @@ const BrandItem: React.FC<BrandItem> = (props) => {
     <Link href={`/brand/${props.brand._id}`}>
       <Box
         mb={{ base: 2, md: 0 }}
-        w={{ base: '155px', md: '192px' }}
+        w={{ base: '156px', md: '192px' }}
         _hover={{ cursor: 'pointer' }}
         ref={hoverRef}
       >
         <Flex
           justifyContent='center'
           alignItems='center'
-          width='full'
           height='152px'
           borderRadius='12px'
           border={isHover ? '1px solid #E8E8E8' : '1px solid #EFEFEF'}
@@ -148,7 +147,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
         <Box mt='8px'>
           <Text
             fontWeight='500'
-            fontSize={{ base: '18px', md: '14px' }}
+            fontSize={{ base: '14px', md: '14px' }}
             // lineHeight='14px'
             textAlign='center'
             color={isHover ? '#09BC8A' : '#172A3A'}

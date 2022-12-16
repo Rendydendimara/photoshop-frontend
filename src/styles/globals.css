@@ -167,7 +167,7 @@ input[type='checkbox']:checked > span {
 } */
 
 .chakra-checkbox__control {
-  width: 'auto';
-  height: 'auto';
-  border: 'initial';
+  width: auto;
+  height: auto;
+  border: initial !important;
 }

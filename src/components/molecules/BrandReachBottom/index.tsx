@@ -14,10 +14,11 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
       <Text
         mb='59px'
         fontWeight='500'
-        fontSize='32px'
-        lineHeight='38px'
+        fontSize={{ base: '24px', md: '32px' }}
+        lineHeight={{ base: '28px', md: '38px' }}
         color='#97A5B0'
         letterSpacing='0.05em'
+        textAlign='center'
       >
         Oops you already reach the bottom
       </Text>

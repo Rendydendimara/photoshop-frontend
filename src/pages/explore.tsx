@@ -1,9 +1,10 @@
-import { Button } from '@chakra-ui/button';
+import { Button, IconButton } from '@chakra-ui/button';
 import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image } from '@chakra-ui/image';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
-import { Box, Center, Flex, HStack, SimpleGrid, Text } from '@chakra-ui/layout';
+import { SearchIcon } from 'components/atoms/icons/search-icon';
+import { Box, Center, Flex, HStack, Text } from '@chakra-ui/layout';
 import {
   Drawer,
   DrawerBody,
@@ -46,6 +47,8 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
 import { useOnClickOutside } from 'usehooks-ts';
 import ListBrandFlowView from 'components/organims/ListBrandFlowView';
+import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
+import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -444,7 +447,11 @@ const Explore: NextPage = () => {
             w={{ base: 'initial', md: 'full' }}
             mt={{ base: '20px', xl: '32px' }}
           >
-            <Flex id='categoryDeskop' justifyContent='center'>
+            <Flex
+              display={{ base: 'none', md: 'initial' }}
+              id='categoryDeskop'
+              justifyContent='center'
+            >
               <FilterPageView
                 onChangeFilterPageView={onChangeFilterPageView}
                 filterPageView={filterPageView}
@@ -457,22 +464,37 @@ const Explore: NextPage = () => {
               />
             </Flex>
             {/* Category Mobile */}
-            <Box display={{ base: 'initial', md: 'none' }}>
-              <Button
-                // bgColor='#172A3A'
-                variant='outline'
-                borderColor='#172A3A'
-                colorScheme='#172A3A'
-                // borderWidth='1px'
-                fontWeight='400'
-                ref={btnRef}
-                onClick={() => {
-                  modalFilterMobile.onOpen();
-                }}
-                fontSize='14px'
-                lineHeight='17px'
-                color='#172A3A'
-                rightIcon={
+            <Flex
+              w='full'
+              display={{ base: 'flex', md: 'none' }}
+              justifyContent='space-between'
+            >
+              <InputGroup width='80%' bgColor='#FAFAFA'>
+                <InputLeftElement
+                  // display={{ base: 'flex', md: 'none' }}
+                  pointerEvents='none'
+                  mt='4px'
+                  children={<SearchIcon showHover />}
+                />
+                <Input
+                  height={{ base: '41px', md: '49px' }}
+                  borderColor='transparent'
+                  onChange={handleChangeSearch}
+                  borderRadius='12px'
+                  onKeyDown={handleKeyOnDownKeyword}
+                  placeholder='Ex Gojek, Cart, or Fashion'
+                  _placeholder={{
+                    fontWeight: 300,
+                    fontSize: '14px',
+                    lineHeight: '21px',
+                    color: '#B4C6D4',
+                  }}
+                  value={keywordSearch}
+                />
+              </InputGroup>
+              <IconButton
+                aria-label='filter'
+                icon={
                   <svg
                     width='16'
                     height='17'
@@ -498,10 +520,15 @@ const Explore: NextPage = () => {
                     </defs>
                   </svg>
                 }
-              >
-                Filter
-              </Button>
-            </Box>
+                variant='outline'
+                bgColor='#ECECEC'
+                // borderWidth='1px'
+                ref={btnRef}
+                onClick={() => {
+                  modalFilterMobile.onOpen();
+                }}
+              />
+            </Flex>
           </Box>
         </Flex>
         <Drawer
@@ -517,104 +544,61 @@ const Explore: NextPage = () => {
               borderRadius='16px 16px 0px 0px'
               maxH='60vh'
               bgColor='white'
-              p='0'
+              p='32px 28px 32px 28px'
             >
-              <Center mt='9px'>
-                <Box
-                  width='56px'
-                  height='4.13px'
-                  bgColor='#AFC2D1'
-                  borderRadius='24px'
+              {listCategory.map((category, i) => (
+                <CheckboxItem
+                  key={i}
+                  marginBtm={i + 1 === listCategory.length ? 0 : '24px'}
+                  icon={
+                    filterBrandByFlow.categories.includes(category._id) ? (
+                      <CheckboxCheckedIcon />
+                    ) : (
+                      <CheckboxIcon />
+                    )
+                  }
+                  value={category._id}
+                  onChange={onChangeFilterCategory}
+                  fontWeight={
+                    filterBrandByFlow.categories.includes(category._id)
+                      ? '600'
+                      : '400'
+                  }
+                  name={category.name}
+                  colorCount={
+                    filterBrandByFlow.categories.includes(category._id)
+                      ? '#172A3A'
+                      : '#8FA2B1'
+                  }
+                  totalCount={category.totalBrand}
                 />
-              </Center>
-              <Box mt='30px' px='16px'>
-                <Text
-                  fontWeight='500'
-                  fontSize='14px'
-                  lineHeight='17px'
-                  color='#172A3A'
-                >
-                  Filter
-                </Text>
-                <Flex
-                  mt='4'
-                  justifyContent='center'
-                  flexWrap='wrap'
-                  alignItems='center'
-                  gap='15px'
-                >
-                  <Button
-                    onClick={() =>
-                      clearFilterBrand({ isCategory: true, isKeyword: true })
-                    }
-                    color='white'
-                    bgColor={
-                      filterBrand.selectedCategory ? 'gray.500' : '#09BC8A'
-                    }
-                    p='8px 12px 8px 12px'
-                    variant='outline'
-                    fontWeight='400'
-                    fontSize='14px'
-                    border='1px solid #FBFFFE'
-                    borderRadius='24px'
-                  >
-                    All
-                  </Button>
-                  {listCategory.map((category, index) => (
-                    <Button
-                      p='8px 12px 8px 12px'
-                      bgColor={
-                        filterBrand.selectedCategory === category._id
-                          ? '#09BC8A'
-                          : 'initial'
-                      }
-                      borderColor='#172A3A'
-                      colorScheme='#172A3A'
-                      border={
-                        filterBrand.selectedCategory === category._id
-                          ? '1px solid whte'
-                          : '1px solid #172A3A'
-                      }
-                      borderRadius='24px'
-                      fontWeight='400'
-                      fontSize='14px'
-                      lineHeight='17px'
-                      color={
-                        filterBrand.selectedCategory === category._id
-                          ? 'white'
-                          : '#172A3A'
-                      }
-                      key={index}
-                      onClick={() => handleFilterCategory(category._id)}
-                      variant='outline'
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
-                </Flex>
-                <Button
-                  mt='29px'
-                  mb='27px'
-                  w='full'
-                  color='white'
-                  bgColor='#09BC8A'
-                  borderRadius='12px'
-                  fontWeight='500'
-                  fontSize='14px'
-                  lineHeight='17px'
-                >
-                  Update Filter
-                </Button>
-              </Box>
+              ))}
+
+              <Button
+                mt='32px'
+                w='full'
+                color='white'
+                bgColor='#09BC8A'
+                borderRadius='12px'
+                fontWeight='500'
+                fontSize='14px'
+                lineHeight='17px'
+              >
+                Apply
+              </Button>
             </DrawerBody>
           </DrawerContent>
         </Drawer>
         <Flex
           flexDirection={{ base: 'column', md: 'row' }}
           mt='32px'
-          gap='64px'
+          gap='52px'
         >
-          <Box width='236px' height='500px'>
+          <Box
+            width='236px'
+            display={{ base: 'none', md: 'initial' }}
+            height='500px'
+          >
             <FilterTools
               refSidebar={refSidebar}
               showFlowFilter={filterPageView.flow}
@@ -627,7 +611,7 @@ const Explore: NextPage = () => {
               onChangeFilterPrice={onChangeFilterPrice}
             />
           </Box>
-          <Box zIndex='10000'>
+          <Box zIndex='1000' w='full'>
             {renderBrand()}
             {listBrand.length > 0 && <BrandReachBottom />}
           </Box>

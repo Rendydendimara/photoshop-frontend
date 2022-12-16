@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 const Home: NextPage = () => {
   return (
-    <Layout>
+    <Layout showNavbarFooter>
       <Head>
         <title>{APP_NAME} | Home</title>
         <link rel='icon' href='/favicon.ico' />
@@ -33,14 +33,14 @@ const Home: NextPage = () => {
             w='full'
             justifyContent='space-between'
             alignItems={{ base: 'initial', md: 'center' }}
-            flexDirection={{ base: 'column-reverse', md: 'row' }}
+            flexDirection={{ base: 'column', md: 'row' }}
           >
             <Box w={{ base: '100%', md: '700px' }}>
               <Text
                 textAlign='left'
                 fontWeight='700'
-                fontSize={{ base: '44px', md: '64px' }}
-                lineHeight={{ base: '52.14px', md: '76px' }}
+                fontSize={{ base: '30px', md: '64px' }}
+                lineHeight={{ base: '150%', md: '96px' }}
                 mt={{ base: '-45px', md: 0 }}
                 color='#000'
               >
@@ -49,33 +49,35 @@ const Home: NextPage = () => {
               <Text
                 w={{ base: 'initial', md: '430px' }}
                 fontWeight='400'
-                fontSize='16px'
-                lineHeight='19px'
+                fontSize={{ base: '18px', md: '24px' }}
+                lineHeight={{ base: '150%', md: '36px' }}
                 textAlign='left'
-                mt={{ base: '25px', md: 0 }}
+                mt={{ base: '12px', md: 0 }}
               >
                 Bring you a new way to looking a design inspiration, more than
                 150 apps we collect for your inspiration.
               </Text>
-              <Link href='/explore'>
-                <Button
-                  mt={{ base: '25px', md: '40px' }}
-                  width='210px'
-                  height='56px'
-                  bgColor='#09BC8A'
-                  boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-                  _hover={{
-                    bgColor: '#07A377',
-                  }}
-                  borderRadius='12px'
-                  color='white'
-                  fontWeight='500'
-                  fontSize='20px'
-                  // size='md'
-                >
-                  Explore
-                </Button>
-              </Link>
+              <Flex justifyContent={{ base: 'center', md: 'flex-start' }}>
+                <Link href='/explore'>
+                  <Button
+                    mt={{ base: '25px', md: '40px' }}
+                    width='210px'
+                    height='56px'
+                    bgColor='#09BC8A'
+                    boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                    _hover={{
+                      bgColor: '#07A377',
+                    }}
+                    borderRadius='12px'
+                    color='white'
+                    fontWeight='500'
+                    fontSize='20px'
+                    // size='md'
+                  >
+                    Explore
+                  </Button>
+                </Link>
+              </Flex>
             </Box>
             <Flex
               w={{ base: 'full', md: 'initial' }}

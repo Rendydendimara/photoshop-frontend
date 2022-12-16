@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalOverlay,
 } from '@chakra-ui/modal';
+import { ApiGetDetailBrand } from 'api/brand';
 import { ApiGetListImageByBrandId } from 'api/images';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
@@ -19,6 +20,7 @@ import { RemoveIcon } from 'components/atoms/icons/remove-icon';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
+import { IBrand } from 'interfaces/IBrand';
 import { IImage } from 'interfaces/Image';
 import type { NextPage } from 'next';
 import Head from 'next/head';
@@ -49,7 +51,7 @@ const Explore: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
   const router = useRouter();
   const [openFilterModule, setOpenFilterModule] = useState(false);
-  const [listIdBrandCompare, setListIdBrandCompare] = useState<string[]>([]);
+  const [listIdBrandCompare, setListIdBrandCompare] = useState<IBrand[]>([]);
   const [imagesBrand, setImagesBrand] = useState<
     {
       brandId: string;
@@ -97,6 +99,24 @@ const Explore: NextPage = () => {
     setImagesBrand(temp);
   };
 
+  const getDetailBrand = async (listBrandId: string[]) => {
+    let temp: any[] = [];
+    for (const brandId of listBrandId) {
+      const res = await ApiGetDetailBrand(brandId);
+      if (res.status === 200) {
+        temp.push(res.data.data);
+      }
+    }
+    setListIdBrandCompare(temp);
+  };
+
+  const handleRemoveBrand = (id: string) => {
+    const newBrand = listIdBrandCompare.filter((brand) => brand._id !== id);
+    const newBrandId = newBrand.map((brand) => brand._id);
+    setListIdBrandCompare(newBrand);
+    getImageBrand(newBrandId);
+  };
+
   useEffect(() => {
     const { brand1, brand2, brand3 }: any = router.query;
     let temp: string[] = [];
@@ -109,7 +129,7 @@ const Explore: NextPage = () => {
     if (brand3) {
       temp.push(brand3);
     }
-    setListIdBrandCompare(temp);
+    getDetailBrand(temp);
     getImageBrand(temp);
   }, [router.query]);
 
@@ -224,40 +244,6 @@ const Explore: NextPage = () => {
                       name={module.name}
                       marginBtm={i + 1 === DUMMY_MODULE.length ? 0 : '20px'}
                     />
-                    // <Flex
-                    //   justifyContent='space-between'
-                    //   mb={i + 1 === DUMMY_MODULE.length ? 0 : '20px'}
-                    //   alignItems='center'
-                    // >
-                    //   <Checkbox
-                    //     colorScheme=''
-                    //     icon={
-                    //       filterModule.includes(module.name) ? (
-                    //         <CheckboxCheckedIcon fill='#EEF4F9' />
-                    //       ) : (
-                    //         <CheckboxIcon fill='#172A3A' />
-                    //       )
-                    //     }
-                    //     border='none'
-                    //     name={module.name}
-                    //     onChange={onChangeFilterModule}
-                    //   >
-                    //     <Text
-                    //       fontWeight={
-                    //         filterModule.includes(module.name) ? '600' : '400'
-                    //       }
-                    //       fontSize='14px'
-                    //       lineHeight='150%'
-                    //       color='#EEF4F9'
-                    //       as='span'
-                    //       ml='8px'
-                    //       textTransform='capitalize'
-                    //       _hover={{ color: '#09BC8A' }}
-                    //     >
-                    //       {module.name}
-                    //     </Text>
-                    //   </Checkbox>
-                    // </Flex>
                   ))}
                 </Box>
               </Box>
@@ -277,7 +263,7 @@ const Explore: NextPage = () => {
             </Button>
           </Box>
           <Flex alignItems='center' gap='12px'>
-            {[0, 1, 3].map((item) => (
+            {listIdBrandCompare.map((brand, item) => (
               <Box position='relative' key={item}>
                 <Flex
                   alignItems='center'
@@ -288,11 +274,19 @@ const Explore: NextPage = () => {
                   borderRadius='100%'
                   height='63px'
                 >
-                  <Image src='/images/shoope.png' />
+                  <Image
+                    src={
+                      brand?.brandImage === undefined ||
+                      brand?.brandImage.length === 0
+                        ? '/images/shoope.png'
+                        : brand.brandImage
+                    }
+                  />
                 </Flex>
                 <IconButton
                   top='8px'
                   right='-12px'
+                  onClick={() => handleRemoveBrand(brand._id)}
                   w='16px'
                   h='16px'
                   padding='0'
@@ -305,76 +299,6 @@ const Explore: NextPage = () => {
             ))}
           </Flex>
         </Flex>
-        {/* <Box
-          px={{
-            base: '15px',
-            md: '20px',
-            xl: '30px',
-          }}
-          w='full'
-          py='4'
-        >
-          <SimpleGrid padding={4} w='full' columns={[1, 2, 3]} spacing='24px'>
-            {imagesBrand.map((brand, i) => (
-              <Box
-                key={i}
-                maxH='100vh' //{{ base: 'unset', md: '100vh' }}
-                overflowY={{ base: 'unset', md: 'scroll' }}
-                className='styled-scrollbar'
-              >
-                {brand.images.map((image, index) => (
-                  <Image
-                    alt={image.filename}
-                    src={image.imagePath}
-                    _hover={{ cursor: 'pointer' }}
-                    key={index}
-                    w={{ base: '270px', md: '380px', lg: '360px', xl: '430px' }}
-                    mb='360px'
-                    bgColor='#FF9797'
-                  />
-                ))}
-              </Box>
-            ))}
-          </SimpleGrid>
-        </Box>
-        <Modal
-          closeOnOverlayClick={false}
-          onClose={onClose}
-          isOpen={isOpen}
-          isCentered
-          size='3xl'
-        >
-          <ModalOverlay />
-          <ModalContent maxH='90vh'>
-            <ModalCloseButton />
-            <ModalBody mt='40px' w='full' overflowY='scroll'>
-              <Flex justifyContent='flex-end'>
-                <Box width='303px' height='49px' bgColor='#D9D9D9' />
-              </Flex>
-              <SimpleGrid mt='17px' columns={[1, 3, 5]} spacing='16px'>
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-                <Box width='135px' height='135px' bgColor='#D9D9D9' />
-              </SimpleGrid>
-            </ModalBody>
-            <ModalFooter justifyContent='center'>
-              <Button bgColor='#D9D9D9' onClick={onClose} w='135px'></Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-       */}
       </AppTemplate>
     </Layout>
   );
@@ -456,6 +380,7 @@ const RenderItemCheckbox: React.FC<IRenderItemCheckbox> = (props) => {
         // border='none'
         name={props.value}
         onChange={props.onChange}
+        border='none !important'
       >
         <Text
           fontWeight={props.fontWeight}
