@@ -35,3 +35,21 @@ export const ApiGetListModuleByBrandId = async (brandId: string) => {
     // return window.location.replace('/500');
   }
 };
+
+export const ApiGetListSameModuleByBrandsId = async (brandsId: string[]) => {
+  const response = await axios
+    .post(`${BACKEND_URL}/image/list-same-module-by-brands`, {
+      listBrandId: brandsId,
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  if (response) {
+    return response;
+  } else {
+    // return window.location.replace('/500');
+  }
+};

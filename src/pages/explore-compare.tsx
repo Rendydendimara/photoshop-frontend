@@ -12,7 +12,10 @@ import {
   ModalOverlay,
 } from '@chakra-ui/modal';
 import { ApiGetDetailBrand } from 'api/brand';
-import { ApiGetListImageByBrandId } from 'api/images';
+import {
+  ApiGetListImageByBrandId,
+  ApiGetListSameModuleByBrandsId,
+} from 'api/images';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { ListIcon } from 'components/atoms/icons/list-icon';
@@ -50,9 +53,16 @@ const Explore: NextPage = () => {
   const height = ['529px', '600px', '350px', '500px', '429px', '400px'];
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
   const router = useRouter();
+  const [listSameModule, setListSameModule] = useState<string[]>([]);
   const [openFilterModule, setOpenFilterModule] = useState(false);
   const [listIdBrandCompare, setListIdBrandCompare] = useState<IBrand[]>([]);
   const [imagesBrand, setImagesBrand] = useState<
+    {
+      brandId: string;
+      images: IImage[];
+    }[]
+  >([]);
+  const [imagesBrandStatic, setImagesBrandStatic] = useState<
     {
       brandId: string;
       images: IImage[];
@@ -81,6 +91,28 @@ const Explore: NextPage = () => {
       newFilter = [...filterModule, e.target.name];
     }
     setFilterModule(newFilter);
+    if (newFilter.length > 0) {
+      let result: any[] = [];
+      imagesBrandStatic.forEach((brand) => {
+        let imgs = brand.images.filter((image: IImage) =>
+          newFilter.includes(image.folder)
+        );
+        result.push({
+          ...brand,
+          images: imgs,
+        });
+      });
+      setImagesBrand(result);
+    } else {
+      setImagesBrand(imagesBrandStatic);
+    }
+  };
+
+  const getListSameModule = async (brandsId: string[]) => {
+    const res = await ApiGetListSameModuleByBrandsId(brandsId);
+    if (res.status === 200) {
+      setListSameModule(res.data.data);
+    }
   };
 
   useOnClickOutside(refButtonFilter, handleClickOutside);
@@ -96,7 +128,36 @@ const Explore: NextPage = () => {
         });
       }
     }
-    setImagesBrand(temp);
+    setImagesBrandStatic(temp);
+    if (filterModule.length > 0) {
+      let result: any[] = [];
+      temp.forEach((brand) => {
+        let imgs = brand.images.filter((image: IImage) =>
+          filterModule.includes(image.folder)
+        );
+        result.push({
+          ...brand,
+          images: imgs,
+        });
+      });
+      setImagesBrand(result);
+    } else {
+      setImagesBrand(temp);
+    }
+
+    // let images: any[] = [];
+    // temp.forEach((brand) => {
+    //   let imgs = brand.images.filter((image: IImage) =>
+    //     filterModule.includes(image.folder)
+    //   );
+    //   images.push(imgs);
+    // });
+    // temp = temp.map((tmp) => {
+    //   return {
+    //     ...tmp,
+    //     images: images,
+    //   };
+    // });
   };
 
   const getDetailBrand = async (listBrandId: string[]) => {
@@ -115,6 +176,7 @@ const Explore: NextPage = () => {
     const newBrandId = newBrand.map((brand) => brand._id);
     setListIdBrandCompare(newBrand);
     getImageBrand(newBrandId);
+    getListSameModule(newBrandId);
   };
 
   useEffect(() => {
@@ -131,6 +193,7 @@ const Explore: NextPage = () => {
     }
     getDetailBrand(temp);
     getImageBrand(temp);
+    getListSameModule(temp);
   }, [router.query]);
 
   return (
@@ -232,19 +295,25 @@ const Explore: NextPage = () => {
                   Same Module
                 </Text>
                 <Box mt='28px'>
-                  {DUMMY_MODULE.map((module, i) => (
-                    <RenderItemCheckbox
-                      fontWeight={
-                        filterModule.includes(module.name) ? '600' : '400'
-                      }
-                      filterModule={filterModule}
-                      onChange={onChangeFilterModule}
-                      key={i}
-                      value={module.name}
-                      name={module.name}
-                      marginBtm={i + 1 === DUMMY_MODULE.length ? 0 : '20px'}
-                    />
-                  ))}
+                  {listSameModule.length > 0 ? (
+                    listSameModule.map((module, i) => (
+                      <RenderItemCheckbox
+                        fontWeight={
+                          filterModule.includes(module) ? '600' : '400'
+                        }
+                        filterModule={filterModule}
+                        onChange={onChangeFilterModule}
+                        key={i}
+                        value={module}
+                        name={module}
+                        marginBtm={i + 1 === listSameModule.length ? 0 : '20px'}
+                      />
+                    ))
+                  ) : (
+                    <Text textAlign='center' color='white' fontSize='20px'>
+                      -
+                    </Text>
+                  )}
                 </Box>
               </Box>
             )}
