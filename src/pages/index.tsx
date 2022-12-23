@@ -124,13 +124,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-const BoxImage: React.FC<any> = (props) => {
-  return (
-    <Box
-      width='72px'
-      height='72px'
-      bgColor={props.noBG ? 'transparent' : '#D9D9D9'}
-    />
-  );
-};
