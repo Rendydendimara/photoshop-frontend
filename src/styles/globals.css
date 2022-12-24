@@ -120,6 +120,7 @@ a {
 
 .stickyNavbarHome {
   position: fixed;
+  display: flex !important;
   top: 0;
   width: 100%;
   z-index: 100000;
