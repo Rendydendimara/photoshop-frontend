@@ -20,10 +20,10 @@ const FilterCheckbox: React.FC<IProps> = (props) => {
       overflowY='scroll'
       className='styled-scrollbar'
     >
-      <Text fontWeight='500' fontSize='16px' lineHeight='19px' color='#172A3A'>
+      <Text fontWeight='700' fontSize='14px' lineHeight='21px' color='#172A3A'>
         {props.labelName}
       </Text>
-      <Box w='full' mt='32px'>
+      <Box w='full' mt='16px'>
         {props.children}
       </Box>
     </Box>

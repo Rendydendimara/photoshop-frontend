@@ -149,7 +149,7 @@ const DesktopNav = () => {
           </Popover>
         </Box>
       ))}
-      {!user ? (
+      {/* {!user ? (
         <Box>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
@@ -173,7 +173,7 @@ const DesktopNav = () => {
         <Text color='red' _hover={{ cursor: 'pointer' }} onClick={handleLogout}>
           Logout
         </Text>
-      )}
+      )} */}
     </Stack>
   );
 };

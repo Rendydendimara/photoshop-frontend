@@ -9,19 +9,24 @@ export interface INavItem {
   pathname?: string;
 }
 export const ROUTE: INavItem[] = [
-  {
-    label: 'Home',
-    href: '/',
-    pathname: '/',
-  },
+  // {
+  //   label: 'Home',
+  //   href: '/',
+  //   pathname: '/',
+  // },
   {
     label: 'Explore',
     href: '/explore',
     pathname: '/explore',
   },
   {
-    label: 'Compare',
-    href: '/compare',
-    pathname: '/compare',
+    label: 'About Us',
+    href: '/about',
+    pathname: '/about',
   },
+  // {
+  //   label: 'Compare',
+  //   href: '/compare',
+  //   pathname: '/compare',
+  // },
 ];

@@ -1,4 +1,5 @@
-import { Box } from '@chakra-ui/layout';
+import { Button } from '@chakra-ui/button';
+import { Box, Flex, Text } from '@chakra-ui/layout';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { IListFlow } from 'interfaces/IBrand';
@@ -20,16 +21,21 @@ interface IProps {
     price: string[];
   };
   FILTER_PRICE: any[];
+  showFilterPrice: boolean;
+  showFilterModule: boolean;
 }
 
 const FilterTools: React.FC<IProps> = (props) => {
+  const onClickModule = (name: string) => {
+    props.onChangeFilterFlow({ target: { name: name } });
+  };
   return (
     <Box ref={props.refSidebar} id='sidebarContainer'>
       <FilterCheckbox labelName='Categories'>
         {props.listCategory.map((category, i) => (
           <CheckboxItem
             key={i}
-            marginBtm={i + 1 === props.listCategory.length ? 0 : '24px'}
+            marginBtm={i + 1 === props.listCategory.length ? 0 : '12px'}
             icon={
               props.filterBrandByFlow.categories.includes(category._id) ? (
                 <CheckboxCheckedIcon />
@@ -55,12 +61,12 @@ const FilterTools: React.FC<IProps> = (props) => {
         ))}
       </FilterCheckbox>
       {props.showFlowFilter && (
-        <Box mt='24px'>
+        <Box mt='16px'>
           <FilterCheckbox labelName='Flow'>
             {props.listFlow.map((flow, i) => (
               <CheckboxItem
                 key={i}
-                marginBtm={i + 1 === props.listFlow.length ? 0 : '24px'}
+                marginBtm={i + 1 === props.listFlow.length ? 0 : '12px'}
                 icon={
                   props.filterBrandByFlow.flows.includes(flow._id) ? (
                     <CheckboxCheckedIcon />
@@ -87,37 +93,89 @@ const FilterTools: React.FC<IProps> = (props) => {
           </FilterCheckbox>
         </Box>
       )}
-      <Box mt='24px'>
-        <FilterCheckbox labelName='Price'>
-          {props.FILTER_PRICE.map((price, i) => (
-            <CheckboxItem
-              key={i}
-              marginBtm={i + 1 === props.FILTER_PRICE.length ? 0 : '24px'}
-              icon={
-                props.filterBrandByFlow.price.includes(price.value) ? (
-                  <CheckboxCheckedIcon />
-                ) : (
-                  <CheckboxIcon />
-                )
-              }
-              value={price.value}
-              onChange={props.onChangeFilterPrice}
-              fontWeight={
-                props.filterBrandByFlow.price.includes(price.value)
-                  ? '600'
-                  : '400'
-              }
-              name={price.name}
-              colorCount={
-                props.filterBrandByFlow.price.includes(price.value)
-                  ? '#172A3A'
-                  : '#8FA2B1'
-              }
-              totalCount={price.count}
-            />
-          ))}
-        </FilterCheckbox>
-      </Box>
+      {props.showFilterPrice && (
+        <Box mt='16px'>
+          <FilterCheckbox labelName='Price'>
+            {props.FILTER_PRICE.map((price, i) => (
+              <CheckboxItem
+                key={i}
+                marginBtm={i + 1 === props.FILTER_PRICE.length ? 0 : '12px'}
+                icon={
+                  props.filterBrandByFlow.price.includes(price.value) ? (
+                    <CheckboxCheckedIcon />
+                  ) : (
+                    <CheckboxIcon />
+                  )
+                }
+                value={price.value}
+                onChange={props.onChangeFilterPrice}
+                fontWeight={
+                  props.filterBrandByFlow.price.includes(price.value)
+                    ? '600'
+                    : '400'
+                }
+                name={price.name}
+                colorCount={
+                  props.filterBrandByFlow.price.includes(price.value)
+                    ? '#172A3A'
+                    : '#8FA2B1'
+                }
+                totalCount={price.count}
+              />
+            ))}
+          </FilterCheckbox>
+        </Box>
+      )}
+      {props.showFilterModule && (
+        <Box
+          mt='16px'
+          padding='37px 28px'
+          boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+          borderRadius='8px'
+          backgroundColor='white'
+          maxH={{ md: '320px', xl: '400px' }}
+          overflowY='scroll'
+          className='styled-scrollbar'
+        >
+          <Text
+            fontWeight='700'
+            fontSize='14px'
+            lineHeight='21px'
+            color='#172A3A'
+          >
+            Module
+          </Text>
+          <Flex
+            mt='16px'
+            minW={'236px'}
+            maxWidth={'236px'}
+            gap='8px'
+            flexWrap='wrap'
+          >
+            {props.listFlow.map((flow, i) => (
+              <Button
+                _hover={{ cursor: 'pointer' }}
+                p='6px 8px'
+                border='1px solid #172A3A'
+                borderRadius='4px'
+                bgColor={
+                  props.filterBrandByFlow.flows.includes(flow._id)
+                    ? '#004346'
+                    : 'transparent'
+                }
+                color={
+                  props.filterBrandByFlow.flows.includes(flow._id)
+                    ? '#FBFFFE'
+                    : '#172A3A'
+                }
+                onClick={() => onClickModule(flow._id)}
+              >
+                {flow._id}
+              </Button>
+            ))}
+          </Flex>
+        </Box>
+      )}
     </Box>
   );
 };

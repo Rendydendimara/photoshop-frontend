@@ -29,6 +29,7 @@ interface IProps {
     selectedBrand: string;
   };
   resultSearchBrand: ISearchBrand | undefined;
+  inputSearchElement: any;
 }
 const FilterPageView: React.FC<IProps> = (props) => {
   const refSearchBrand: any = useRef();
@@ -64,11 +65,11 @@ const FilterPageView: React.FC<IProps> = (props) => {
           fill={props.filterPageView.flow ? '#09BC8A' : '#B4C6D4'}
           onClick={() => props.onChangeFilterPageView('flow')}
         />
-        <CategoryIcon
+        {/* <CategoryIcon
           showHover
           fill={props.filterPageView.category ? '#09BC8A' : '#B4C6D4'}
           onClick={() => props.onChangeFilterPageView('category')}
-        />
+        /> */}
         <svg
           width='2'
           height='27'
@@ -110,6 +111,7 @@ const FilterPageView: React.FC<IProps> = (props) => {
             children={<SearchIcon showHover />}
           />
           <Input
+            ref={props.inputSearchElement}
             width='full'
             height={{ base: '41px', md: '49px' }}
             borderColor='transparent'
@@ -118,10 +120,10 @@ const FilterPageView: React.FC<IProps> = (props) => {
             onKeyDown={props.handleKeyOnDownKeyword}
             placeholder='Ex Gojek, Cart, or Fashion'
             _placeholder={{
-              fontWeight: 300,
+              fontWeight: 400,
               fontSize: '14px',
               lineHeight: '21px',
-              color: '#B4C6D4',
+              color: '#91A5B6',
             }}
             value={props.value}
             onFocus={onFocusInput}

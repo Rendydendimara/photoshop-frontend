@@ -66,7 +66,7 @@ const Compare: NextPage = () => {
   };
 
   const handleGetListBrand = async (filter: {
-    category?: string;
+    category?: string[];
     notIncludeBrandId?: string[];
     keyword?: string[];
   }) => {

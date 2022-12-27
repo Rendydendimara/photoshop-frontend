@@ -1,7 +1,10 @@
 import { Button } from '@chakra-ui/button';
 import { Flex, Text } from '@chakra-ui/layout';
 
-interface IProps {}
+interface IProps {
+  onSearchAgain: () => void;
+  onRequest: () => void;
+}
 const BrandReachBottom: React.FC<IProps> = (props) => {
   return (
     <Flex
@@ -148,10 +151,12 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
         _hover={{
           bgColor: '#07A377',
         }}
+        onClick={props.onSearchAgain}
       >
         Search Again
       </Button>
       <Button
+        onClick={props.onRequest}
         variant='outline'
         mt='12px'
         borderColor='#09BC8A'

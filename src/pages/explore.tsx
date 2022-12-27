@@ -103,6 +103,7 @@ const Explore: NextPage = () => {
   const [listBrandByFlow, setListBrandByFlow] = useState<IListBrandByFlow[]>(
     []
   );
+  const inputSearchElement: any = useRef(null);
   const [listCategory, setListCategory] = useState<ICategory[]>([]);
   const [listFlow, setListFlow] = useState<IListFlow[]>([]);
   const modalFilterMobile = useDisclosure();
@@ -164,22 +165,23 @@ const Explore: NextPage = () => {
 
   const [tags, setTags] = useState<{ id: string; text: string }[]>([]);
 
-  const removeKeyword = (keyword: string) => {
-    const result = filterBrand.keyword.filter((key) => key !== keyword);
-    setFilterBrand({
-      ...filterBrand,
-      keyword: result,
-    });
-    handleGetListBrand({
-      category: filterBrand.selectedCategory,
-      keyword: result,
-    });
-  };
+  // const removeKeyword = (keyword: string) => {
+  //   const result = filterBrand.keyword.filter((key) => key !== keyword);
+  //   setFilterBrand({
+  //     ...filterBrand,
+  //     keyword: result,
+  //   });
+  //   handleGetListBrand({
+  //     category: filterBrand.selectedCategory,
+  //     keyword: result,
+  //   });
+  // };
 
   const handleGetListBrand = async (filter: {
-    category?: string;
+    category?: string[];
     notIncludeBrandId?: string[];
     keyword?: string[];
+    module?: string[];
   }) => {
     setLoadingGetBrand(true);
     const res = await ApiGetListBrand(filter);
@@ -192,14 +194,48 @@ const Explore: NextPage = () => {
   const handleGetListCategory = async () => {
     const res = await ApiGetListCategory();
     if (res.status === 200) {
-      setListCategory(res.data.data);
+      let data = res.data.data;
+      let dataResult: any = data;
+      let countTotal = 0;
+      if (data.length > 0) {
+        data.forEach((dt: any) => {
+          countTotal += dt.totalBrand;
+        });
+        dataResult = [
+          {
+            name: 'all',
+            _id: 'all',
+            created_at: '',
+            totalBrand: countTotal,
+          },
+          ...data,
+        ];
+      }
+      setListCategory(dataResult);
     }
   };
 
   const getListFlow = async () => {
     const res = await ApiGetListModules();
     if (res.status === 200) {
-      setListFlow(res.data.data);
+      let data = res.data.data;
+      let dataResult: any = data;
+      let countTotal = 0;
+      if (data.length > 0) {
+        // _id: string;
+        // count: number;
+        data.forEach((dt: any) => {
+          countTotal += dt.count;
+        });
+        dataResult = [
+          {
+            _id: 'all',
+            count: countTotal,
+          },
+          ...dataResult,
+        ];
+      }
+      setListFlow(dataResult);
     }
   };
 
@@ -216,13 +252,13 @@ const Explore: NextPage = () => {
     }
   };
 
-  const handleFilterCategory = (idCategory: string) => {
-    setFilterBrand({
-      ...filterBrand,
-      selectedCategory: idCategory,
-    });
-    handleGetListBrand({ keyword: filterBrand.keyword, category: idCategory });
-  };
+  // const handleFilterCategory = (idCategory: string) => {
+  //   setFilterBrand({
+  //     ...filterBrand,
+  //     selectedCategory: idCategory,
+  //   });
+  //   handleGetListBrand({ keyword: filterBrand.keyword, category: idCategory });
+  // };
 
   const handleKeyOnDownKeyword = (e: any) => {
     // if (e.keyCode === 32 || e.keyCode === 13 || e.keyCode === 9) {
@@ -274,7 +310,7 @@ const Explore: NextPage = () => {
         setListBrand([res.data.data]);
       }
     } else if (field === 'category') {
-      handleGetListBrand({ category: value });
+      // handleGetListBrand({ category: value });
       setFilterBrandV2({
         selectedCategory: value,
         selectedBrand: '',
@@ -305,6 +341,7 @@ const Explore: NextPage = () => {
   };
 
   const onChangeFilterFlow = (e: any) => {
+    console.log(e.target.name);
     let newFlows: any[] = [];
     if (filterBrandByFlow.flows.includes(e.target.name)) {
       newFlows = filterBrandByFlow.flows.filter(
@@ -313,14 +350,62 @@ const Explore: NextPage = () => {
     } else {
       newFlows = [...filterBrandByFlow.flows, e.target.name];
     }
-    setFilterBrandByFlow({
-      ...filterBrandByFlow,
-      flows: newFlows,
-    });
-    getListBrandByFlow({
-      ...filterBrandByFlow,
-      flows: newFlows,
-    });
+    if (e.target.name === 'all' && newFlows.includes('all')) {
+      setFilterBrandByFlow({
+        ...filterBrandByFlow,
+        flows: ['all'],
+      });
+    } else {
+      if (newFlows.includes('all')) {
+        newFlows = newFlows.filter((cat) => cat !== 'all');
+      }
+      setFilterBrandByFlow({
+        ...filterBrandByFlow,
+        flows: newFlows,
+      });
+    }
+    if (filterPageView.brand) {
+      if (e.target.name === 'all' && newFlows.includes('all')) {
+        handleGetListBrand({
+          keyword: filterBrand.keyword,
+          module: [],
+          category: filterBrandByFlow.categories,
+        });
+      } else {
+        handleGetListBrand({
+          keyword: filterBrand.keyword,
+          module: newFlows,
+          category: filterBrandByFlow.categories,
+        });
+      }
+    } else {
+      if (e.target.name === 'all' && newFlows.includes('all')) {
+        getListBrandByFlow({
+          ...filterBrandByFlow,
+          flows: [],
+        });
+      } else {
+        getListBrandByFlow({
+          ...filterBrandByFlow,
+          flows: newFlows,
+        });
+      }
+    }
+    // getListBrandByFlow({
+    //   ...filterBrandByFlow,
+    //   flows: [],
+    // });
+    // if (newFlows.includes('all')) {
+    //   newFlows = newFlows.filter((cat) => cat !== 'all');
+    // }
+    // setFilterBrandByFlow({
+    //   ...filterBrandByFlow,
+    //   flows: newFlows,
+    // });
+    // getListBrandByFlow({
+    //   ...filterBrandByFlow,
+    //   flows: newFlows,
+    // });
   };
   const onChangeFilterCategory = (e: any) => {
     let newCategories: any[] = [];
@@ -331,14 +416,47 @@ const Explore: NextPage = () => {
     } else {
       newCategories = [...filterBrandByFlow.categories, e.target.name];
     }
-    setFilterBrandByFlow({
-      ...filterBrandByFlow,
-      categories: newCategories,
-    });
-    getListBrandByFlow({
-      ...filterBrandByFlow,
-      categories: newCategories,
-    });
+    if (e.target.name === 'all' && newCategories.includes('all')) {
+      setFilterBrandByFlow({
+        ...filterBrandByFlow,
+        categories: ['all'],
+      });
+    } else {
+      if (newCategories.includes('all')) {
+        newCategories = newCategories.filter((cat) => cat !== 'all');
+      }
+      setFilterBrandByFlow({
+        ...filterBrandByFlow,
+        categories: newCategories,
+      });
+    }
+    if (filterPageView.brand) {
+      if (e.target.name === 'all' && newCategories.includes('all')) {
+        handleGetListBrand({
+          keyword: filterBrand.keyword,
+          category: ['all'],
+          module: filterBrandByFlow.flows,
+        });
+      } else {
+        handleGetListBrand({
+          keyword: filterBrand.keyword,
+          category: newCategories,
+          module: filterBrandByFlow.flows,
+        });
+      }
+    } else {
+      if (e.target.name === 'all' && newCategories.includes('all')) {
+        getListBrandByFlow({
+          ...filterBrandByFlow,
+          categories: [],
+        });
+      } else {
+        getListBrandByFlow({
+          ...filterBrandByFlow,
+          categories: newCategories,
+        });
+      }
+    }
   };
   const onChangeFilterPrice = (e: any) => {
     let newPrice: any[] = [];
@@ -362,6 +480,19 @@ const Explore: NextPage = () => {
       setIsFixedPositionSidebar(false);
     }
   };
+
+  const scrollOnTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (inputSearchElement) {
+        if (inputSearchElement.current) {
+          inputSearchElement.current.focus();
+        }
+      }
+    }
+  };
+
+  const onRequest = () => {};
 
   useEffect(() => {
     // Get the navbar
@@ -458,6 +589,7 @@ const Explore: NextPage = () => {
                 handleKeyOnDownKeyword={handleKeyOnDownKeyword}
                 handleChangeSearch={handleChangeSearch}
                 value={keywordSearch}
+                inputSearchElement={inputSearchElement}
                 onClickFilterV2={onClickFilterV2}
                 filterBrandV2={filterBrandV2}
                 resultSearchBrand={resultSearchBrand}
@@ -589,9 +721,31 @@ const Explore: NextPage = () => {
             </DrawerBody>
           </DrawerContent>
         </Drawer>
+        <Box mt='24px' mb='12px'>
+          {/* if (filterPageView.brand) {
+      return <ListBrand listBrand={listBrand} />;
+    } else if (filterPageView.flow) {
+      return (
+        <ListBrandFlowView
+          activeFlow={filterBrandByFlow.flows}
+          listBrandByFlow={listBrandByFlow}
+        />
+      ); */}
+          <Text
+            fontWeight='600'
+            fontSize='14px'
+            lineHeight='21px'
+            color='#172A3A'
+            display={{ base: 'hide', md: 'initial' }}
+          >
+            Result :{' '}
+            {filterPageView.brand ? listBrand.length : listBrandByFlow.length}{' '}
+            Apps
+          </Text>
+        </Box>
         <Flex
           flexDirection={{ base: 'column', md: 'row' }}
-          mt='32px'
+          mt={{ base: '32px', md: 0 }}
           gap='52px'
         >
           <Box
@@ -609,11 +763,18 @@ const Explore: NextPage = () => {
               filterBrandByFlow={filterBrandByFlow}
               FILTER_PRICE={FILTER_PRICE}
               onChangeFilterPrice={onChangeFilterPrice}
+              showFilterPrice={false}
+              showFilterModule={!filterPageView.flow}
             />
           </Box>
           <Box zIndex='1000' w='full'>
             {renderBrand()}
-            {listBrand.length > 0 && <BrandReachBottom />}
+            {listBrand.length > 0 && (
+              <BrandReachBottom
+                onSearchAgain={scrollOnTop}
+                onRequest={onRequest}
+              />
+            )}
           </Box>
         </Flex>
       </AppTemplate>

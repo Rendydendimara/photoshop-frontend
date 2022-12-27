@@ -17,9 +17,9 @@ const Home: NextPage = () => {
       </Head>
       <AppTemplate
         px={{
-          sm: '15px',
-          md: '40px',
-          xl: '124px',
+          sm: '0',
+          md: '0',
+          xl: '0',
         }}
       >
         <Box
@@ -34,6 +34,7 @@ const Home: NextPage = () => {
             justifyContent='space-between'
             alignItems={{ base: 'initial', md: 'center' }}
             flexDirection={{ base: 'column', md: 'row' }}
+            gap={{ base: 0, md: '50px', xl: '100px' }}
           >
             <Box w={{ base: '100%', md: '700px' }}>
               <Text
@@ -44,18 +45,18 @@ const Home: NextPage = () => {
                 mt={{ base: '-45px', md: 0 }}
                 color='#000'
               >
-                GOOD INSPIRATIONS GOOD DESIGN
+                Home for Real Design Inspiration
               </Text>
               <Text
-                w={{ base: 'initial', md: '430px' }}
+                // w={{ base: 'initial', md: '430px' }}
                 fontWeight='400'
                 fontSize={{ base: '18px', md: '24px' }}
                 lineHeight={{ base: '150%', md: '36px' }}
                 textAlign='left'
                 mt={{ base: '12px', md: 0 }}
               >
-                Bring you a new way to looking a design inspiration, more than
-                150 apps we collect for your inspiration.
+                Bring you a new way to find a design inspiration, more than 150
+                apps we collect for your inspiration.
               </Text>
               <Flex justifyContent={{ base: 'center', md: 'flex-start' }}>
                 <Link href='/explore'>
@@ -80,7 +81,7 @@ const Home: NextPage = () => {
               </Flex>
             </Box>
             <Flex
-              w={{ base: 'full', md: 'initial' }}
+              w={{ base: 'full', md: '339px' }}
               gap='10px'
               justifyContent='flex-end'
             >
