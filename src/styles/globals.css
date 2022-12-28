@@ -131,6 +131,19 @@ a {
   /* max-width: 1106px; */
 }
 
+.stickyFilterMobileHome {
+  position: fixed;
+  display: flex !important;
+  top: 0;
+  width: 100%;
+  z-index: 100000;
+  /* padding: 25px 18px 25px 18px; */
+  left: 0;
+  right: 0;
+  transition: all 0.5s ease;
+  /* max-width: 1106px; */
+}
+
 .stickySidebar {
   position: fixed;
   width: 100%;

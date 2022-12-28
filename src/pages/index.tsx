@@ -7,6 +7,137 @@ import { APP_NAME } from 'constant';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import Marquee from 'react-fast-marquee';
+
+import Threesecond from 'icons/3second.svg';
+import AIcon from 'icons/a.svg';
+import Banggood from 'icons/Banggood.svg';
+import Bukalapak from 'icons/bukalapak.svg';
+import EBay from 'icons/EBay.svg';
+import Freshbox from 'icons/freshbox.svg';
+import Iherb from 'icons/iherb.svg';
+import Jamtangan from 'icons/jamtangan.svg';
+import Path14942 from 'icons/path14942.svg';
+import Adidas from 'icons/adidas.svg';
+import Berrybenka from 'icons/berrybenka.svg';
+import Coldstorage from 'icons/coldstorage.svg';
+import Etsy from 'icons/Etsy.svg';
+import Giant from 'icons/giant.svg';
+import Ikea from 'icons/Ikea.svg';
+import Jdid from 'icons/jdid.svg';
+import Uiga from 'icons/uiga.svg';
+import Allogresh from 'icons/allogresh.svg';
+import Atome from 'icons/atome.svg';
+import Blibi from 'icons/blibi.svg';
+import Decathlon from 'icons/Decathlon.svg';
+import Fairprice from 'icons/fairprice.svg';
+import Hypermart from 'icons/Hypermart.svg';
+import Informa from 'icons/informa.svg';
+import Lazada from 'icons/Lazada.svg';
+import { Image } from '@chakra-ui/image';
+
+const ICONS_BRAND = [
+  {
+    icon: <Threesecond />,
+    src: '/icons/3second.svg',
+  },
+  {
+    icon: <AIcon />,
+    src: '/icons/a.svg',
+  },
+  {
+    icon: <Banggood />,
+    src: '/icons/Banggood.svg',
+  },
+  {
+    icon: <Bukalapak />,
+    src: '/icons/bukalapak.svg',
+  },
+  {
+    icon: <EBay />,
+    src: '/icons/EBay.svg',
+  },
+  {
+    icon: <Freshbox />,
+    src: '/icons/freshbox.svg',
+  },
+  {
+    icon: <Iherb />,
+    src: '/icons/iherb.svg',
+  },
+  {
+    icon: <Jamtangan />,
+    src: '/icons/jamtangan.svg',
+  },
+  {
+    icon: <Path14942 />,
+    src: '/icons/path14942.svg',
+  },
+  {
+    icon: <Adidas />,
+    src: '/icons/adidas.svg',
+  },
+  {
+    icon: <Berrybenka />,
+    src: '/icons/berrybenka.svg',
+  },
+  {
+    icon: <Coldstorage />,
+    src: '/icons/coldstorage.svg',
+  },
+  {
+    icon: <Etsy />,
+    src: '/icons/Etsy.svg',
+  },
+  {
+    icon: <Giant />,
+    src: '/icons/giant.svg',
+  },
+  {
+    icon: <Ikea />,
+    src: '/icons/Ikea.svg',
+  },
+  {
+    icon: <Jdid />,
+    src: '/icons/jdid.svg',
+  },
+  {
+    icon: <Uiga />,
+    src: '/icons/uiga.svg',
+  },
+  {
+    icon: <Allogresh />,
+    src: '/icons/allogresh.svg',
+  },
+  {
+    icon: <Atome />,
+    src: '/icons/atome.svg',
+  },
+  {
+    icon: <Blibi />,
+    src: '/icons/blibi.svg',
+  },
+  {
+    icon: <Decathlon />,
+    src: '/icons/Decathlon.svg',
+  },
+  {
+    icon: <Fairprice />,
+    src: '/icons/fairprice.svg',
+  },
+  {
+    icon: <Hypermart />,
+    src: '/icons/Hypermart.svg',
+  },
+  {
+    icon: <Informa />,
+    src: '/icons/informa.svg',
+  },
+  {
+    icon: <Lazada />,
+    src: '/icons/Lazada.svg',
+  },
+];
 
 const Home: NextPage = () => {
   return (
@@ -17,7 +148,7 @@ const Home: NextPage = () => {
       </Head>
       <AppTemplate
         px={{
-          sm: '0',
+          sm: '16px',
           md: '0',
           xl: '0',
         }}
@@ -26,7 +157,6 @@ const Home: NextPage = () => {
           h={{ base: 'initial', md: '100vh' }}
           w='full'
           pt={{ base: '33px', md: 0 }}
-          pb={{ base: '98px', md: 0 }}
         >
           <Flex
             h='full'
@@ -58,10 +188,68 @@ const Home: NextPage = () => {
                 Bring you a new way to find a design inspiration, more than 150
                 apps we collect for your inspiration.
               </Text>
+              <Box display={{ base: 'initial', md: 'none' }}>
+                <Marquee speed={10}>
+                  <Flex
+                    mt='38px'
+                    alignItems='center'
+                    justifyContent='space-between'
+                    overflowX='scroll'
+                    w='full'
+                    gap='14px'
+                  >
+                    {ICONS_BRAND.slice(0, 13).map((brand, i) => (
+                      <Flex
+                        justifyContent='center'
+                        alignItems='center'
+                        bgColor='#F2F2F2'
+                        minW='64px'
+                        minH='64px'
+                        maxW='64px'
+                        maxH='64px'
+                        p='2'
+                        borderRadius='8px'
+                      >
+                        <Image src={brand.src} />
+                        {/* {brand.icon} */}
+                      </Flex>
+                    ))}
+                  </Flex>
+                </Marquee>
+                <Marquee speed={5}>
+                  <Flex
+                    mt='11px'
+                    alignItems='center'
+                    justifyContent='space-between'
+                    overflowX='scroll'
+                    w='full'
+                    gap='14px'
+                  >
+                    {ICONS_BRAND.slice(13, ICONS_BRAND.length).map(
+                      (brand, i) => (
+                        <Flex
+                          justifyContent='center'
+                          alignItems='center'
+                          bgColor='#F2F2F2'
+                          minW='64px'
+                          minH='64px'
+                          maxW='64px'
+                          maxH='64px'
+                          p='2'
+                          borderRadius='8px'
+                        >
+                          <Image src={brand.src} />
+                          {/* {brand.icon} */}
+                        </Flex>
+                      )
+                    )}
+                  </Flex>
+                </Marquee>
+              </Box>
               <Flex justifyContent={{ base: 'center', md: 'flex-start' }}>
                 <Link href='/explore'>
                   <Button
-                    mt={{ base: '25px', md: '40px' }}
+                    mt={{ base: '184px', md: '40px' }}
                     width='210px'
                     height='56px'
                     bgColor='#09BC8A'
@@ -73,7 +261,6 @@ const Home: NextPage = () => {
                     color='white'
                     fontWeight='500'
                     fontSize='20px'
-                    // size='md'
                   >
                     Explore
                   </Button>
@@ -81,41 +268,12 @@ const Home: NextPage = () => {
               </Flex>
             </Box>
             <Flex
+              display={{ base: 'none', md: 'initial' }}
               w={{ base: 'full', md: '339px' }}
               gap='10px'
               justifyContent='flex-end'
             >
               <AllBrandIcon />
-              {/* <Flex flexDirection='column' gap='10px'>
-                <BoxImage noBG />
-                <BoxImage noBG />
-                <BoxImage noBG />
-                <BoxImage />
-              </Flex>
-              <Flex flexDirection='column' gap='10px'>
-                <BoxImage noBG />
-                <BoxImage noBG />
-                <BoxImage noBG />
-                <BoxImage />
-                <BoxImage />
-              </Flex>
-              <Flex flexDirection='column' gap='10px'>
-                <BoxImage noBG />
-                <BoxImage noBG />
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-              </Flex>
-              <Flex flexDirection='column' gap='10px'>
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-                <BoxImage />
-              </Flex> */}
             </Flex>
           </Flex>
         </Box>

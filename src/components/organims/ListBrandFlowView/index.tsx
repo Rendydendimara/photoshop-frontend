@@ -16,7 +16,7 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
   return (
     // <Box>
     <Flex
-      width='900px'
+      width={{ base: 'full', md: '900px' }}
       //  w='full'
       gap={{ base: 3, md: '30px' }}
       flexWrap='wrap'
@@ -34,8 +34,8 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
                 justifyContent='center'
                 alignItems='center'
                 boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-                width='140px'
-                height='100px'
+                width={{ base: '87px', md: '140px' }}
+                height={{ base: '62px', md: '100px' }}
                 borderRadius='12px'
                 px='10px'
               >
@@ -61,8 +61,8 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
               >
                 <Box maxW='568px'>
                   <Text
-                    fontWeight='700'
-                    fontSize='16px'
+                    fontWeight={{ base: '500', md: '700' }}
+                    fontSize={{ base: '14px', md: '16px' }}
                     textAlign='left'
                     color='#172A3A'
                   >
@@ -74,11 +74,23 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
                     fontSize='12px'
                     textAlign='left'
                     color='#97A5B0'
+                    display={{ base: 'none', md: 'initial' }}
                   >
                     {brand.category_id.name}
                     {/* {brand.modules} Module {brand.screens} Screen */}
                   </Text>
                   <Text
+                    mt='4px'
+                    fontWeight='400'
+                    fontSize='12px'
+                    textAlign='left'
+                    color='#91A5B6'
+                    display={{ base: 'initial', md: 'none' }}
+                  >
+                    Have 3 Screen for Register
+                  </Text>
+                  <Text
+                    display={{ base: 'none', md: 'initial' }}
                     fontWeight='400'
                     fontSize='12px'
                     textAlign='left'
@@ -96,7 +108,7 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
                     {/* Last updated {moment(brand.updated_at).format('DD MMM')} */}
                   </Text>
                 </Box>
-                <Box>
+                <Box display={{ base: 'none', md: 'initial' }}>
                   <Text fontWeight='600' fontSize='12px' color='#07A377'>
                     {brand.screens} Screen
                   </Text>
@@ -115,7 +127,7 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
             maxW='full'
             overflowX='scroll'
             className='styled-scrollbar'
-            mt='24px'
+            mt={{ base: '10px', md: '24px' }}
             gap='28px'
           >
             {brand.images.map((image, i) => (

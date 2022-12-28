@@ -50,6 +50,7 @@ import ListBrandFlowView from 'components/organims/ListBrandFlowView';
 import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import Footer from 'components/molecules/Footer';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/tabs';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -342,7 +343,6 @@ const Explore: NextPage = () => {
   };
 
   const onChangeFilterFlow = (e: any) => {
-    console.log(e.target.name);
     let newFlows: any[] = [];
     if (filterBrandByFlow.flows.includes(e.target.name)) {
       newFlows = filterBrandByFlow.flows.filter(
@@ -495,18 +495,27 @@ const Explore: NextPage = () => {
 
   const onRequest = () => {};
 
+  const onClickModule = (name: string) => {
+    onChangeFilterFlow({ target: { name: name } });
+  };
+  const onClickCategory = (name: string) => {
+    onChangeFilterCategory({ target: { name: name } });
+  };
   useEffect(() => {
     // Get the navbar
     let navbar: any;
     let sidebar: any;
+    let filterMobile: any;
 
     if (typeof window !== 'undefined') {
       navbar = document.getElementById('categoryDeskop');
       sidebar = document.getElementById('sidebarContainer');
+      filterMobile = document.getElementById('filterMobile');
     }
 
     // Get the offset position of the navbar
     let sticky: any = navbar?.offsetTop;
+    let stickyMobile: any = filterMobile?.offsetTop;
     let stickySidebar: any = sidebar?.offsetTop;
     // When the user scrolls the page, execute myFunction
     if (typeof window !== 'undefined') {
@@ -522,12 +531,15 @@ const Explore: NextPage = () => {
       if (window.pageYOffset >= sticky + 57) {
         navbar.classList.add('stickyNavbarHome');
         sidebar.classList.add('stickySidebar');
+        filterMobile.classList.add('stickyFilterMobileHome');
+        // stickyFilterMobileHome
         // if (!isFixedPositionSidebar) {
         // setIsFixedPositionSidebar(true);
         // }
       } else {
         navbar.classList.remove('stickyNavbarHome');
         sidebar.classList.remove('stickySidebar');
+        filterMobile.classList.remove('stickyFilterMobileHome');
         // if (isFixedPositionSidebar) {
         //   // setIsFixedPositionSidebar(false);
         // }
@@ -601,6 +613,10 @@ const Explore: NextPage = () => {
               w='full'
               display={{ base: 'flex', md: 'none' }}
               justifyContent='space-between'
+              id='filterMobile'
+              bgColor='white'
+              p='16px'
+              boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
             >
               <InputGroup width='80%' bgColor='#FAFAFA'>
                 <InputLeftElement
@@ -638,7 +654,12 @@ const Explore: NextPage = () => {
                     <g clip-path='url(#clip0_104_2404)'>
                       <path
                         d='M9.33348 16.5C9.18924 16.5 9.04888 16.4532 8.93348 16.3667L6.26682 14.3667C6.18402 14.3046 6.11682 14.224 6.07053 14.1315C6.02425 14.0389 6.00015 13.9368 6.00015 13.8333V10.0867L1.32282 4.82467C0.99063 4.44992 0.773736 3.98721 0.698203 3.49216C0.62267 2.9971 0.691713 2.49077 0.897032 2.03401C1.10235 1.57725 1.43521 1.18951 1.8556 0.917377C2.276 0.645248 2.76603 0.500316 3.26682 0.5H12.7335C13.2342 0.500587 13.7241 0.64576 14.1444 0.918071C14.5646 1.19038 14.8972 1.57825 15.1023 2.03506C15.3074 2.49187 15.3763 2.99818 15.3005 3.49316C15.2248 3.98815 15.0078 4.45073 14.6755 4.82533L10.0002 10.0867V15.8333C10.0002 16.0101 9.92991 16.1797 9.80489 16.3047C9.67986 16.4298 9.51029 16.5 9.33348 16.5V16.5ZM7.33348 13.5L8.66682 14.5V9.83333C8.66695 9.67011 8.72697 9.5126 8.83548 9.39067L13.6808 3.93933C13.8424 3.75672 13.9478 3.53136 13.9844 3.2903C14.0211 3.04924 13.9874 2.80274 13.8873 2.58037C13.7873 2.35801 13.6252 2.16924 13.4206 2.03673C13.2159 1.90421 12.9773 1.83359 12.7335 1.83333H3.26682C3.02312 1.8337 2.7847 1.90436 2.58015 2.03684C2.37561 2.16932 2.21362 2.358 2.11362 2.58023C2.01362 2.80247 1.97985 3.04884 2.01637 3.28979C2.05288 3.53074 2.15813 3.75604 2.31948 3.93867L7.16548 9.39067C7.27376 9.5127 7.33353 9.67019 7.33348 9.83333V13.5Z'
-                        fill='#374957'
+                        fill={
+                          filterBrandByFlow.categories.length > 0 ||
+                          filterBrandByFlow.flows.length > 0
+                            ? '#FBFFFE'
+                            : '#374957'
+                        }
                       />
                     </g>
                     <defs>
@@ -654,7 +675,12 @@ const Explore: NextPage = () => {
                   </svg>
                 }
                 variant='outline'
-                bgColor='#ECECEC'
+                bgColor={
+                  filterBrandByFlow.categories.length > 0 ||
+                  filterBrandByFlow.flows.length > 0
+                    ? '#09BC8A'
+                    : '#ECECEC'
+                }
                 // borderWidth='1px'
                 ref={btnRef}
                 onClick={() => {
@@ -671,51 +697,144 @@ const Explore: NextPage = () => {
           finalFocusRef={btnRef}
         >
           <DrawerOverlay />
-          <DrawerContent bgColor='transparent'>
+          <DrawerContent bgColor='transparent' zIndex='110000'>
             <DrawerBody
               boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px -4px 8px rgba(0, 0, 0, 0.06)'
               borderRadius='16px 16px 0px 0px'
-              maxH='60vh'
+              maxH='553px'
               bgColor='white'
               p='32px 28px 32px 28px'
             >
-              {listCategory.map((category, i) => (
-                <CheckboxItem
-                  key={i}
-                  marginBtm={i + 1 === listCategory.length ? 0 : '24px'}
-                  icon={
-                    filterBrandByFlow.categories.includes(category._id) ? (
-                      <CheckboxCheckedIcon />
-                    ) : (
-                      <CheckboxIcon />
-                    )
-                  }
-                  value={category._id}
-                  onChange={onChangeFilterCategory}
-                  fontWeight={
-                    filterBrandByFlow.categories.includes(category._id)
-                      ? '600'
-                      : '400'
-                  }
-                  name={category.name}
-                  colorCount={
-                    filterBrandByFlow.categories.includes(category._id)
-                      ? '#172A3A'
-                      : '#8FA2B1'
-                  }
-                  totalCount={category.totalBrand}
-                />
-              ))}
-
+              <Tabs isFitted variant='soft-rounded' colorScheme='green'>
+                <TabList>
+                  <Tab
+                    _selected={{
+                      bgColor: '#F4F4F4',
+                      color: '#09BC8A',
+                    }}
+                    fontWeight='500'
+                    fontSize='16px'
+                    display='flex'
+                    alignItems='center'
+                    gap='10px'
+                    color='#B9B9B9'
+                  >
+                    Categories
+                    {filterBrandByFlow.categories.length > 0 && (
+                      <Flex
+                        width='23px'
+                        height='23px'
+                        bgColor='#09BC8A'
+                        justifyContent='center'
+                        alignItems='center'
+                        borderRadius='30px'
+                        fontWeight='700'
+                        fontSize='10px'
+                        color='#FCFCFC'
+                      >
+                        {filterBrandByFlow.categories.length}
+                      </Flex>
+                    )}
+                  </Tab>
+                  <Tab
+                    _selected={{
+                      bgColor: '#F4F4F4',
+                      color: '#09BC8A',
+                    }}
+                    fontWeight='500'
+                    fontSize='16px'
+                    color='#B9B9B9'
+                  >
+                    Feature
+                    {filterBrandByFlow.flows.length > 0 && (
+                      <Flex
+                        width='23px'
+                        height='23px'
+                        bgColor='#09BC8A'
+                        justifyContent='center'
+                        alignItems='center'
+                        borderRadius='30px'
+                        fontWeight='700'
+                        fontSize='10px'
+                        color='#FCFCFC'
+                      >
+                        {filterBrandByFlow.flows.length}
+                      </Flex>
+                    )}
+                  </Tab>
+                </TabList>
+                <TabPanels mt='16px'>
+                  <TabPanel
+                    maxH='297px'
+                    overflowY='scroll'
+                    className='styled-scrollbar'
+                  >
+                    <Flex gap='10px' flexWrap='wrap'>
+                      {listCategory.map((category, i) => (
+                        <Button
+                          key={i}
+                          bgColor={
+                            filterBrandByFlow.categories.includes(category.name)
+                              ? '#07A377'
+                              : '#EFEFEF'
+                          }
+                          borderRadius='8px'
+                          padding='8px 12px'
+                          fontWeight='400'
+                          fontSize='12px'
+                          color={
+                            filterBrandByFlow.categories.includes(category.name)
+                              ? '#FBFFFE'
+                              : '#172A3A'
+                          }
+                          onClick={() => onClickCategory(category.name)}
+                        >
+                          {category.name}
+                        </Button>
+                      ))}
+                    </Flex>
+                  </TabPanel>
+                  <TabPanel
+                    maxH='297px'
+                    overflowY='scroll'
+                    className='styled-scrollbar'
+                  >
+                    <Flex gap='10px' flexWrap='wrap'>
+                      {listFlow.map((flow, i) => (
+                        <Button
+                          key={i}
+                          bgColor={
+                            filterBrandByFlow.flows.includes(flow._id)
+                              ? '#07A377'
+                              : '#EFEFEF'
+                          }
+                          borderRadius='8px'
+                          padding='8px 12px'
+                          fontWeight='400'
+                          fontSize='12px'
+                          color={
+                            filterBrandByFlow.flows.includes(flow._id)
+                              ? '#FBFFFE'
+                              : '#172A3A'
+                          }
+                          onClick={() => onClickModule(flow._id)}
+                        >
+                          {flow._id}
+                        </Button>
+                      ))}
+                    </Flex>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
               <Button
                 mt='32px'
                 w='full'
+                h='48px'
                 color='white'
                 bgColor='#09BC8A'
                 borderRadius='12px'
                 fontWeight='500'
-                fontSize='14px'
-                lineHeight='17px'
+                fontSize='20px'
               >
                 Apply
               </Button>
@@ -768,7 +887,11 @@ const Explore: NextPage = () => {
               showFilterModule={!filterPageView.flow}
             />
           </Box>
-          <Box zIndex='1000' w='full' ml={isFixedPositionSidebar ? '60px' : 0}>
+          <Box
+            zIndex='1000'
+            w='full'
+            ml={{ base: 0, md: isFixedPositionSidebar ? '60px' : 0 }}
+          >
             {renderBrand()}
             {listBrand.length > 0 && (
               <BrandReachBottom
@@ -781,6 +904,80 @@ const Explore: NextPage = () => {
             </Center>
           </Box>
         </Flex>
+        <Center display={{ base: 'flex', md: 'none' }}>
+          <Flex
+            p='8px 16px'
+            position='fixed'
+            bottom='20px'
+            gap='10px'
+            alignItems='center'
+            display={{ base: 'flex', md: 'none' }}
+            zIndex='1000'
+            bgColor='#09BC8A'
+            boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+            borderRadius='8px'
+          >
+            <IconButton
+              minW='24px'
+              height='24px'
+              aria-label='brands'
+              onClick={() => onChangeFilterPageView('brand')}
+              icon={
+                <svg
+                  width='11'
+                  height='14'
+                  viewBox='0 0 11 14'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M1.3076 13.6682C1.18315 13.6682 1.07115 13.6247 0.971599 13.5376C0.872043 13.438 0.822266 13.3198 0.822266 13.1829V1.0869C0.822266 0.950007 0.872043 0.838007 0.971599 0.750896C1.07115 0.65134 1.18315 0.601562 1.3076 0.601562H4.40627C4.54315 0.601562 4.66138 0.65134 4.76093 0.750896C4.86049 0.838007 4.91027 0.950007 4.91027 1.0869V10.3456H10.3049C10.4418 10.3456 10.56 10.3953 10.6596 10.4949C10.7592 10.582 10.8089 10.694 10.8089 10.8309V13.1829C10.8089 13.3198 10.7592 13.438 10.6596 13.5376C10.56 13.6247 10.4418 13.6682 10.3049 13.6682H1.3076Z'
+                    fill='#FBFFFE'
+                  />
+                </svg>
+
+                // <BrandIcon
+                //   showHover
+                //   fill='#FBFFFE'
+                //   // fill={filterPageView.brand ? '#004346' : '#FBFFFE'}
+                //   onClick={() => onChangeFilterPageView('brand')}
+                // />
+              }
+              bgColor={filterPageView.brand ? '#004346' : '#09BC8A'}
+            />
+
+            <Text fontWeight='500' fontSize='16px' color='#FBFFFE'>
+              {filterPageView.brand ? 'Brands' : 'Flows'}
+            </Text>
+            <IconButton
+              minW='24px'
+              height='24px'
+              aria-label='brands'
+              onClick={() => onChangeFilterPageView('flow')}
+              icon={
+                <svg
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M21.018 13.4286C20.2467 13.4288 19.5058 13.7293 18.9524 14.2666L17.7755 13.6781C18.7362 10.5274 16.9609 7.19458 13.8102 6.23392C12.6577 5.88255 11.4258 5.88845 10.2768 6.25084L9.5869 5.00533C10.6942 3.79286 10.6089 1.91233 9.39645 0.805094C8.18398 -0.302187 6.3035 -0.216922 5.19622 0.995547C4.08894 2.20802 4.1742 4.0885 5.38667 5.19578C5.9367 5.69809 6.65525 5.97564 7.40009 5.97348C7.54306 5.96941 7.68556 5.95511 7.82651 5.93074L8.51037 7.16627C5.92011 9.08847 5.33881 12.7273 7.20125 15.3609L4.3047 18.1441C2.76805 17.4559 0.964483 18.1437 0.276311 19.6803C-0.411861 21.217 0.275936 23.0206 1.81259 23.7087C3.34925 24.3969 5.15281 23.7091 5.84098 22.1725C6.22442 21.3163 6.19231 20.3313 5.75398 19.5018L8.59287 16.7733C11.2456 18.6946 14.9534 18.1034 16.877 15.4523L18.0698 16.0487C18.0509 16.1684 18.0397 16.2893 18.036 16.4105C18.036 18.0574 19.3711 19.3925 21.018 19.3925C22.665 19.3925 24 18.0576 24 16.4107C24 14.7638 22.6649 13.4286 21.018 13.4286Z'
+                    fill='#FBFFFE'
+                  />
+                </svg>
+
+                // <BrandIcon
+                //   showHover
+                //   fill={filterPageView.brand ? '#004346' : '#B4C6D4'}
+                //   onClick={() => onChangeFilterPageView('brand')}
+                // />
+              }
+              bgColor={filterPageView.flow ? '#004346' : '#09BC8A'}
+            />
+          </Flex>
+        </Center>
       </AppTemplate>
     </Layout>
   );

@@ -102,17 +102,17 @@ const FilterPageView: React.FC<IProps> = (props) => {
             : ''}
         </Text>
       </Flex>
-      <Box py='12px' w='full' maxW='320px' position='relative' bgColor='white'>
+      <Box p='12px' w='full' maxW='320px' position='relative' bgColor='white'>
         <InputGroup bgColor='#FAFAFA'>
           <InputLeftElement
             // display={{ base: 'flex', md: 'none' }}
             pointerEvents='none'
-            mt='4px'
+            mt='5px'
             children={<SearchIcon showHover />}
           />
           <Input
             ref={props.inputSearchElement}
-            width='full'
+            width={{ base: 'full', md: '320px' }}
             height={{ base: '41px', md: '49px' }}
             borderColor='transparent'
             onChange={props.handleChangeSearch}
