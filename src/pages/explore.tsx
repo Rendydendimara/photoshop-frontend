@@ -49,6 +49,7 @@ import { useOnClickOutside } from 'usehooks-ts';
 import ListBrandFlowView from 'components/organims/ListBrandFlowView';
 import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
+import Footer from 'components/molecules/Footer';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -511,7 +512,7 @@ const Explore: NextPage = () => {
     if (typeof window !== 'undefined') {
       window.onscroll = function () {
         handleScroll();
-        // checkMLSidebar();
+        checkMLSidebar();
         // console.log('useEffect isFixedPositionSidebar', isFixedPositionSidebar);
       };
     }
@@ -555,7 +556,7 @@ const Explore: NextPage = () => {
   }, []);
 
   return (
-    <Layout showNavbarFooter>
+    <Layout hideFooter={true} showNavbarFooter>
       <Head>
         <title>{APP_NAME} | Explore</title>
         <link rel='icon' href='/favicon.ico' />
@@ -767,7 +768,7 @@ const Explore: NextPage = () => {
               showFilterModule={!filterPageView.flow}
             />
           </Box>
-          <Box zIndex='1000' w='full'>
+          <Box zIndex='1000' w='full' ml={isFixedPositionSidebar ? '60px' : 0}>
             {renderBrand()}
             {listBrand.length > 0 && (
               <BrandReachBottom
@@ -775,6 +776,9 @@ const Explore: NextPage = () => {
                 onRequest={onRequest}
               />
             )}
+            <Center>
+              <Footer />
+            </Center>
           </Box>
         </Flex>
       </AppTemplate>

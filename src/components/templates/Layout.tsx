@@ -18,6 +18,7 @@ interface IProps {
   showInfoBeta?: boolean;
   showNavbarFooter?: boolean;
   disableMaxWidth?: boolean;
+  hideFooter?: boolean;
 }
 
 const Layout: React.FC<IProps> = (props) => {
@@ -148,7 +149,7 @@ const Layout: React.FC<IProps> = (props) => {
             {props.children}
           </Box>
         </main>
-        {props.showNavbarFooter && <Footer />}
+        {props.showNavbarFooter && !props.hideFooter && <Footer />}
 
         <script
           async

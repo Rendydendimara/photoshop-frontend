@@ -162,7 +162,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
             fontSize='12px'
             lineHeight='14px'
           >
-            {props.brand.modules} Module {props.brand.screens} Screen
+            {props.brand.category_id.name}
           </Text>
           {/* <Text
           mt='12px'

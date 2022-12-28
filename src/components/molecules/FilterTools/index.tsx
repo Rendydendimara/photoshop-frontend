@@ -128,13 +128,14 @@ const FilterTools: React.FC<IProps> = (props) => {
       )}
       {props.showFilterModule && (
         <Box
+          width='248px'
           mt='16px'
-          padding='37px 28px'
+          padding='24px 28px'
           boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
           borderRadius='8px'
           backgroundColor='white'
           maxH={{ md: '320px', xl: '400px' }}
-          overflowY='scroll'
+          overflowX='scroll'
           className='styled-scrollbar'
         >
           <Text

@@ -9,9 +9,9 @@ interface IProps {
 const FilterCheckbox: React.FC<IProps> = (props) => {
   return (
     <Box
-      minW={props.width ?? '236px'}
-      padding='37px 28px'
-      maxWidth={props.width ?? '236px'}
+      minW={props.width ?? '248px'}
+      padding='24px 28px'
+      maxWidth={props.width ?? '248px'}
       backgroundColor='white'
       boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
       borderRadius='8px'

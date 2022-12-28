@@ -4,7 +4,10 @@ export interface IBrand {
   brandName: string;
   description: string;
   link: string;
-  category_id: string;
+  category_id: {
+    _id: string;
+    name: string;
+  };
   created_at: string;
   tags: string[];
   updated_at: string;
@@ -40,7 +43,10 @@ export interface IListBrandByFlow {
   brandName: string;
   description: string;
   link: string;
-  category_id: string;
+  category_id: {
+    _id: string;
+    name: string;
+  };
   created_at: string;
   updated_at: null | string;
   images: {
