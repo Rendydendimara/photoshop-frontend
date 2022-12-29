@@ -87,9 +87,9 @@ const GridImage: React.FC<IGridImage> = (props) => {
     <SimpleGrid
       // padding={{ md: 4 }}
       w='full'
-      column={[2, 3, 4]}
+      columns={{ sm: 2, md: 4 }}
       // gap='48px'
-      minChildWidth={{ base: '156px' }}
+      // minChildWidth={{ base: '156px' }}
       gap={{ base: '16px', md: '30px', xl: '40px' }}
       // flexWrap='wrap'
       // justifyContent={{ base: 'center', md: 'initial' }}
@@ -113,7 +113,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
     <Link href={`/brand/${props.brand._id}`}>
       <Box
         mb={{ base: 2, md: 0 }}
-        w={{ base: '156px', md: '192px' }}
+        w={{ base: 'full', md: '192px' }}
         _hover={{ cursor: 'pointer' }}
         ref={hoverRef}
       >

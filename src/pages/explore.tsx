@@ -497,10 +497,13 @@ const Explore: NextPage = () => {
 
   const onClickModule = (name: string) => {
     onChangeFilterFlow({ target: { name: name } });
+    modalFilterMobile.onClose();
   };
   const onClickCategory = (name: string) => {
     onChangeFilterCategory({ target: { name: name } });
+    modalFilterMobile.onClose();
   };
+
   useEffect(() => {
     // Get the navbar
     let navbar: any;
@@ -611,7 +614,7 @@ const Explore: NextPage = () => {
             {/* Category Mobile */}
             <Flex
               w='full'
-              display={{ base: 'flex', md: 'none' }}
+              display={{ base: 'flex', md: 'none !important' }}
               justifyContent='space-between'
               id='filterMobile'
               bgColor='white'
@@ -744,6 +747,9 @@ const Explore: NextPage = () => {
                     fontWeight='500'
                     fontSize='16px'
                     color='#B9B9B9'
+                    display='flex'
+                    alignItems='center'
+                    gap='10px'
                   >
                     Feature
                     {filterBrandByFlow.flows.length > 0 && (

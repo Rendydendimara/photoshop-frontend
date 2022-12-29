@@ -130,52 +130,59 @@ const FilterTools: React.FC<IProps> = (props) => {
         <Box
           width='248px'
           mt='16px'
-          padding='24px 28px'
-          // boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
           borderRadius='8px'
           border='1px solid #EBEBEB'
           backgroundColor='white'
-          maxH={{ md: '320px', xl: '400px' }}
-          overflowX='scroll'
-          className='styled-scrollbar'
+          borderTopRightRadius='2px'
+          borderTopLeftRadius='2px'
         >
           <Text
             fontWeight='700'
             fontSize='14px'
             lineHeight='21px'
             color='#172A3A'
+            padding='24px 28px'
+            pb='0'
           >
             Module
           </Text>
-          <Flex
-            mt='16px'
-            minW={'236px'}
-            maxWidth={'236px'}
-            gap='8px'
-            flexWrap='wrap'
-          >
-            {props.listFlow.map((flow, i) => (
-              <Button
-                _hover={{ cursor: 'pointer' }}
-                p='6px 8px'
-                border='1px solid #172A3A'
-                borderRadius='4px'
-                bgColor={
-                  props.filterBrandByFlow.flows.includes(flow._id)
-                    ? '#004346'
-                    : 'transparent'
-                }
-                color={
-                  props.filterBrandByFlow.flows.includes(flow._id)
-                    ? '#FBFFFE'
-                    : '#172A3A'
-                }
-                onClick={() => onClickModule(flow._id)}
+          <Box pl='28px' pr='14px'>
+            <Box
+              maxH={{ md: '320px', xl: '400px' }}
+              overflowY='scroll'
+              className='styled-scrollbar'
+            >
+              <Flex
+                minW={'236px'}
+                maxWidth={'236px'}
+                gap='8px'
+                pr='14px'
+                flexWrap='wrap'
               >
-                {flow._id}
-              </Button>
-            ))}
-          </Flex>
+                {props.listFlow.map((flow, i) => (
+                  <Button
+                    _hover={{ cursor: 'pointer' }}
+                    p='6px 8px'
+                    border='1px solid #172A3A'
+                    borderRadius='4px'
+                    bgColor={
+                      props.filterBrandByFlow.flows.includes(flow._id)
+                        ? '#004346'
+                        : 'transparent'
+                    }
+                    color={
+                      props.filterBrandByFlow.flows.includes(flow._id)
+                        ? '#FBFFFE'
+                        : '#172A3A'
+                    }
+                    onClick={() => onClickModule(flow._id)}
+                  >
+                    {flow._id}
+                  </Button>
+                ))}
+              </Flex>
+            </Box>
+          </Box>
         </Box>
       )}
     </Box>

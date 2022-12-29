@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/button';
-import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/layout';
+import { Box, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/layout';
 import { AllBrandIcon } from 'components/atoms/icons/all-brand-icon';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
@@ -166,8 +166,9 @@ const Home: NextPage = () => {
             flexDirection={{ base: 'column', md: 'row' }}
             gap={{ base: 0, md: '50px', xl: '100px' }}
           >
-            <Box w={{ base: '100%', md: '700px' }}>
-              <Text
+            <Box w={{ base: '100%', md: '758px' }}>
+              <Heading
+                as='h1'
                 textAlign='left'
                 fontWeight='700'
                 fontSize={{ base: '30px', md: '64px' }}
@@ -175,8 +176,9 @@ const Home: NextPage = () => {
                 mt={{ base: '-45px', md: 0 }}
                 color='#000'
               >
-                Home for Real Design Inspiration
-              </Text>
+                Home for
+                <br /> Real Design Inspiration
+              </Heading>
               <Text
                 // w={{ base: 'initial', md: '430px' }}
                 fontWeight='400'
