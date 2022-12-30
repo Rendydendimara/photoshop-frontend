@@ -11,7 +11,7 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
       mb='84px'
       flexDirection='column'
       mt='250px'
-      w='full'
+      w={{ base: 'full', md: '900px' }}
       alignItems='center'
     >
       <Text

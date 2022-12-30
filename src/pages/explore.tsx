@@ -129,6 +129,70 @@ const Explore: NextPage = () => {
   });
   const [resultSearchBrand, setResultSearchBrand] = useState<ISearchBrand>();
   const btnRef: any = useRef();
+  const [applyFilterMobile, setApplyFilterMobile] = useState<any>({
+    categories: [],
+    flows: [],
+  });
+  const [applyFilterMobileHistory, setApplyFilterMobileHistory] = useState<any>(
+    {
+      categories: [],
+      flows: [],
+    }
+  );
+
+  const onChangeApplyFilterMobile = (
+    type: 'category' | 'flow',
+    value: string
+  ) => {
+    if (type === 'category') {
+      let newCategories: string[] = [];
+      if (applyFilterMobile.categories.includes(value)) {
+        newCategories = applyFilterMobile.categories.filter(
+          (category: string) => category !== value
+        );
+      } else {
+        newCategories = [...applyFilterMobile.categories, value];
+      }
+      if (value === 'all' && newCategories.includes('all')) {
+        setApplyFilterMobile({
+          ...applyFilterMobile,
+          categories: ['all'],
+        });
+      } else {
+        if (newCategories.includes('all')) {
+          newCategories = newCategories.filter((cat) => cat !== 'all');
+        }
+        setApplyFilterMobile({
+          ...applyFilterMobile,
+          categories: newCategories,
+        });
+      }
+    } else {
+      let newFlows: string[] = [];
+      if (applyFilterMobile.flows.includes(value)) {
+        newFlows = applyFilterMobile.flows.filter(
+          (flow: string) => flow !== value
+        );
+      } else {
+        newFlows = [...applyFilterMobile.flows, value];
+      }
+      if (value === 'all' && newFlows.includes('all')) {
+        setApplyFilterMobile({
+          ...applyFilterMobile,
+          flows: ['all'],
+        });
+      } else {
+        if (newFlows.includes('all')) {
+          newFlows = newFlows.filter((cat) => cat !== 'all');
+        }
+        setApplyFilterMobile({
+          ...applyFilterMobile,
+          flows: newFlows,
+        });
+      }
+    }
+  };
+
   const handleClickOutside = () => {
     setOpenMoreCategory(false);
   };
@@ -495,6 +559,31 @@ const Explore: NextPage = () => {
 
   const onRequest = () => {};
 
+  const handleApplyMobileFilter = () => {
+    if (filterPageView.brand) {
+      handleGetListBrand({
+        keyword: [keywordSearch],
+        module: applyFilterMobile.flows,
+        category: applyFilterMobile.categories,
+      });
+    } else {
+      getListBrandByFlow({
+        categories: applyFilterMobile.categories,
+        flows: applyFilterMobile.flows,
+      });
+    }
+    setApplyFilterMobileHistory({
+      categories: applyFilterMobile.categories,
+      flows: applyFilterMobile.flows,
+    });
+    modalFilterMobile.onClose();
+  };
+
+  const onCancelApplyMobileFilter = () => {
+    setApplyFilterMobile(applyFilterMobileHistory);
+    modalFilterMobile.onClose();
+  };
+
   const onClickModule = (name: string) => {
     onChangeFilterFlow({ target: { name: name } });
     modalFilterMobile.onClose();
@@ -590,10 +679,7 @@ const Explore: NextPage = () => {
           gap={{ base: '10px', md: 0 }}
           position='relative'
         >
-          <Box
-            w={{ base: 'initial', md: 'full' }}
-            mt={{ base: '20px', xl: '32px' }}
-          >
+          <Box w='full' mt={{ base: '20px', xl: '32px' }}>
             <Flex
               display={{ base: 'none', md: 'initial' }}
               id='categoryDeskop'
@@ -619,17 +705,23 @@ const Explore: NextPage = () => {
               id='filterMobile'
               bgColor='white'
               p='16px'
-              boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
             >
-              <InputGroup width='80%' bgColor='#FAFAFA'>
+              <InputGroup
+                borderRadius='8px'
+                border='1px solid #E8E8E8'
+                width='85%'
+                h='45px'
+                p='12px'
+                display='flex'
+                alignItems='center'
+              >
                 <InputLeftElement
                   // display={{ base: 'flex', md: 'none' }}
                   pointerEvents='none'
-                  mt='4px'
+                  mt='3px'
                   children={<SearchIcon showHover />}
                 />
                 <Input
-                  height={{ base: '41px', md: '49px' }}
                   borderColor='transparent'
                   onChange={handleChangeSearch}
                   borderRadius='12px'
@@ -642,6 +734,10 @@ const Explore: NextPage = () => {
                     color: '#B4C6D4',
                   }}
                   value={keywordSearch}
+                  _focus={{}}
+                  _active={{}}
+                  _hover={{}}
+                  _focusVisible={{}}
                 />
               </InputGroup>
               <IconButton
@@ -658,8 +754,8 @@ const Explore: NextPage = () => {
                       <path
                         d='M9.33348 16.5C9.18924 16.5 9.04888 16.4532 8.93348 16.3667L6.26682 14.3667C6.18402 14.3046 6.11682 14.224 6.07053 14.1315C6.02425 14.0389 6.00015 13.9368 6.00015 13.8333V10.0867L1.32282 4.82467C0.99063 4.44992 0.773736 3.98721 0.698203 3.49216C0.62267 2.9971 0.691713 2.49077 0.897032 2.03401C1.10235 1.57725 1.43521 1.18951 1.8556 0.917377C2.276 0.645248 2.76603 0.500316 3.26682 0.5H12.7335C13.2342 0.500587 13.7241 0.64576 14.1444 0.918071C14.5646 1.19038 14.8972 1.57825 15.1023 2.03506C15.3074 2.49187 15.3763 2.99818 15.3005 3.49316C15.2248 3.98815 15.0078 4.45073 14.6755 4.82533L10.0002 10.0867V15.8333C10.0002 16.0101 9.92991 16.1797 9.80489 16.3047C9.67986 16.4298 9.51029 16.5 9.33348 16.5V16.5ZM7.33348 13.5L8.66682 14.5V9.83333C8.66695 9.67011 8.72697 9.5126 8.83548 9.39067L13.6808 3.93933C13.8424 3.75672 13.9478 3.53136 13.9844 3.2903C14.0211 3.04924 13.9874 2.80274 13.8873 2.58037C13.7873 2.35801 13.6252 2.16924 13.4206 2.03673C13.2159 1.90421 12.9773 1.83359 12.7335 1.83333H3.26682C3.02312 1.8337 2.7847 1.90436 2.58015 2.03684C2.37561 2.16932 2.21362 2.358 2.11362 2.58023C2.01362 2.80247 1.97985 3.04884 2.01637 3.28979C2.05288 3.53074 2.15813 3.75604 2.31948 3.93867L7.16548 9.39067C7.27376 9.5127 7.33353 9.67019 7.33348 9.83333V13.5Z'
                         fill={
-                          filterBrandByFlow.categories.length > 0 ||
-                          filterBrandByFlow.flows.length > 0
+                          applyFilterMobile.categories.length > 0 ||
+                          applyFilterMobile.flows.length > 0
                             ? '#FBFFFE'
                             : '#374957'
                         }
@@ -679,8 +775,8 @@ const Explore: NextPage = () => {
                 }
                 variant='outline'
                 bgColor={
-                  filterBrandByFlow.categories.length > 0 ||
-                  filterBrandByFlow.flows.length > 0
+                  applyFilterMobile.categories.length > 0 ||
+                  applyFilterMobile.flows.length > 0
                     ? '#09BC8A'
                     : '#ECECEC'
                 }
@@ -696,7 +792,7 @@ const Explore: NextPage = () => {
         <Drawer
           isOpen={modalFilterMobile.isOpen}
           placement='bottom'
-          onClose={() => modalFilterMobile.onClose()}
+          onClose={onCancelApplyMobileFilter}
           finalFocusRef={btnRef}
         >
           <DrawerOverlay />
@@ -723,7 +819,7 @@ const Explore: NextPage = () => {
                     color='#B9B9B9'
                   >
                     Categories
-                    {filterBrandByFlow.categories.length > 0 && (
+                    {applyFilterMobile.categories.length > 0 && (
                       <Flex
                         width='23px'
                         height='23px'
@@ -735,7 +831,7 @@ const Explore: NextPage = () => {
                         fontSize='10px'
                         color='#FCFCFC'
                       >
-                        {filterBrandByFlow.categories.length}
+                        {applyFilterMobile.categories.length}
                       </Flex>
                     )}
                   </Tab>
@@ -752,7 +848,7 @@ const Explore: NextPage = () => {
                     gap='10px'
                   >
                     Feature
-                    {filterBrandByFlow.flows.length > 0 && (
+                    {applyFilterMobile.flows.length > 0 && (
                       <Flex
                         width='23px'
                         height='23px'
@@ -764,7 +860,7 @@ const Explore: NextPage = () => {
                         fontSize='10px'
                         color='#FCFCFC'
                       >
-                        {filterBrandByFlow.flows.length}
+                        {applyFilterMobile.flows.length}
                       </Flex>
                     )}
                   </Tab>
@@ -780,7 +876,7 @@ const Explore: NextPage = () => {
                         <Button
                           key={i}
                           bgColor={
-                            filterBrandByFlow.categories.includes(category.name)
+                            applyFilterMobile.categories.includes(category.name)
                               ? '#07A377'
                               : '#EFEFEF'
                           }
@@ -789,11 +885,13 @@ const Explore: NextPage = () => {
                           fontWeight='400'
                           fontSize='12px'
                           color={
-                            filterBrandByFlow.categories.includes(category.name)
+                            applyFilterMobile.categories.includes(category.name)
                               ? '#FBFFFE'
                               : '#172A3A'
                           }
-                          onClick={() => onClickCategory(category.name)}
+                          onClick={() =>
+                            onChangeApplyFilterMobile('category', category.name)
+                          }
                         >
                           {category.name}
                         </Button>
@@ -810,7 +908,7 @@ const Explore: NextPage = () => {
                         <Button
                           key={i}
                           bgColor={
-                            filterBrandByFlow.flows.includes(flow._id)
+                            applyFilterMobile.flows.includes(flow._id)
                               ? '#07A377'
                               : '#EFEFEF'
                           }
@@ -819,11 +917,13 @@ const Explore: NextPage = () => {
                           fontWeight='400'
                           fontSize='12px'
                           color={
-                            filterBrandByFlow.flows.includes(flow._id)
+                            applyFilterMobile.flows.includes(flow._id)
                               ? '#FBFFFE'
                               : '#172A3A'
                           }
-                          onClick={() => onClickModule(flow._id)}
+                          onClick={() =>
+                            onChangeApplyFilterMobile('flow', flow._id)
+                          }
                         >
                           {flow._id}
                         </Button>
@@ -841,6 +941,7 @@ const Explore: NextPage = () => {
                 borderRadius='12px'
                 fontWeight='500'
                 fontSize='20px'
+                onClick={handleApplyMobileFilter}
               >
                 Apply
               </Button>
@@ -869,15 +970,18 @@ const Explore: NextPage = () => {
             Apps
           </Text>
         </Box>
-        <Flex
-          flexDirection={{ base: 'column', md: 'row' }}
-          mt={{ base: '32px', md: 0 }}
-          gap='52px'
+        <Box
+          // flexDirection={{ base: 'column', md: 'row' }}
+          // mt={{ base: '32px', md: 0 }}
+          // gap='52px'
+          position='relative'
         >
           <Box
-            width='236px'
+            width='248px'
             display={{ base: 'none', md: 'initial' }}
-            height='500px'
+            // height={{ md: '300px', '2xl': '500px' }}
+            // bgColor='red'
+            minW='236px'
           >
             <FilterTools
               refSidebar={refSidebar}
@@ -894,9 +998,12 @@ const Explore: NextPage = () => {
             />
           </Box>
           <Box
+            position={{ base: 'initial', md: 'absolute' }}
             zIndex='1000'
-            w='full'
-            ml={{ base: 0, md: isFixedPositionSidebar ? '60px' : 0 }}
+            w={{ base: 'full', md: '900px' }}
+            left='300px'
+            top='0'
+            // ml={{ base: 0, md: isFixedPositionSidebar ? '60px' : 0 }}
           >
             {renderBrand()}
             {listBrand.length > 0 && (
@@ -909,7 +1016,7 @@ const Explore: NextPage = () => {
               <Footer />
             </Center>
           </Box>
-        </Flex>
+        </Box>
         <Center display={{ base: 'flex', md: 'none' }}>
           <Flex
             p='8px 16px'

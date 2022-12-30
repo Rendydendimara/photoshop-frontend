@@ -13,9 +13,9 @@ const FilterCheckbox: React.FC<IProps> = (props) => {
       maxWidth={props.width ?? '248px'}
       backgroundColor='white'
       borderRadius='8px'
-      border='1px solid #EBEBEB'
-      borderTopRightRadius='2px'
-      borderTopLeftRadius='2px'
+      border='2px solid #EBEBEB'
+      // borderTopRightRadius='2px'
+      // borderTopLeftRadius='2px'
     >
       <Text
         padding='24px 28px'
@@ -28,7 +28,7 @@ const FilterCheckbox: React.FC<IProps> = (props) => {
         {props.labelName}
       </Text>
       <Box
-        maxH={{ md: '320px', xl: '400px' }}
+        maxH={{ md: '290px', '2xl': '400px' }}
         overflowY='scroll'
         className='styled-scrollbar'
         padding='24px 28px'

@@ -103,20 +103,26 @@ const FilterPageView: React.FC<IProps> = (props) => {
         </Text>
       </Flex>
       <Box p='12px' w='full' maxW='320px' position='relative' bgColor='white'>
-        <InputGroup bgColor='#FAFAFA'>
+        <InputGroup
+          borderRadius='8px'
+          h='53px'
+          p='16px 12px'
+          bgColor='#FAFAFA'
+          display='flex'
+          alignItems='center'
+        >
           <InputLeftElement
+            mt='5px'
             // display={{ base: 'flex', md: 'none' }}
             pointerEvents='none'
-            mt='5px'
             children={<SearchIcon showHover />}
           />
           <Input
             ref={props.inputSearchElement}
             width={{ base: 'full', md: '320px' }}
-            height={{ base: '41px', md: '49px' }}
+            // height={{ base: '41px', md: '49px' }}
             borderColor='transparent'
             onChange={props.handleChangeSearch}
-            borderRadius='12px'
             onKeyDown={props.handleKeyOnDownKeyword}
             placeholder='Ex Gojek, Cart, or Fashion'
             _placeholder={{
@@ -125,6 +131,10 @@ const FilterPageView: React.FC<IProps> = (props) => {
               lineHeight: '21px',
               color: '#91A5B6',
             }}
+            _focus={{}}
+            _active={{}}
+            _hover={{}}
+            _focusVisible={{}}
             value={props.value}
             onFocus={onFocusInput}
           />

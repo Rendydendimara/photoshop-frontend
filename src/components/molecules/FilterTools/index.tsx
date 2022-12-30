@@ -30,7 +30,7 @@ const FilterTools: React.FC<IProps> = (props) => {
     props.onChangeFilterFlow({ target: { name: name } });
   };
   return (
-    <Box ref={props.refSidebar} id='sidebarContainer'>
+    <Box ref={props.refSidebar} className='stickySidebar' id='sidebarContainer'>
       <FilterCheckbox labelName='Categories'>
         {props.listCategory.map((category, i) => (
           <CheckboxItem
@@ -131,10 +131,10 @@ const FilterTools: React.FC<IProps> = (props) => {
           width='248px'
           mt='16px'
           borderRadius='8px'
-          border='1px solid #EBEBEB'
+          border='2px solid #EBEBEB'
           backgroundColor='white'
-          borderTopRightRadius='2px'
-          borderTopLeftRadius='2px'
+          // borderTopRightRadius='2px'
+          // borderTopLeftRadius='2px'
         >
           <Text
             fontWeight='700'
@@ -148,7 +148,7 @@ const FilterTools: React.FC<IProps> = (props) => {
           </Text>
           <Box pl='28px' pr='14px'>
             <Box
-              maxH={{ md: '320px', xl: '400px' }}
+              maxH={{ md: '290px', '2xl': '400px' }}
               overflowY='scroll'
               className='styled-scrollbar'
             >

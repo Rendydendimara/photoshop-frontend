@@ -66,7 +66,7 @@ const ListBrand: React.FC<IProps> = (props) => {
   }, [props.listBrand]);
 
   return (
-    <Box>
+    <Box w='full'>
       {dataBase.map((brandBase: any, i: any) => (
         <Box key={i}>
           {renderItemBrand(brandBase)}
@@ -90,7 +90,7 @@ const GridImage: React.FC<IGridImage> = (props) => {
       columns={{ sm: 2, md: 4 }}
       // gap='48px'
       // minChildWidth={{ base: '156px' }}
-      gap={{ base: '16px', md: '30px', xl: '40px' }}
+      gap={{ base: '16px', md: '30px', xl: '44px' }}
       // flexWrap='wrap'
       // justifyContent={{ base: 'center', md: 'initial' }}
     >
