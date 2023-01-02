@@ -10,12 +10,12 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
     <Flex
       mb='84px'
       flexDirection='column'
-      mt='250px'
+      mt={{ base: '55px', md: '250px' }}
       w={{ base: 'full', md: '900px' }}
       alignItems='center'
     >
       <Text
-        mb='48px'
+        mb='69px'
         fontWeight='500'
         fontSize={{ base: '24px', md: '32px' }}
         lineHeight={{ base: '28px', md: '38px' }}

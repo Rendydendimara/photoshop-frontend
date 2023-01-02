@@ -161,7 +161,6 @@ const Compare: NextPage = () => {
     if (search.length === 0 && filterBrand.categories.length === 0) {
       return listBrandCompetitorStatic;
     } else {
-      console.log('filterBrand.categories', filterBrand.categories);
       const tempBrand = filter(listBrandCompetitorStatic, (brand: IBrand) => {
         let passFilter: boolean[] = [];
 

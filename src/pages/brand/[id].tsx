@@ -72,7 +72,6 @@ const BrandIndex: NextPage = () => {
 
   const onChangeFilterContent = (e: any) => {
     let newFilter: any[] = [];
-    console.log(e);
     if (filterContent.includes(e.target.name)) {
       newFilter = filterContent.filter((flow) => flow !== e.target.name);
     } else {

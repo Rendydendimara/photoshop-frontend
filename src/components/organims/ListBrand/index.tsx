@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/button';
 import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
@@ -108,7 +109,7 @@ interface BrandItem {
 const BrandItem: React.FC<BrandItem> = (props) => {
   const hoverRef = useRef(null);
   const isHover = useHover(hoverRef);
-
+  const [isMobile] = useMediaQuery('(max-width: 600px)');
   return (
     <Link href={`/brand/${props.brand._id}`}>
       <Box
@@ -120,7 +121,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
         <Flex
           justifyContent='center'
           alignItems='center'
-          height='152px'
+          height='115px'
           borderRadius='12px'
           border={isHover ? '1px solid #E8E8E8' : '1px solid #EFEFEF'}
           bgColor='#FBFBFB'
@@ -139,7 +140,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
             }
             alt='shoope logo'
             width={{ base: '144px', md: '144px' }}
-            height='153px'
+            height='115px'
             objectFit='contain'
             objectPosition='center'
           />
@@ -162,7 +163,9 @@ const BrandItem: React.FC<BrandItem> = (props) => {
             fontSize='12px'
             lineHeight='14px'
           >
-            {props.brand.category_id.name}
+            {isMobile
+              ? `${props.brand.modules} Module ${props.brand.screens} Screen`
+              : props.brand.category_id.name}
           </Text>
           {/* <Text
           mt='12px'

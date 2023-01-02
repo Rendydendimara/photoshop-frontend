@@ -1,3 +1,4 @@
+import { every, filter, includes, some } from 'lodash';
 import { Button, IconButton } from '@chakra-ui/button';
 import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
@@ -98,6 +99,8 @@ const Explore: NextPage = () => {
   const refCategory = useRef(null);
   const refSidebar: any = useRef(null);
   const [keywordSearch, setKeywordSearch] = useState('');
+  const [keywordSearchFilterMobile, setKeywordSearchFilterMobile] =
+    useState('');
   const [openMoreCategory, setOpenMoreCategory] = useState(false);
   const [loadingGetBrand, setLoadingGetBrand] = useState(false);
   const [isFixedPositionSidebar, setIsFixedPositionSidebar] = useState(false);
@@ -359,6 +362,56 @@ const Explore: NextPage = () => {
       clearTimeout(timer);
     }
     timer = setTimeout(handleSearchingBrand, 500, e.target.value);
+  };
+
+  const handleChangeSearchFilterMobile = (e: any) => {
+    setKeywordSearchFilterMobile(e.target.value);
+  };
+
+  const filteredOptionsFilterMobile = (type: 'categories' | 'flow') => {
+    if (type === 'categories') {
+      if (keywordSearchFilterMobile.length > 0) {
+        const tempCategory = filter(listCategory, (category: ICategory) => {
+          let passFilter: boolean[] = [];
+
+          const haystack = [category.name.toLowerCase()];
+          passFilter.push(
+            some(haystack, (el) => includes(el, keywordSearchFilterMobile))
+          );
+
+          // FINAL CHECKING
+          if (passFilter.length > 0) {
+            return every(passFilter, Boolean);
+          } else {
+            return true;
+          }
+        });
+        return tempCategory;
+      } else {
+        return listCategory;
+      }
+    } else {
+      if (keywordSearchFilterMobile.length > 0) {
+        const tempFlow = filter(listFlow, (flow: IListFlow) => {
+          let passFilter: boolean[] = [];
+
+          const haystack = [flow._id.toLowerCase()];
+          passFilter.push(
+            some(haystack, (el) => includes(el, keywordSearchFilterMobile))
+          );
+
+          // FINAL CHECKING
+          if (passFilter.length > 0) {
+            return every(passFilter, Boolean);
+          } else {
+            return true;
+          }
+        });
+        return tempFlow;
+      } else {
+        return listFlow;
+      }
+    }
   };
 
   const onClickFilterV2 = async (
@@ -865,69 +918,148 @@ const Explore: NextPage = () => {
                     )}
                   </Tab>
                 </TabList>
-                <TabPanels mt='16px'>
+                <TabPanels mt='40px'>
                   <TabPanel
-                    maxH='297px'
+                    maxH='200px'
+                    p='0'
                     overflowY='scroll'
                     className='styled-scrollbar'
                   >
-                    <Flex gap='10px' flexWrap='wrap'>
-                      {listCategory.map((category, i) => (
-                        <Button
-                          key={i}
-                          bgColor={
-                            applyFilterMobile.categories.includes(category.name)
-                              ? '#07A377'
-                              : '#EFEFEF'
-                          }
-                          borderRadius='8px'
-                          padding='8px 12px'
-                          fontWeight='400'
-                          fontSize='12px'
-                          color={
-                            applyFilterMobile.categories.includes(category.name)
-                              ? '#FBFFFE'
-                              : '#172A3A'
-                          }
-                          onClick={() =>
-                            onChangeApplyFilterMobile('category', category.name)
-                          }
-                        >
-                          {category.name}
-                        </Button>
-                      ))}
+                    <InputGroup
+                      borderRadius='8px'
+                      h='53px'
+                      p='16px 12px'
+                      bgColor='#FAFAFA'
+                      display='flex'
+                      alignItems='center'
+                    >
+                      <InputLeftElement
+                        mt='5px'
+                        // display={{ base: 'flex', md: 'none' }}
+                        pointerEvents='none'
+                        children={<SearchIcon showHover />}
+                      />
+                      <Input
+                        width={{ base: 'full', md: '320px' }}
+                        // height={{ base: '41px', md: '49px' }}
+                        borderColor='transparent'
+                        onChange={handleChangeSearchFilterMobile}
+                        placeholder='Ex Gojek, Cart, or Fashion'
+                        _placeholder={{
+                          fontWeight: 400,
+                          fontSize: '14px',
+                          lineHeight: '21px',
+                          color: '#91A5B6',
+                        }}
+                        _focus={{}}
+                        _active={{}}
+                        _hover={{}}
+                        _focusVisible={{}}
+                        value={keywordSearchFilterMobile}
+                      />
+                    </InputGroup>
+                    <Flex mt='12px' gap='10px' flexWrap='wrap'>
+                      {filteredOptionsFilterMobile('categories').map(
+                        (category: any, i: number) => (
+                          <Button
+                            key={i}
+                            bgColor={
+                              applyFilterMobile.categories.includes(
+                                category.name
+                              )
+                                ? '#07A377'
+                                : '#EFEFEF'
+                            }
+                            borderRadius='8px'
+                            padding='8px 12px'
+                            fontWeight='400'
+                            fontSize='12px'
+                            color={
+                              applyFilterMobile.categories.includes(
+                                category.name
+                              )
+                                ? '#FBFFFE'
+                                : '#172A3A'
+                            }
+                            onClick={() =>
+                              onChangeApplyFilterMobile(
+                                'category',
+                                category.name
+                              )
+                            }
+                          >
+                            {category.name}
+                          </Button>
+                        )
+                      )}
                     </Flex>
                   </TabPanel>
                   <TabPanel
-                    maxH='297px'
+                    maxH='200px'
+                    p='0'
                     overflowY='scroll'
                     className='styled-scrollbar'
                   >
-                    <Flex gap='10px' flexWrap='wrap'>
-                      {listFlow.map((flow, i) => (
-                        <Button
-                          key={i}
-                          bgColor={
-                            applyFilterMobile.flows.includes(flow._id)
-                              ? '#07A377'
-                              : '#EFEFEF'
-                          }
-                          borderRadius='8px'
-                          padding='8px 12px'
-                          fontWeight='400'
-                          fontSize='12px'
-                          color={
-                            applyFilterMobile.flows.includes(flow._id)
-                              ? '#FBFFFE'
-                              : '#172A3A'
-                          }
-                          onClick={() =>
-                            onChangeApplyFilterMobile('flow', flow._id)
-                          }
-                        >
-                          {flow._id}
-                        </Button>
-                      ))}
+                    <InputGroup
+                      borderRadius='8px'
+                      h='53px'
+                      p='16px 12px'
+                      bgColor='#FAFAFA'
+                      display='flex'
+                      alignItems='center'
+                    >
+                      <InputLeftElement
+                        mt='5px'
+                        // display={{ base: 'flex', md: 'none' }}
+                        pointerEvents='none'
+                        children={<SearchIcon showHover />}
+                      />
+                      <Input
+                        width={{ base: 'full', md: '320px' }}
+                        // height={{ base: '41px', md: '49px' }}
+                        borderColor='transparent'
+                        onChange={handleChangeSearchFilterMobile}
+                        placeholder='Ex Gojek, Cart, or Fashion'
+                        _placeholder={{
+                          fontWeight: 400,
+                          fontSize: '14px',
+                          lineHeight: '21px',
+                          color: '#91A5B6',
+                        }}
+                        _focus={{}}
+                        _active={{}}
+                        _hover={{}}
+                        _focusVisible={{}}
+                        value={keywordSearchFilterMobile}
+                      />
+                    </InputGroup>
+                    <Flex mt='12px' gap='10px' flexWrap='wrap'>
+                      {filteredOptionsFilterMobile('flow').map(
+                        (flow: any, i: number) => (
+                          <Button
+                            key={i}
+                            bgColor={
+                              applyFilterMobile.flows.includes(flow._id)
+                                ? '#07A377'
+                                : '#EFEFEF'
+                            }
+                            borderRadius='8px'
+                            padding='8px 12px'
+                            fontWeight='400'
+                            fontSize='12px'
+                            color={
+                              applyFilterMobile.flows.includes(flow._id)
+                                ? '#FBFFFE'
+                                : '#172A3A'
+                            }
+                            onClick={() =>
+                              onChangeApplyFilterMobile('flow', flow._id)
+                            }
+                          >
+                            {flow._id}
+                          </Button>
+                        )
+                      )}
                     </Flex>
                   </TabPanel>
                 </TabPanels>

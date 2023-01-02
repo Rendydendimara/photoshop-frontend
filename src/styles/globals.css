@@ -118,6 +118,19 @@ a {
   border-radius: 0.5em;
 }
 
+.hide-styled-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.hide-styled-scrollbar::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 0.5em;
+}
+.hide-styled-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0.5em;
+}
+
 .stickyNavbarHome {
   position: fixed;
   display: flex !important;
