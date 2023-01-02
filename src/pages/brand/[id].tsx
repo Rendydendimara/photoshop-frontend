@@ -262,14 +262,18 @@ const BrandIndex: NextPage = () => {
       </Head>
       <AppTemplate
         px={{
-          sm: '16px',
+          sm: '0',
           md: '0',
           xl: '0',
         }}
       >
         <Box mt='22px' mb='68px'>
           {/* Brand Info */}
-          <Center bgColor='white' flexDirection='column'>
+          <Center
+            px={{ base: '16', md: 0 }}
+            bgColor='white'
+            flexDirection='column'
+          >
             <ImageChakra
               src={
                 brand?.brandImage === undefined ||
@@ -380,6 +384,7 @@ const BrandIndex: NextPage = () => {
             // left="20%"
             overflowX='hidden'
             maxW={screen.width + 30}
+            pl={{ base: '16px', md: 0 }}
           >
             {filterBrandImages().map((imgBrand, i) => (
               <Box key={i}>
@@ -394,7 +399,6 @@ const BrandIndex: NextPage = () => {
           </Box>
           {/* AMBIL YANG DARI SINI  */}
         </Box>
-
         <Modal onClose={onClose} isOpen={isOpen} isCentered size='6xl'>
           <ModalOverlay bg='rgba(9, 9, 9, 0.8)' />
           <ModalContent
@@ -433,6 +437,16 @@ const BrandIndex: NextPage = () => {
             </ModalBody>
           </ModalContent>
         </Modal>
+        <Button
+          onClick={handleCompare}
+          colorScheme='green'
+          position='fixed'
+          bottom='20px'
+          right='20px'
+          size='lg'
+        >
+          Compare
+        </Button>
       </AppTemplate>
     </Layout>
   );

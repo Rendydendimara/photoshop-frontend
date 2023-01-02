@@ -2,10 +2,21 @@ import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image } from '@chakra-ui/image';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
-import { Box, Center, Flex, SimpleGrid, Text } from '@chakra-ui/layout';
+import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
+import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
+import {
+  Box,
+  Center,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Text,
+} from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
 import { ApiGetListBrand } from 'api/brand';
 import BrandItemModal from 'components/molecules/BrandItemModal';
+import FilterCheckbox from 'components/molecules/FilterCheckbox';
+import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
@@ -20,6 +31,8 @@ import { useEffect, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlinePlusSm } from 'react-icons/hi';
 import { RiSearchLine } from 'react-icons/ri';
+import { ApiGetListCategory } from 'api/category';
+import { ICategory } from 'interfaces/ICategory';
 
 let searchTimer: any;
 const Compare: NextPage = () => {
@@ -39,10 +52,12 @@ const Compare: NextPage = () => {
   const [listBrandCompetitorStatic, setListBrandCompetitorStatic] = useState<
     IBrand[]
   >([]);
-  // setLocal(LOCAL_COMPARE[1].brandId, brandId);
-  // setLocal(LOCAL_COMPARE[1].listModule, listCheckedModule);
-  // console.log(getLocalCookie(LOCAL_COMPARE[1].brandId));
-  // console.log(getLocalCookie(LOCAL_COMPARE[1].listModule));
+  const [listCategory, setListCategory] = useState<ICategory[]>([]);
+  const [filterBrand, setFilterBrand] = useState<{
+    categories: string[];
+  }>({
+    categories: [],
+  });
 
   const handleAddBrandCompare = (brandId: string, fieldName: string) => {
     setListIdBrandCompareObject({
@@ -128,6 +143,7 @@ const Compare: NextPage = () => {
         } else {
           passFilter.push(true);
         }
+        // CATEGORIES filterBrand.categories
         // FINAL CHECKING
         if (passFilter.length > 0) {
           return every(passFilter, Boolean);
@@ -141,7 +157,106 @@ const Compare: NextPage = () => {
     }
   };
 
+  const filteredListBrand = () => {
+    if (search.length === 0 && filterBrand.categories.length === 0) {
+      return listBrandCompetitorStatic;
+    } else {
+      console.log('filterBrand.categories', filterBrand.categories);
+      const tempBrand = filter(listBrandCompetitorStatic, (brand: IBrand) => {
+        let passFilter: boolean[] = [];
+
+        // FILTER
+        if (
+          filterBrand.categories.length > 0 &&
+          filterBrand.categories.includes('all') === false
+        ) {
+          passFilter.push(
+            filterBrand.categories.includes(brand.category_id._id)
+          );
+        } else {
+          passFilter.push(true);
+        }
+
+        // SEARCH
+        if (search.length > 0) {
+          const haystack = [brand.brandName.toLowerCase()];
+          passFilter.push(some(haystack, (el) => includes(el, search)));
+        } else {
+          passFilter.push(true);
+        }
+
+        // FINAL CHECKING
+        if (passFilter.length > 0) {
+          return every(passFilter, Boolean);
+        } else {
+          return true;
+        }
+      });
+      return tempBrand;
+    }
+  };
+
+  const onChangeFilterCategory = (e: any) => {
+    let newCategories: any[] = [];
+    if (filterBrand.categories.includes(e.target.name)) {
+      newCategories = filterBrand.categories.filter(
+        (flow) => flow !== e.target.name
+      );
+    } else {
+      newCategories = [...filterBrand.categories, e.target.name];
+    }
+    if (e.target.name === 'all' && newCategories.includes('all')) {
+      setFilterBrand({
+        ...filterBrand,
+        categories: ['all'],
+      });
+    } else {
+      if (newCategories.includes('all')) {
+        newCategories = newCategories.filter((cat) => cat !== 'all');
+      }
+      setFilterBrand({
+        ...filterBrand,
+        categories: newCategories,
+      });
+    }
+  };
+
+  const handleGetListCategory = async () => {
+    const res = await ApiGetListCategory();
+    if (res.status === 200) {
+      let data = res.data.data;
+      let dataResult: any = data;
+      let countTotal = 0;
+      if (data.length > 0) {
+        data.forEach((dt: any) => {
+          countTotal += dt.totalBrand;
+        });
+        dataResult = [
+          {
+            name: 'all',
+            _id: 'all',
+            created_at: '',
+            totalBrand: countTotal,
+          },
+          ...data,
+        ];
+      }
+      setListCategory(dataResult);
+    }
+  };
+
+  const renderBrandName = (name: string) => {
+    let searchString = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // let paragraph = document.getElementById("paragraph");
+    // textToSearch = search.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+
+    let pattern = new RegExp(`${searchString}`, 'gi');
+    return name.replace(pattern, (match) => `<b>${match}</b>`);
+    // paragraph.innerHTML = paragraph.textContent.replace(pattern, match => `<mark>${match}</mark>`)
+  };
+
   useEffect(() => {
+    handleGetListCategory();
     let brandIdLocal = getLocalCookie(LOCAL_COMPARE[1].brandId);
     let temp = [];
     if (brandIdLocal) {
@@ -173,9 +288,9 @@ const Compare: NextPage = () => {
           h='90vh'
         >
           <Box mb='44px'>
-            <Text color='#172A3A' fontWeight='600' fontSize='48px'>
+            <Heading as='h2' color='#172A3A' fontWeight='600' fontSize='48px'>
               Compare Competitor
-            </Text>
+            </Heading>
           </Box>
           <Flex alignItems='flex-start' gap='80px'>
             {/* {renderListBrandSelected()} */}
@@ -202,7 +317,8 @@ const Compare: NextPage = () => {
             )}
             {!listIdBrandCompareObject.brand1 && (
               <Flex
-                boxShadow='md'
+                boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                borderRadius='12px'
                 justifyContent='center'
                 alignItems='center'
                 minW='240px'
@@ -212,8 +328,8 @@ const Compare: NextPage = () => {
               >
                 <AiOutlinePlus size='30' fill='#172A3A' />
                 <Text
-                  fontWeight='500'
-                  fontSize='16px'
+                  fontWeight='400'
+                  fontSize='14px'
                   color='#172A3A'
                   lineHeight='19px'
                 >
@@ -223,7 +339,8 @@ const Compare: NextPage = () => {
             )}
             {!listIdBrandCompareObject.brand2 && (
               <Flex
-                boxShadow='md'
+                boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                borderRadius='12px'
                 justifyContent='center'
                 alignItems='center'
                 minW='240px'
@@ -233,8 +350,8 @@ const Compare: NextPage = () => {
               >
                 <AiOutlinePlus size='30' fill='#172A3A' />
                 <Text
-                  fontWeight='500'
-                  fontSize='16px'
+                  fontWeight='400'
+                  fontSize='14px'
                   color='#172A3A'
                   lineHeight='19px'
                 >
@@ -245,7 +362,8 @@ const Compare: NextPage = () => {
             {!listIdBrandCompareObject.brand3 && (
               <Flex
                 onClick={() => handleOpenBrand('brand3')}
-                boxShadow='md'
+                boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                borderRadius='12px'
                 justifyContent='center'
                 alignItems='center'
                 minW='240px'
@@ -254,8 +372,8 @@ const Compare: NextPage = () => {
               >
                 <AiOutlinePlus size='30' fill='#172A3A' />
                 <Text
-                  fontWeight='500'
-                  fontSize='16px'
+                  fontWeight='400'
+                  fontSize='14px'
                   color='#172A3A'
                   lineHeight='19px'
                 >
@@ -270,12 +388,13 @@ const Compare: NextPage = () => {
             > */}
             <Button
               disabled={!checkDisable().disable}
-              leftIcon={<HiOutlinePlusSm />}
               color='#FBFFFE'
               fontWeight='600'
               variant='solid'
               w='full'
               bgColor='#09BC8A'
+              minW='224px'
+              _hover={{}}
               h='40px'
               onClick={handleCompare}
             >
@@ -300,88 +419,132 @@ const Compare: NextPage = () => {
           onClose={onClose}
           isOpen={isOpen}
           isCentered
-          size='3xl'
+          size='5xl'
         >
           <ModalOverlay />
           <ModalContent p='0' maxH='90vh'>
-            <ModalBody mt='15px' w='full' overflowY='scroll'>
-              <Flex
-                gap='10px'
-                alignItems='center'
-                mb='8'
-                flexDirection='column'
+            <ModalBody
+              p='40px'
+              w='full'
+              overflowY='scroll'
+              className='styled-scrollbar'
+            >
+              <Text
+                textAlign='center'
+                fontWeight='600'
+                fontSize='20px'
+                color='#172A3A'
               >
-                <Text fontWeight='500' fontSize='16px' color='#172A3A'>
-                  Search Competitor
-                </Text>
-                <Center>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents='none'
-                      children={<RiSearchLine color='#B4C6D5' />}
-                    />
-                    <Input
-                      width='365px'
-                      height='41px'
-                      border='2px solid #172A3A !important'
-                      borderRadius='8px'
-                      placeholder='Ex Gojek, Cart, or Fashion'
-                      _placeholder={{
-                        fontWeight: 300,
-                        fontSize: '14px',
-                        color: '#B4C6D5',
-                      }}
-                      value={search}
-                      onChange={onChangeSearch}
-                    />
-                  </InputGroup>
-                </Center>
-              </Flex>
-              <SimpleGrid mt='17px' columns={[1, 3, 4]} spacing='12px'>
-                {listBrandCompetitor.map((brand, i) => (
-                  <Box
-                    key={i}
-                    boxShadow='md'
-                    p='2'
-                    _hover={{ cursor: 'pointer' }}
-                    onClick={() => handleAddBrandCompare(brand._id, fieldAdd)}
-                  >
-                    <Image
-                      src={
-                        brand.brandImage === undefined ||
-                        brand.brandImage.length === 0
-                          ? './images/shoope.png'
-                          : brand.brandImage
-                      }
-                      alt='shoope logo'
-                      // width={{ base: 'full', md: '120px' }}
-                      width={{ base: '144px', md: '144px' }}
-                      height='153px'
-                      objectFit='contain'
-                      objectPosition='center'
-                    />
-                    <Text
-                      fontWeight='700'
-                      fontSize='14px'
-                      lineHeight='24px'
-                      textAlign='center'
-                      mt='4'
-                    >
-                      {brand.brandName}
-                    </Text>{' '}
-                    <Text
-                      fontWeight='500'
-                      fontSize='12px'
-                      // lineHeight='24px'
-                      textAlign='center'
-                      mt='4px'
-                      color='#B4C6D4'
-                    >
-                      {brand?.modules} Module {brand?.screens} Screen
-                    </Text>
+                Search Competitor
+              </Text>
+              <Box mt='28px' w='full'>
+                <InputGroup
+                  w='full'
+                  border=' 0.5px solid #EBEBEB'
+                  borderRadius='8px'
+                  bgColor='#FAFAFA'
+                >
+                  <InputLeftElement
+                    mt='7px'
+                    pointerEvents='none'
+                    children={<RiSearchLine color='#B4C6D5' />}
+                  />
+                  <Input
+                    w='full'
+                    height='53px'
+                    border='unset'
+                    placeholder='Ex Gojek, Cart, or Fashion'
+                    _placeholder={{
+                      fontWeight: 400,
+                      fontSize: '14px',
+                      color: '#AEC2D2',
+                    }}
+                    value={search}
+                    onChange={onChangeSearch}
+                  />
+                </InputGroup>
+                <Flex gap='24px' mt='20px' alignItems='flex-start'>
+                  <Box w='30%'>
+                    <FilterCheckbox width='full' labelName='Categories'>
+                      {listCategory.map((category, i) => (
+                        <CheckboxItem
+                          key={i}
+                          marginBtm={i + 1 === listCategory.length ? 0 : '12px'}
+                          icon={
+                            filterBrand.categories.includes(category._id) ? (
+                              <CheckboxCheckedIcon />
+                            ) : (
+                              <CheckboxIcon />
+                            )
+                          }
+                          value={category._id}
+                          onChange={onChangeFilterCategory}
+                          fontWeight={
+                            filterBrand.categories.includes(category._id)
+                              ? '600'
+                              : '400'
+                          }
+                          name={category.name}
+                          colorCount={
+                            filterBrand.categories.includes(category._id)
+                              ? '#172A3A'
+                              : '#8FA2B1'
+                          }
+                          totalCount={category.totalBrand}
+                        />
+                      ))}
+                    </FilterCheckbox>
                   </Box>
-                ))}
-              </SimpleGrid>
+                  <SimpleGrid w='70%' columns={[1, 3, 4]} spacing='12px'>
+                    {filteredListBrand().map((brand, i) => (
+                      <Box
+                        key={i}
+                        boxShadow='md'
+                        p='2'
+                        _hover={{ cursor: 'pointer' }}
+                        onClick={() =>
+                          handleAddBrandCompare(brand._id, fieldAdd)
+                        }
+                      >
+                        <Image
+                          src={
+                            brand.brandImage === undefined ||
+                            brand.brandImage.length === 0
+                              ? './images/shoope.png'
+                              : brand.brandImage
+                          }
+                          alt='shoope logo'
+                          // width={{ base: 'full', md: '120px' }}
+                          width={{ base: '144px', md: '144px' }}
+                          height='153px'
+                          objectFit='contain'
+                          objectPosition='center'
+                        />
+                        <Text
+                          fontWeight='500'
+                          fontSize='14px'
+                          color='#172A3A'
+                          textAlign='center'
+                          mt='4'
+                          dangerouslySetInnerHTML={{
+                            __html: renderBrandName(brand.brandName),
+                          }}
+                        />
+                        <Text
+                          fontWeight='400'
+                          fontSize='12px'
+                          // lineHeight='24px'
+                          textAlign='center'
+                          mt='4px'
+                          color='#91A5B6'
+                        >
+                          {brand.category_id.name}
+                        </Text>
+                      </Box>
+                    ))}
+                  </SimpleGrid>
+                </Flex>
+              </Box>
             </ModalBody>
           </ModalContent>
         </Modal>

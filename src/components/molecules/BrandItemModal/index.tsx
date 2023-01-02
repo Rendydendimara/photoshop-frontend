@@ -31,11 +31,12 @@ const BrandItemModal: React.FC<IBrandSelected> = (props) => {
     <Box>
       <Flex
         // filter='drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.04)) drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.08))'
-        boxShadow='md'
         justifyContent='center'
         alignItems='center'
         minW='240px'
         minH='190px'
+        boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+        borderRadius='12px'
       >
         <ChakraImage
           alt='shoope'
