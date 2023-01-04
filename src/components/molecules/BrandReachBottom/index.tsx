@@ -23,7 +23,7 @@ const BrandReachBottom: React.FC<IProps> = (props) => {
         letterSpacing='0.05em'
         textAlign='center'
       >
-        Oops you already reach the bottom
+        Oops you already reach the end :(
       </Text>
       <svg
         width='173'

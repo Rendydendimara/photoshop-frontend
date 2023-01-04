@@ -169,6 +169,10 @@ const FilterTools: React.FC<IProps> = (props) => {
               <Flex gap='8px' flexWrap='wrap'>
                 {props.listFlow.map((flow, i) => (
                   <Button
+                    h='auto'
+                    minH='29px'
+                    fontWeight='500'
+                    fontSize='11px'
                     _hover={{ cursor: 'pointer' }}
                     p='6px 8px'
                     border='1px solid #172A3A'

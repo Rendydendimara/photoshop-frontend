@@ -121,7 +121,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
         <Flex
           justifyContent='center'
           alignItems='center'
-          height='115px'
+          height='153px'
           borderRadius='12px'
           border={isHover ? '1px solid #E8E8E8' : '1px solid #EFEFEF'}
           bgColor='#FBFBFB'
@@ -147,7 +147,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
         </Flex>
         <Box mt='8px'>
           <Text
-            fontWeight='500'
+            fontWeight='600'
             fontSize={{ base: '14px', md: '14px' }}
             // lineHeight='14px'
             textAlign='center'
@@ -163,9 +163,7 @@ const BrandItem: React.FC<BrandItem> = (props) => {
             fontSize='12px'
             lineHeight='14px'
           >
-            {isMobile
-              ? `${props.brand.modules} Module ${props.brand.screens} Screen`
-              : props.brand.category_id.name}
+            {props.brand.category_id.name}
           </Text>
           {/* <Text
           mt='12px'

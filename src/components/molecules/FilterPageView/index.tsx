@@ -139,7 +139,7 @@ const FilterPageView: React.FC<IProps> = (props) => {
             onFocus={onFocusInput}
           />
         </InputGroup>
-        {showSearchBrand && (
+        {props.value && showSearchBrand && (
           <Box
             w='full'
             mt='8px'

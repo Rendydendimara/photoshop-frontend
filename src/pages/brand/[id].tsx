@@ -266,60 +266,64 @@ const BrandIndex: NextPage = () => {
           xl: '0',
         }}
       >
-        <Box mt='22px' mb='68px'>
+        <Box w='full' mt='22px' mb='68px'>
           {/* Brand Info */}
-          <Center
-            px={{ base: '16', md: 0 }}
-            bgColor='white'
-            flexDirection='column'
-          >
-            <ImageChakra
-              src={
-                brand?.brandImage === undefined ||
-                brand?.brandImage.length === 0
-                  ? '/images/shoope.png'
-                  : brand.brandImage
-              }
-              alt='shoope logo'
-              width='130px'
-              height='56px'
-              objectFit='contain'
-              objectPosition='center'
-            />
+          <Box w='full' px={{ base: '16px', md: 0 }} bgColor='white'>
+            <Center>
+              <ImageChakra
+                src={
+                  brand?.brandImage === undefined ||
+                  brand?.brandImage.length === 0
+                    ? '/images/shoope.png'
+                    : brand.brandImage
+                }
+                alt='shoope logo'
+                width='130px'
+                height='56px'
+                objectFit='contain'
+                objectPosition='center'
+              />
+            </Center>
             <Heading
               as='h2'
               fontWeight='700'
               fontSize={{ base: '24px', md: '48px' }}
               color='#172A3A'
+              textAlign='center'
             >
               {brand?.brandName}
             </Heading>
             <Text
+              textAlign='center'
               fontWeight='400'
               fontSize={{ base: '14px', md: '16px' }}
               color='#172A3A'
             >
               {brand?.category_id.name}
             </Text>
-            <Box
-              mt='12px'
-              bgColor='#EEF4F9'
-              borderRadius='4px'
-              padding='12px 16px'
-            >
-              <Text
-                textAlign='center'
-                fontWeight='400'
-                fontSize='14px'
-                color='#172A3A'
+            <Center w='full'>
+              <Box
+                mt='12px'
+                bgColor='#EEF4F9'
+                borderRadius='4px'
+                padding='12px 16px'
+                w='full'
                 maxW='477px'
               >
-                {brand?.description
-                  ? brand?.description
-                  : "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."}
-              </Text>
-            </Box>
-          </Center>
+                <Text
+                  textAlign='center'
+                  fontWeight='400'
+                  fontSize='14px'
+                  color='#172A3A'
+                  w='full'
+                >
+                  {brand?.description
+                    ? brand?.description
+                    : "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."}
+                </Text>
+              </Box>
+            </Center>
+          </Box>
           {/* List Module Brand */}
           <Flex
             justifyContent='center'
@@ -327,16 +331,23 @@ const BrandIndex: NextPage = () => {
             w='full'
             gap={{ base: '10px', md: 0 }}
             position='relative'
+            ml={{ base: '16px', md: 0 }}
           >
-            <Flex justifyContent='center' w='full' id='listModuleBrand'>
-              <Flex
+            <Flex
+              justifyContent='center'
+              w='full'
+              bgColor={isOpen ? 'transparent !important' : 'white'}
+              id='listModuleBrand'
+            >
+              <HStack
                 bgColor='white'
                 py='16px'
                 // px={{ base: '200px', md: 0 }}
                 maxW='1200px'
-                w='full'
-                // justifyContent={{ base: 'flex-start', md: 'center' }}
+                // w='full'
+                justifyContent={{ base: 'flex-start', md: 'center' }}
                 borderRadius='4px'
+                display='-webkit-inline-box'
                 gap='16px'
                 overflowX='scroll'
                 className='styled-scrollbar'
@@ -344,10 +355,12 @@ const BrandIndex: NextPage = () => {
               >
                 {moduleBrand.map((module, i) => (
                   <Button
+                    display='flex'
+                    fontSize='14px'
                     key={i}
                     _hover={{ cursor: 'pointer' }}
                     p='6px 8px'
-                    borderRadius='4px'
+                    borderRadius='8px'
                     bgColor={
                       filterContent.includes(module._id)
                         ? '#09BC8A'
@@ -368,7 +381,7 @@ const BrandIndex: NextPage = () => {
                     {module._id}
                   </Button>
                 ))}
-              </Flex>
+              </HStack>
             </Flex>
           </Flex>
           {/* Brand Images */}
@@ -401,14 +414,14 @@ const BrandIndex: NextPage = () => {
         <Modal onClose={onClose} isOpen={isOpen} isCentered size='6xl'>
           <ModalOverlay bg='rgba(9, 9, 9, 0.8)' />
           <ModalContent
-            className='styled-scrollbar'
+            // className='styled-scrollbar'
             bgColor='transparent'
             border='unset'
             maxH='90vh'
             w='full'
             maxW='90%'
             boxShadow='unset'
-            overflow='scroll'
+            // overflow='scroll'
           >
             <ModalBody w='full' border='unset'>
               <Flex
@@ -416,6 +429,9 @@ const BrandIndex: NextPage = () => {
                 gap='48px'
                 w='full'
                 h='100%'
+                display='-webkit-inline-box'
+                overflowX='scroll'
+                className='styled-scrollbar'
                 justifyContent='center'
               >
                 {listImageSelectedModule.map((image, i) => (
@@ -475,6 +491,8 @@ const ListImage: React.FC<IListImage> = (props) => {
         gap='48px'
         alignItems='center'
         maxW='full'
+        display='-webkit-inline-box'
+        justifyContent='center'
         overflowX='scroll'
         className='styled-scrollbar'
       >

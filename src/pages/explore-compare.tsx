@@ -217,34 +217,41 @@ const Explore: NextPage = () => {
           }}
           w='full'
           py='4'
+          // maxH='95vh'
         >
           <Modal onClose={onClose} isOpen={true} isCentered size='6xl'>
-            <ModalOverlay bg='rgba(9, 9, 9, 0.8)' />
+            <ModalOverlay bg='rgba(9, 9, 9, 0.8)' zIndex='1000' />
             <ModalContent
-              className='styled-scrollbar'
+              margin='0'
+              padding='0'
               bgColor='transparent'
               border='unset'
-              maxH='90vh'
+              // maxH='0vh'
               w='full'
+              zIndex='1000'
               maxW='90%'
               boxShadow='unset'
-              overflow='scroll'
+              // overflow='scroll'
+              // className='styled-scrollbar'
             >
               <ModalBody w='full' border='unset'>
                 <Flex
+                  overflowX='scroll'
+                  className='hide-styled-scrollbar'
+                  maxH='100vh'
                   padding={4}
                   w='full'
                   flexDirection={{ base: 'column', md: 'row' }}
                   gap='24px'
                   justifyContent='center'
-                  alignItems='center'
+                  // alignItems='center'
                 >
                   {imagesBrand.map((brand, i) => (
                     <Box
                       key={i}
-                      maxH='100vh' //{{ base: 'unset', md: '100vh' }}
-                      overflowY={{ base: 'unset', md: 'scroll' }}
-                      className='styled-scrollbar'
+                      // maxH='100vh' //{{ base: 'unset', md: '100vh' }}
+                      // overflowY={{ base: 'unset', md: 'scroll' }}
+                      // className='styled-scrollbar'
                     >
                       {brand.images.map((image, index) => (
                         <Image

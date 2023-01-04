@@ -94,7 +94,14 @@ const Explore: NextPage = () => {
     category: false,
     flow: false,
   });
+  const refSearchBrand: any = useRef();
+  const [showSearchBrand, setShowSearchBrand] = useState(false);
 
+  useOnClickOutside(refSearchBrand, () => setShowSearchBrand(false));
+
+  const onFocusInput = () => {
+    setShowSearchBrand(true);
+  };
   const height = ['529px', '600px', '350px', '500px', '429px', '400px'];
   const refCategory = useRef(null);
   const refSidebar: any = useRef(null);
@@ -757,11 +764,11 @@ const Explore: NextPage = () => {
               justifyContent='space-between'
               id='filterMobile'
               bgColor='white'
-              p='16px'
             >
               <InputGroup
                 borderRadius='8px'
                 border='1px solid #E8E8E8'
+                bgColor='#FAFAFA'
                 width='85%'
                 h='45px'
                 p='12px'
@@ -786,6 +793,7 @@ const Explore: NextPage = () => {
                     lineHeight: '21px',
                     color: '#B4C6D4',
                   }}
+                  onFocus={onFocusInput}
                   value={keywordSearch}
                   _focus={{}}
                   _active={{}}
@@ -793,6 +801,146 @@ const Explore: NextPage = () => {
                   _focusVisible={{}}
                 />
               </InputGroup>
+              {keywordSearch && showSearchBrand && (
+                <Box
+                  w='90%'
+                  mt='55px'
+                  p='4px'
+                  left='16px'
+                  ref={refSearchBrand}
+                  border='1px solid #172A3A'
+                  borderRadius='8px'
+                  position='fixed'
+                  maxH='250px'
+                  overflowY='scroll'
+                  zIndex='100000'
+                  bgColor='white'
+                  className='styled-scrollbar'
+                >
+                  {/* Result Brand */}
+                  <Box>
+                    <Text
+                      padding='8px'
+                      fontWeight='500'
+                      fontSize='14px'
+                      lineHeight='17px'
+                      color='#172A3A'
+                      borderBottom='0.5px solid #C4D7E8'
+                    >
+                      Brand
+                    </Text>
+                    {resultSearchBrand &&
+                      resultSearchBrand.brands.map((brand, i) => (
+                        <Flex
+                          key={i}
+                          onClick={() => onClickFilterV2(brand._id, 'brand')}
+                          p='4px'
+                          _hover={{ cursor: 'pointer' }}
+                          borderBottom={
+                            i + 1 === resultSearchBrand?.brands.length
+                              ? 'unset'
+                              : '0.5px solid #C4D7E8'
+                          }
+                          alignItems='center'
+                          gap='12px'
+                          bgColor={
+                            brand._id === filterBrandV2.selectedBrand
+                              ? '#F1FFF8'
+                              : 'white'
+                          }
+                        >
+                          <Image
+                            src={
+                              brand.brandImage
+                                ? brand.brandImage
+                                : './images/shoope.png'
+                            }
+                            width='42px'
+                            height='32px'
+                            objectFit='contain'
+                            objectPosition='center'
+                          />
+                          <Box>
+                            <Text
+                              fontWeight='400'
+                              fontSize='14px'
+                              color='#09BC8A'
+                            >
+                              {brand.brandName}
+                            </Text>
+                            {brand.tags.length > 0 && (
+                              <Flex gap='4px' mt='4px' alignItems='center'>
+                                {brand.tags.map((tag, i) => (
+                                  <Text
+                                    fontWeight='400'
+                                    fontSize='11px'
+                                    color='#3E97FF'
+                                    key={i}
+                                  >
+                                    {tag}
+                                  </Text>
+                                ))}
+                              </Flex>
+                            )}
+                          </Box>
+                        </Flex>
+                      ))}
+                  </Box>
+                  {/* Result Category */}
+                  <Box mt='8px'>
+                    <Text
+                      padding='8px'
+                      fontWeight='500'
+                      fontSize='14px'
+                      lineHeight='17px'
+                      color='#172A3A'
+                      borderBottom='0.5px solid #C4D7E8'
+                    >
+                      Category
+                    </Text>
+                    {resultSearchBrand &&
+                      resultSearchBrand.categories.map((category, i) => (
+                        <Flex
+                          _hover={{ cursor: 'pointer' }}
+                          key={i}
+                          onClick={() =>
+                            onClickFilterV2(category._id, 'category')
+                          }
+                          p='12px 8px'
+                          bgColor={
+                            i + 1 === resultSearchBrand?.categories?.length
+                              ? '#F1FFF8'
+                              : 'white'
+                          }
+                          borderBottom={
+                            category._id === filterBrandV2.selectedCategory
+                              ? 'unset'
+                              : '0.5px solid #C4D7E8'
+                          }
+                          alignItems='center'
+                          gap='12px'
+                          justifyContent='space-between'
+                        >
+                          <Text
+                            fontWeight='400'
+                            fontSize='14px'
+                            color='#172A3A'
+                          >
+                            {category.name}
+                          </Text>
+                          <Text
+                            fontWeight='400'
+                            fontSize='11px'
+                            color='#B4C6D4'
+                          >
+                            {category.totalBrand} Brand {category.totalScreens}{' '}
+                            Screen
+                          </Text>
+                        </Flex>
+                      ))}
+                  </Box>
+                </Box>
+              )}
               <IconButton
                 aria-label='filter'
                 icon={
@@ -1080,7 +1228,7 @@ const Explore: NextPage = () => {
             </DrawerBody>
           </DrawerContent>
         </Drawer>
-        <Box mt='24px' mb='12px'>
+        <Box mt={{ base: '16px', md: '24px' }} mb='12px'>
           {/* if (filterPageView.brand) {
       return <ListBrand listBrand={listBrand} />;
     } else if (filterPageView.flow) {
