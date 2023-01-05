@@ -112,12 +112,15 @@ const FilterPageView: React.FC<IProps> = (props) => {
           alignItems='center'
         >
           <InputLeftElement
-            mt='5px'
             // display={{ base: 'flex', md: 'none' }}
             pointerEvents='none'
             children={<SearchIcon showHover />}
+            w='14px'
+            position='initial'
+            mr='8px'
           />
           <Input
+            p='0'
             ref={props.inputSearchElement}
             width={{ base: 'full', md: '320px' }}
             // height={{ base: '41px', md: '49px' }}

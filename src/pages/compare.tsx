@@ -420,8 +420,14 @@ const Compare: NextPage = () => {
           isCentered
           size='5xl'
         >
-          <ModalOverlay />
-          <ModalContent p='0' maxH='90vh'>
+          <ModalOverlay bgColor='rgba(23, 23, 23, 0.8)' />
+          <ModalContent
+            p='0'
+            maxH='585px'
+            w='864px'
+            boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+            borderRadius='16px'
+          >
             <ModalBody
               p='40px'
               w='full'
@@ -441,16 +447,21 @@ const Compare: NextPage = () => {
                   w='full'
                   border=' 0.5px solid #EBEBEB'
                   borderRadius='8px'
+                  padding='16px 12px'
                   bgColor='#FAFAFA'
+                  height='53px'
+                  alignItems='center'
                 >
                   <InputLeftElement
-                    mt='7px'
+                    w='14px'
+                    position='initial'
+                    mr='8px'
                     pointerEvents='none'
                     children={<RiSearchLine color='#B4C6D5' />}
                   />
                   <Input
+                    p='0'
                     w='full'
-                    height='53px'
                     border='unset'
                     placeholder='Ex Gojek, Cart, or Fashion'
                     _placeholder={{
@@ -458,6 +469,10 @@ const Compare: NextPage = () => {
                       fontSize: '14px',
                       color: '#AEC2D2',
                     }}
+                    _focus={{}}
+                    _active={{}}
+                    _hover={{}}
+                    _focusVisible={{}}
                     value={search}
                     onChange={onChangeSearch}
                   />
@@ -497,34 +512,41 @@ const Compare: NextPage = () => {
                   <SimpleGrid w='70%' columns={[1, 3, 4]} spacing='12px'>
                     {filteredListBrand().map((brand, i) => (
                       <Box
+                        mt={i + 1 > 4 ? '24px' : 0}
                         key={i}
-                        boxShadow='md'
-                        p='2'
+                        // boxShadow='md'
                         _hover={{ cursor: 'pointer' }}
                         onClick={() =>
                           handleAddBrandCompare(brand._id, fieldAdd)
                         }
+                        w='full'
                       >
-                        <Image
-                          src={
-                            brand.brandImage === undefined ||
-                            brand.brandImage.length === 0
-                              ? './images/shoope.png'
-                              : brand.brandImage
-                          }
-                          alt='shoope logo'
-                          // width={{ base: 'full', md: '120px' }}
-                          width={{ base: '144px', md: '144px' }}
-                          height='153px'
-                          objectFit='contain'
-                          objectPosition='center'
-                        />
+                        <Center
+                          border='1px solid #EFEFEF'
+                          borderRadius='8px'
+                          px='10px'
+                        >
+                          <Image
+                            src={
+                              brand.brandImage === undefined ||
+                              brand.brandImage.length === 0
+                                ? './images/shoope.png'
+                                : brand.brandImage
+                            }
+                            alt='shoope logo'
+                            // width={{ base: 'full', md: '120px' }}
+                            w={{ base: '120px', md: '120px' }}
+                            height='120px'
+                            objectFit='contain'
+                            objectPosition='center'
+                          />
+                        </Center>
                         <Text
                           fontWeight='500'
                           fontSize='14px'
                           color='#172A3A'
                           textAlign='center'
-                          mt='4'
+                          mt='12px'
                           dangerouslySetInnerHTML={{
                             __html: renderBrandName(brand.brandName),
                           }}

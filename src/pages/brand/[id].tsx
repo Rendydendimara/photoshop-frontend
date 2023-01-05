@@ -146,6 +146,7 @@ const BrandIndex: NextPage = () => {
         },
         ...res.data.data,
       ]);
+      setFilterContent(['All']);
     }
   };
 

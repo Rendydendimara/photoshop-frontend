@@ -778,20 +778,23 @@ const Explore: NextPage = () => {
                 <InputLeftElement
                   // display={{ base: 'flex', md: 'none' }}
                   pointerEvents='none'
-                  mt='3px'
+                  w='14px'
+                  position='initial'
                   children={<SearchIcon showHover />}
+                  mr='8px'
                 />
                 <Input
+                  p='0px'
                   borderColor='transparent'
                   onChange={handleChangeSearch}
                   borderRadius='12px'
                   onKeyDown={handleKeyOnDownKeyword}
                   placeholder='Ex Gojek, Cart, or Fashion'
                   _placeholder={{
-                    fontWeight: 300,
+                    fontWeight: 400,
                     fontSize: '14px',
                     lineHeight: '21px',
-                    color: '#B4C6D4',
+                    color: '#91A5B6',
                   }}
                   onFocus={onFocusInput}
                   value={keywordSearch}
@@ -1001,7 +1004,7 @@ const Explore: NextPage = () => {
             <DrawerBody
               boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px -4px 8px rgba(0, 0, 0, 0.06)'
               borderRadius='16px 16px 0px 0px'
-              maxH='553px'
+              maxH='80vh'
               bgColor='white'
               p='32px 28px 32px 28px'
             >
@@ -1068,7 +1071,7 @@ const Explore: NextPage = () => {
                 </TabList>
                 <TabPanels mt='40px'>
                   <TabPanel
-                    maxH='200px'
+                    maxH='80vh'
                     p='0'
                     overflowY='scroll'
                     className='styled-scrollbar'
@@ -1121,7 +1124,8 @@ const Explore: NextPage = () => {
                             borderRadius='8px'
                             padding='8px 12px'
                             fontWeight='400'
-                            fontSize='12px'
+                            fontSize='14px'
+                            lineHeight='120%'
                             color={
                               applyFilterMobile.categories.includes(
                                 category.name
@@ -1143,7 +1147,7 @@ const Explore: NextPage = () => {
                     </Flex>
                   </TabPanel>
                   <TabPanel
-                    maxH='200px'
+                    maxH='80vh'
                     p='0'
                     overflowY='scroll'
                     className='styled-scrollbar'
@@ -1194,7 +1198,8 @@ const Explore: NextPage = () => {
                             borderRadius='8px'
                             padding='8px 12px'
                             fontWeight='400'
-                            fontSize='12px'
+                            fontSize='14px'
+                            lineHeight='120%'
                             color={
                               applyFilterMobile.flows.includes(flow._id)
                                 ? '#FBFFFE'

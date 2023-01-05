@@ -22,7 +22,12 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
       flexWrap='wrap'
     >
       {props.listBrandByFlow.map((brand, item) => (
-        <Box w='full' _hover={{ cursor: 'pointer' }} key={item}>
+        <Box
+          mt={item + 1 > 1 ? '52px' : 0}
+          w='full'
+          _hover={{ cursor: 'pointer' }}
+          key={item}
+        >
           {/* Brand Info */}
           <Link
             href={`/brand/${
@@ -74,7 +79,7 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
                     fontSize='12px'
                     textAlign='left'
                     color='#97A5B0'
-                    display={{ base: 'none', md: 'initial' }}
+                    display={{ base: 'none', md: 'block' }}
                   >
                     {brand.category_id.name}
                     {/* {brand.modules} Module {brand.screens} Screen */}

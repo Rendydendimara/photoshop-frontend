@@ -249,9 +249,9 @@ const Explore: NextPage = () => {
                   {imagesBrand.map((brand, i) => (
                     <Box
                       key={i}
-                      // maxH='100vh' //{{ base: 'unset', md: '100vh' }}
-                      // overflowY={{ base: 'unset', md: 'scroll' }}
-                      // className='styled-scrollbar'
+                      maxH='100vh' //{{ base: 'unset', md: '100vh' }}
+                      overflowY={{ base: 'unset', md: 'scroll' }}
+                      className='hide-styled-scrollbar'
                     >
                       {brand.images.map((image, index) => (
                         <Image
