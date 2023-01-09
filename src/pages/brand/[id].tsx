@@ -37,6 +37,9 @@ import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import FilterCheckbox from 'components/molecules/FilterCheckbox';
 import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
+import { GAEvent, ReactGA } from 'lib/ga';
+import { logEvent } from '@firebase/analytics';
+import { analytics } from 'lib/firebase';
 
 const FILTER_CONTENT = [
   {
@@ -163,6 +166,23 @@ const BrandIndex: NextPage = () => {
   const handleCompare = () => {
     setLocalCookie(LOCAL_COMPARE[1].brandId, brandId);
     setLocalCookie(LOCAL_COMPARE[1].listModule, listCheckedModule);
+    // GAEvent({
+    //   action: 'on-click-compare-button',
+    //   params: JSON.stringify({
+    //     data: {
+    //       brandName: brand?.brandName ?? '',
+    //       brandId: brandId,
+    //     },
+    //   }),
+    // });
+    // ReactGA.event({
+    //   category: 'Brand',
+    //   action: `Compare brand ${brandId}`,
+    // });
+    logEvent(analytics, 'select_content', {
+      category: 'BrandCompare',
+      value: `compare brand ${brandId}`,
+    });
     router.push('/compare');
   };
 

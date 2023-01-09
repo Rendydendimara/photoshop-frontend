@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/button';
-import { Box, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/layout';
+import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { AllBrandIcon } from 'components/atoms/icons/all-brand-icon';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
@@ -8,7 +8,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import Marquee from 'react-fast-marquee';
-
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import Threesecond from 'icons/3second.svg';
 import AIcon from 'icons/a.svg';
 import Banggood from 'icons/Banggood.svg';
@@ -35,6 +35,9 @@ import Hypermart from 'icons/Hypermart.svg';
 import Informa from 'icons/informa.svg';
 import Lazada from 'icons/Lazada.svg';
 import { Image } from '@chakra-ui/image';
+import { GAEvent, ReactGA } from 'lib/ga';
+import Router from 'next/router';
+import { analytics } from 'lib/firebase';
 
 const ICONS_BRAND = [
   {
@@ -140,6 +143,22 @@ const ICONS_BRAND = [
 ];
 
 const Home: NextPage = () => {
+  const gotoExplorePage = () => {
+    logEvent(analytics, 'select_content', {
+      category: 'ButtonClick',
+      value: 'click-expolorer-button',
+    });
+    // ReactGA.event({
+    //   category: 'ButtonClick',
+    //   action: 'click-expolorer-button',
+    // });
+    Router.push('/explore');
+    // GAEvent({
+    //   action: 'on-click-expole-button',
+    //   params: '',
+    // });
+  };
+
   return (
     <Layout showNavbarFooter>
       <Head>
@@ -249,24 +268,25 @@ const Home: NextPage = () => {
                 </Marquee>
               </Box>
               <Flex justifyContent={{ base: 'center', md: 'flex-start' }}>
-                <Link href='/explore'>
-                  <Button
-                    mt={{ base: '184px', md: '40px' }}
-                    width='210px'
-                    height='56px'
-                    bgColor='#09BC8A'
-                    boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-                    _hover={{
-                      bgColor: '#07A377',
-                    }}
-                    borderRadius='12px'
-                    color='white'
-                    fontWeight='500'
-                    fontSize='20px'
-                  >
-                    Explore
-                  </Button>
-                </Link>
+                {/* <Link href='/explore'> */}
+                <Button
+                  onClick={gotoExplorePage}
+                  mt={{ base: '184px', md: '40px' }}
+                  width='210px'
+                  height='56px'
+                  bgColor='#09BC8A'
+                  boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                  _hover={{
+                    bgColor: '#07A377',
+                  }}
+                  borderRadius='12px'
+                  color='white'
+                  fontWeight='500'
+                  fontSize='20px'
+                >
+                  Explore
+                </Button>
+                {/* </Link> */}
               </Flex>
             </Box>
             <Flex

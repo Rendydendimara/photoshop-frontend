@@ -94,24 +94,27 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
                   >
                     Have 3 Screen for Register
                   </Text>
-                  <Text
-                    display={{ base: 'none', md: 'initial' }}
-                    fontWeight='400'
-                    fontSize='12px'
-                    textAlign='left'
+                  <Box
+                    display={{ base: 'none', md: 'block' }}
                     mt='8px'
                     p='8px 12px'
-                    color='#172A3A'
                     bgColor='#EEF4F9'
                     borderRadius='8px'
                   >
-                    {/* brand.description ?? */}
-                    {
-                      "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."
-                    }
+                    <Text
+                      fontWeight='400'
+                      fontSize='12px'
+                      textAlign='left'
+                      color='#172A3A'
+                    >
+                      {/* brand.description ?? */}
+                      {
+                        "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."
+                      }
 
-                    {/* Last updated {moment(brand.updated_at).format('DD MMM')} */}
-                  </Text>
+                      {/* Last updated {moment(brand.updated_at).format('DD MMM')} */}
+                    </Text>
+                  </Box>
                 </Box>
                 <Box display={{ base: 'none', md: 'initial' }}>
                   <Text fontWeight='600' fontSize='12px' color='#07A377'>

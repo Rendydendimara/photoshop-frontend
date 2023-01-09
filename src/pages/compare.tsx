@@ -254,6 +254,43 @@ const Compare: NextPage = () => {
     // paragraph.innerHTML = paragraph.textContent.replace(pattern, match => `<mark>${match}</mark>`)
   };
 
+  const onScorllModalBody = () => {
+    // Get the navbar
+    let navbar: any;
+    let sidebar: any;
+    let modalBody: any;
+
+    if (typeof window !== 'undefined') {
+      modalBody = document.getElementById('modalBody');
+      navbar = document.getElementById('categoryDeskop');
+      console.log('navbar', navbar);
+      sidebar = document.getElementById('sidebarContainer');
+    }
+
+    // Get the offset position of the navbar
+    let sticky: any = navbar?.offsetTop;
+    let stickySidebar: any = sidebar?.offsetTop;
+    // When the user scrolls the page, execute myFunction
+    if (typeof window !== 'undefined') {
+      // window.onscroll = function () {
+      handleScroll();
+      // };
+    }
+
+    function handleScroll() {
+      console.log('modalBody.offsetHeight', modalBody?.offsetHeight);
+      console.log('sticky', sticky);
+      // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+      if (modalBody?.offsetHeight >= sticky) {
+        navbar?.classList.add('stickyNavbarHome');
+        sidebar?.classList.add('stickySidebar');
+      } else {
+        navbar?.classList.remove('stickyNavbarHome');
+        sidebar?.classList.remove('stickySidebar');
+      }
+    }
+  };
+
   useEffect(() => {
     handleGetListCategory();
     let brandIdLocal = getLocalCookie(LOCAL_COMPARE[1].brandId);
@@ -429,10 +466,13 @@ const Compare: NextPage = () => {
             borderRadius='16px'
           >
             <ModalBody
+              // onScroll={onScorllModalBody}
               p='40px'
               w='full'
               overflowY='scroll'
               className='styled-scrollbar'
+              position='relative'
+              id='modalBody'
             >
               <Text
                 textAlign='center'
@@ -444,6 +484,7 @@ const Compare: NextPage = () => {
               </Text>
               <Box mt='28px' w='full'>
                 <InputGroup
+                  id='categoryDeskop'
                   w='full'
                   border=' 0.5px solid #EBEBEB'
                   borderRadius='8px'
@@ -478,7 +519,7 @@ const Compare: NextPage = () => {
                   />
                 </InputGroup>
                 <Flex gap='24px' mt='20px' alignItems='flex-start'>
-                  <Box w='30%'>
+                  <Box w='30%' id='sidebarContainer'>
                     <FilterCheckbox width='full' labelName='Categories'>
                       {listCategory.map((category, i) => (
                         <CheckboxItem

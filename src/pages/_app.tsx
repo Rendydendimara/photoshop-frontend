@@ -4,7 +4,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { css, Global } from '@emotion/react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { GAPageView } from 'lib/ga';
+import { ReactGA } from 'lib/ga';
+
 import type { NextComponentType, NextPageContext } from 'next';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
@@ -84,7 +85,7 @@ export default function App({ Component, pageProps }: AppRenderProps) {
     funcAsyncDefault();
     const handleRouteChange = (url: string) => {
       setPageLoading(false);
-      GAPageView(url);
+      ReactGA.pageview(url);
     };
     const handleRouteChangeStart = (url: string) => {
       setPageLoading(true);
