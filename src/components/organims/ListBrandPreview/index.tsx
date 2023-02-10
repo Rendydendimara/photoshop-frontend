@@ -10,7 +10,7 @@ interface IProps {
   listBrandByFlow: IListBrandByFlow[];
   activeFlow: string[];
 }
-const ListBrandFlowView: React.FC<IProps> = (props) => {
+const ListBrandPreview: React.FC<IProps> = (props) => {
   const [dataBase, setDataBase] = useState<IBrand[]>([]);
 
   return (
@@ -155,4 +155,4 @@ const ListBrandFlowView: React.FC<IProps> = (props) => {
   );
 };
 
-export default ListBrandFlowView;
+export default ListBrandPreview;

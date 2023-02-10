@@ -263,7 +263,6 @@ const Compare: NextPage = () => {
     if (typeof window !== 'undefined') {
       modalBody = document.getElementById('modalBody');
       navbar = document.getElementById('categoryDeskop');
-      console.log('navbar', navbar);
       sidebar = document.getElementById('sidebarContainer');
     }
 
@@ -278,8 +277,6 @@ const Compare: NextPage = () => {
     }
 
     function handleScroll() {
-      console.log('modalBody.offsetHeight', modalBody?.offsetHeight);
-      console.log('sticky', sticky);
       // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
       if (modalBody?.offsetHeight >= sticky) {
         navbar?.classList.add('stickyNavbarHome');

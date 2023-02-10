@@ -12,7 +12,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiArrowLeftCircle } from 'react-icons/fi';
 import { HiOutlinePlusSm } from 'react-icons/hi';
 import { IBrand } from 'interfaces/IBrand';
@@ -40,6 +40,7 @@ import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 import { GAEvent, ReactGA } from 'lib/ga';
 import { logEvent } from '@firebase/analytics';
 import { analytics } from 'lib/firebase';
+import Footer from 'components/molecules/Footer';
 
 const FILTER_CONTENT = [
   {
@@ -54,6 +55,8 @@ const FILTER_CONTENT = [
   },
 ];
 const BrandIndex: NextPage = () => {
+  const refContainerImages: any = useRef(null);
+  const [heightContainerImages, setHeightContainerImages] = useState(0);
   const [showContentBrand, setShowContentBrand] = useState(false);
   const [mtSamiliarBrand, setMtSamiliarBrand] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -245,6 +248,7 @@ const BrandIndex: NextPage = () => {
   useEffect(() => {
     let box: any = document.querySelector('#brandImage');
     setMtSamiliarBrand(box?.offsetHeight ?? 0);
+    setHeightContainerImages(refContainerImages?.current?.clientHeight ?? 0);
   });
 
   useEffect(() => {
@@ -275,7 +279,7 @@ const BrandIndex: NextPage = () => {
   });
 
   return (
-    <Layout showNavbarFooter>
+    <Layout hideFooter showNavbarFooter>
       <Head>
         <title>{APP_NAME} | Brand</title>
         <link rel='icon' href='/favicon.ico' />
@@ -412,6 +416,7 @@ const BrandIndex: NextPage = () => {
             // overflowY='scroll'
             // maxH='100vh'
             // id='brandImage'
+            ref={refContainerImages}
             // className='styled-scrollbar'
             position='absolute'
             // left="20%"
@@ -430,7 +435,9 @@ const BrandIndex: NextPage = () => {
               </Box>
             ))}
           </Box>
-          {/* AMBIL YANG DARI SINI  */}
+          <Box mt={heightContainerImages + 100}>
+            <Footer />
+          </Box>
         </Box>
         <Modal onClose={onClose} isOpen={isOpen} isCentered size='6xl'>
           <ModalOverlay bg='rgba(9, 9, 9, 0.8)' />
@@ -516,6 +523,7 @@ const ListImage: React.FC<IListImage> = (props) => {
         justifyContent='center'
         overflowX='scroll'
         className='styled-scrollbar'
+        pb='12px'
       >
         {props.images.map((image, i) => (
           <ImageChakra

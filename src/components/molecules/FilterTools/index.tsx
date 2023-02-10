@@ -79,7 +79,7 @@ const FilterTools: React.FC<IProps> = (props) => {
             />
           ))}
         </FilterCheckbox>
-        {props.showFlowFilter && (
+        {props.showFlowFilter && false && (
           <Box mt='16px'>
             <FilterCheckbox labelName='Flow'>
               {props.listFlow.map((flow, i) => (
@@ -112,7 +112,7 @@ const FilterTools: React.FC<IProps> = (props) => {
             </FilterCheckbox>
           </Box>
         )}
-        {props.showFilterPrice && (
+        {props.showFilterPrice && false && (
           <Box mt='16px'>
             <FilterCheckbox labelName='Price'>
               {props.FILTER_PRICE.map((price, i) => (
@@ -145,7 +145,7 @@ const FilterTools: React.FC<IProps> = (props) => {
             </FilterCheckbox>
           </Box>
         )}
-        {props.showFilterModule && (
+        {props.showFilterModule && false && (
           <Box
             width='248px'
             mt='16px'

@@ -1,5 +1,5 @@
 export const BACKEND_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';
-export const APP_NAME = 'PHOTOSHOP';
+export const APP_NAME = 'Thetruesight';
 
 export interface INavItem {
   label: string;
@@ -19,11 +19,11 @@ export const ROUTE: INavItem[] = [
     href: '/explore',
     pathname: '/explore',
   },
-  {
-    label: 'About Us',
-    href: '/about',
-    pathname: '/about',
-  },
+  // {
+  //   label: 'About Us',
+  //   href: '/about',
+  //   pathname: '/about',
+  // },
   // {
   //   label: 'Compare',
   //   href: '/compare',

@@ -14,11 +14,12 @@ const FilterCheckbox: React.FC<IProps> = (props) => {
       backgroundColor='white'
       borderRadius='8px'
       border='2px solid #EBEBEB'
+      padding='24px 28px'
       // borderTopRightRadius='2px'
       // borderTopLeftRadius='2px'
     >
       <Text
-        padding='24px 28px'
+        // padding='24px 28px'
         pb='0'
         fontWeight='700'
         fontSize='14px'
@@ -28,10 +29,10 @@ const FilterCheckbox: React.FC<IProps> = (props) => {
         {props.labelName}
       </Text>
       <Box
+        mt='16px'
         maxH={{ md: '290px', '2xl': '400px' }}
         overflowY='scroll'
         className='styled-scrollbar'
-        padding='24px 28px'
       >
         <Box w='full'>{props.children}</Box>
       </Box>

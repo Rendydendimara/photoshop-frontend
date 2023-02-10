@@ -47,11 +47,12 @@ import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
 import { useOnClickOutside } from 'usehooks-ts';
-import ListBrandFlowView from 'components/organims/ListBrandFlowView';
+import ListBrandPreview from 'components/organims/ListBrandPreview';
 import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import Footer from 'components/molecules/Footer';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/tabs';
+import ListFlowBrand from 'components/organims/ListFlowBrand';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -118,6 +119,7 @@ const Explore: NextPage = () => {
   const inputSearchElement: any = useRef(null);
   const [listCategory, setListCategory] = useState<ICategory[]>([]);
   const [listFlow, setListFlow] = useState<IListFlow[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const modalFilterMobile = useDisclosure();
   const [filterBrand, setFilterBrand] = useState({
     selectedCategory: '',
@@ -149,6 +151,10 @@ const Explore: NextPage = () => {
       flows: [],
     }
   );
+
+  const changeShowPreview = (e: any) => {
+    setShowPreview(e.target.checked);
+  };
 
   const onChangeApplyFilterMobile = (
     type: 'category' | 'flow',
@@ -316,15 +322,17 @@ const Explore: NextPage = () => {
   };
 
   const renderBrand = () => {
-    if (filterPageView.brand) {
-      return <ListBrand listBrand={listBrand} />;
-    } else if (filterPageView.flow) {
+    if (filterPageView.brand && showPreview) {
       return (
-        <ListBrandFlowView
+        <ListBrandPreview
           activeFlow={filterBrandByFlow.flows}
           listBrandByFlow={listBrandByFlow}
         />
       );
+    } else if (filterPageView.brand) {
+      return <ListBrand listBrand={listBrand} />;
+    } else if (filterPageView.flow) {
+      return <ListFlowBrand />;
     }
   };
 
@@ -717,6 +725,10 @@ const Explore: NextPage = () => {
     handleGetListBrand({});
     handleGetListCategory();
     getListFlow();
+    getListBrandByFlow({
+      categories: [],
+      flows: [],
+    });
   }, []);
 
   return (
@@ -746,6 +758,8 @@ const Explore: NextPage = () => {
               justifyContent='center'
             >
               <FilterPageView
+                changeShowPreview={changeShowPreview}
+                showPreview={showPreview}
                 onChangeFilterPageView={onChangeFilterPageView}
                 filterPageView={filterPageView}
                 handleKeyOnDownKeyword={handleKeyOnDownKeyword}
@@ -1238,7 +1252,7 @@ const Explore: NextPage = () => {
       return <ListBrand listBrand={listBrand} />;
     } else if (filterPageView.flow) {
       return (
-        <ListBrandFlowView
+        <ListBrandPreview
           activeFlow={filterBrandByFlow.flows}
           listBrandByFlow={listBrandByFlow}
         />
@@ -1262,11 +1276,11 @@ const Explore: NextPage = () => {
           position='relative'
         >
           <Box
-            width='248px'
+            // width='248px'
             display={{ base: 'none', md: 'initial' }}
             // height={{ md: '300px', '2xl': '500px' }}
             // bgColor='red'
-            minW='236px'
+            // minW='236px'
           >
             <FilterTools
               refSidebar={refSidebar}

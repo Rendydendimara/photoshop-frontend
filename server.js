@@ -13,23 +13,7 @@ const options = {
   cert: fs.readFileSync('cert.pem')
 };
 app.prepare().then(() => {
-  https.createServer(options, function (req, res) {
-    // Be sure to pass `true` as the second argument to `url.parse`.
-    // This tells it to parse the query portion of the URL.
-    const parsedUrl = parse(req.url, true)
-    const { pathname, query } = parsedUrl
-
-    if (pathname === '/a') {
-      app.render(req, res, '/a', query)
-    } else if (pathname === '/b') {
-      app.render(req, res, '/b', query)
-    } else {
-      handle(req, res, parsedUrl)
-    }
-  }).listen(PORT, (err) => {
-    if (err) throw err;
-  });
-  // createServer((req, res) => {
+  // https.createServer(options, function (req, res) {
   //   // Be sure to pass `true` as the second argument to `url.parse`.
   //   // This tells it to parse the query portion of the URL.
   //   const parsedUrl = parse(req.url, true)
@@ -45,4 +29,20 @@ app.prepare().then(() => {
   // }).listen(PORT, (err) => {
   //   if (err) throw err;
   // });
+  createServer((req, res) => {
+    // Be sure to pass `true` as the second argument to `url.parse`.
+    // This tells it to parse the query portion of the URL.
+    const parsedUrl = parse(req.url, true)
+    const { pathname, query } = parsedUrl
+
+    if (pathname === '/a') {
+      app.render(req, res, '/a', query)
+    } else if (pathname === '/b') {
+      app.render(req, res, '/b', query)
+    } else {
+      handle(req, res, parsedUrl)
+    }
+  }).listen(PORT, (err) => {
+    if (err) throw err;
+  });
 });

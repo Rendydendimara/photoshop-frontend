@@ -38,6 +38,7 @@ import { useHover, useOnClickOutside } from 'usehooks-ts';
 interface IProps {
   listBrand: IBrand[];
 }
+const LIMIT_ROW_BRAND = 5;
 const ListBrand: React.FC<IProps> = (props) => {
   const [dataBase, setDataBase] = useState<IBrand[]>([]);
 
@@ -46,34 +47,36 @@ const ListBrand: React.FC<IProps> = (props) => {
   };
 
   useEffect(() => {
-    let tempDataBase: any = [];
-    let dataItem: any = [];
-    let limit = 0;
-    props.listBrand.map((brand) => {
-      dataItem.push(brand);
-      limit++;
-      if (props.listBrand.length > 4) {
-        if (limit === 4) {
-          tempDataBase.push(dataItem);
-          dataItem = [];
-          limit = 0;
-        }
-      }
-    });
-    if (props.listBrand.length < 4) {
-      tempDataBase.push(dataItem);
-    }
-    setDataBase(tempDataBase);
+    // let tempDataBase: any = [];
+    // let dataItem: any = [];
+    // let limit = 0;
+    // props.listBrand.map((brand) => {
+    //   dataItem.push(brand);
+    //   limit++;
+    //   if (props.listBrand.length > LIMIT_ROW_BRAND) {
+    //     if (limit === LIMIT_ROW_BRAND) {
+    //       tempDataBase.push(dataItem);
+    //       dataItem = [];
+    //       limit = 0;
+    //     }
+    //   }
+    // });
+    // if (props.listBrand.length < LIMIT_ROW_BRAND) {
+    //   tempDataBase.push(dataItem);
+    // }
+    // console.log('tempDataBase', tempDataBase);
+    setDataBase(props.listBrand ?? []);
   }, [props.listBrand]);
 
   return (
     <Box w='full'>
-      {dataBase.map((brandBase: any, i: any) => (
-        <Box key={i}>
-          {renderItemBrand(brandBase)}
+      {/* {dataBase.map((brand: IBrand, i: any) => (
+        <Box key={i}> */}
+      <GridImage brands={dataBase} />
+      {/* {renderItemBrand(brandBase)}
           <Box mt={{ base: '10px', md: '60px' }} />
-        </Box>
-      ))}
+        </Box> */}
+      {/* ))} */}
     </Box>
   );
 };
@@ -88,10 +91,11 @@ const GridImage: React.FC<IGridImage> = (props) => {
     <SimpleGrid
       // padding={{ md: 4 }}
       w='full'
-      columns={{ sm: 2, md: 4 }}
+      columns={{ sm: 2, md: 4, xl: 5 }}
+      // columns={5}
       // gap='48px'
       // minChildWidth={{ base: '156px' }}
-      gap={{ base: '16px', md: '30px', xl: '44px' }}
+      gap={{ base: '16px', md: '30px', xl: '49px' }}
       // flexWrap='wrap'
       // justifyContent={{ base: 'center', md: 'initial' }}
     >
@@ -111,61 +115,65 @@ const BrandItem: React.FC<BrandItem> = (props) => {
   const isHover = useHover(hoverRef);
   const [isMobile] = useMediaQuery('(max-width: 600px)');
   return (
-    <Link href={`/brand/${props.brand._id}`}>
-      <Box
-        mb={{ base: 2, md: 0 }}
-        w={{ base: 'full', md: '192px' }}
-        _hover={{ cursor: 'pointer' }}
-        ref={hoverRef}
-      >
-        <Flex
-          justifyContent='center'
-          alignItems='center'
-          height='153px'
-          borderRadius='12px'
-          border={isHover ? '1px solid #E8E8E8' : '1px solid #EFEFEF'}
-          bgColor='#FBFBFB'
-          boxShadow={
-            isHover
-              ? '0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
-              : 'unset'
-          }
+    <Box
+      w={{ base: 'full', md: '140px' }}
+      mb={{ base: '10px', md: '2px', xl: '-17px' }}
+      // mx={{ base: '16px', md: '30px', '2xl': '49px' }}
+    >
+      <Link href={`/brand/${props.brand._id}`}>
+        <Box
+          mb={{ base: 2, md: 0 }}
+          _hover={{ cursor: 'pointer' }}
+          ref={hoverRef}
         >
-          <Image
-            src={
-              props.brand.brandImage === undefined ||
-              props.brand.brandImage.length === 0
-                ? './images/shoope.png'
-                : props.brand.brandImage
+          <Flex
+            justifyContent='center'
+            alignItems='center'
+            height='153px'
+            borderRadius='12px'
+            border={isHover ? '1px solid #E8E8E8' : '1px solid #EFEFEF'}
+            bgColor='#FBFBFB'
+            boxShadow={
+              isHover
+                ? '0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+                : 'unset'
             }
-            alt='shoope logo'
-            width={{ base: '144px', md: '144px' }}
-            height='115px'
-            objectFit='contain'
-            objectPosition='center'
-          />
-        </Flex>
-        <Box mt='8px'>
-          <Text
-            fontWeight='600'
-            fontSize={{ base: '14px', md: '14px' }}
-            // lineHeight='14px'
-            textAlign='center'
-            color={isHover ? '#09BC8A' : '#172A3A'}
           >
-            {props.brand.brandName}
-          </Text>
-          <Text
-            mt='4px'
-            color='#B4C6D5'
-            textAlign='center'
-            fontWeight='400'
-            fontSize='12px'
-            lineHeight='14px'
-          >
-            {props.brand.category_id.name}
-          </Text>
-          {/* <Text
+            <Image
+              src={
+                props.brand.brandImage === undefined ||
+                props.brand.brandImage.length === 0
+                  ? './images/shoope.png'
+                  : props.brand.brandImage
+              }
+              alt='shoope logo'
+              width={{ base: '144px', md: '144px' }}
+              height='115px'
+              objectFit='contain'
+              objectPosition='center'
+            />
+          </Flex>
+          <Box mt='8px'>
+            <Text
+              fontWeight='600'
+              fontSize={{ base: '14px', md: '14px' }}
+              // lineHeight='14px'
+              textAlign='center'
+              color={isHover ? '#09BC8A' : '#172A3A'}
+            >
+              {props.brand.brandName}
+            </Text>
+            <Text
+              mt='4px'
+              color='#B4C6D5'
+              textAlign='center'
+              fontWeight='400'
+              fontSize='12px'
+              lineHeight='14px'
+            >
+              {props.brand.category_id.name}
+            </Text>
+            {/* <Text
           mt='12px'
           textAlign='left'
           fontWeight='400'
@@ -179,28 +187,29 @@ const BrandItem: React.FC<BrandItem> = (props) => {
           Redefining clothing, with a focus on quality and textiles which
           has been unwavered since the company's origins in 1949.
         </Text> */}
-          {props.brand.tags.length > 0 && (
-            <HStack
-              flexDirection={{ base: 'column', md: 'row' }}
-              mt='12px'
-              alignItems='flex-start'
-            >
-              {props.brand.tags.map((tag, i) => (
-                <Text
-                  margin='0 !important'
-                  fontWeight='400'
-                  fontSize='14px'
-                  lineHeight='17px'
-                  color='#3E97FF'
-                  key={i}
-                >
-                  #{tag}
-                </Text>
-              ))}
-            </HStack>
-          )}
+            {props.brand.tags.length > 0 && (
+              <HStack
+                flexDirection={{ base: 'column', md: 'row' }}
+                mt='12px'
+                alignItems='flex-start'
+              >
+                {props.brand.tags.map((tag, i) => (
+                  <Text
+                    margin='0 !important'
+                    fontWeight='400'
+                    fontSize='14px'
+                    lineHeight='17px'
+                    color='#3E97FF'
+                    key={i}
+                  >
+                    #{tag}
+                  </Text>
+                ))}
+              </HStack>
+            )}
+          </Box>
         </Box>
-      </Box>
-    </Link>
+      </Link>
+    </Box>
   );
 };

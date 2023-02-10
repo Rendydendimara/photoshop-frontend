@@ -173,9 +173,9 @@ const Home: NextPage = () => {
         }}
       >
         <Box
-          h={{ base: 'initial', md: '100vh' }}
+          // h={{ base: 'initial', md: '100vh' }}
           w='full'
-          pt={{ base: '33px', md: 0 }}
+          pt={{ base: '33px', md: '100px' }}
         >
           <Flex
             h='full'
@@ -290,12 +290,69 @@ const Home: NextPage = () => {
               </Flex>
             </Box>
             <Flex
-              display={{ base: 'none', md: 'initial' }}
-              w={{ base: 'full', md: '339px' }}
-              gap='10px'
-              justifyContent='flex-end'
+              display={{ base: 'none', md: 'flex' }}
+              // w={{ base: 'full', md: '339px' }}
+              gap='16px'
+              alignItems='center'
             >
-              <AllBrandIcon />
+              {ICONS_BRAND.slice(0, 1).map((brand, i) => (
+                <BoxContainer>
+                  <Image
+                    src={brand.src}
+                    width='45px'
+                    objectFit='contain'
+                    h='45px'
+                  />
+                </BoxContainer>
+              ))}
+              <Flex gap='16px' flexDirection='column'>
+                {ICONS_BRAND.slice(2, 5).map((brand, i) => (
+                  <BoxContainer>
+                    <Image
+                      src={brand.src}
+                      width='45px'
+                      objectFit='contain'
+                      h='45px'
+                    />
+                  </BoxContainer>
+                ))}
+              </Flex>
+              <Flex gap='16px' flexDirection='column'>
+                {ICONS_BRAND.slice(5, 9).map((brand, i) => (
+                  <BoxContainer>
+                    <Image
+                      src={brand.src}
+                      width='45px'
+                      objectFit='contain'
+                      h='45px'
+                    />
+                  </BoxContainer>
+                ))}
+              </Flex>
+              <Flex gap='16px' flexDirection='column'>
+                {ICONS_BRAND.slice(9, 16).map((brand, i) => (
+                  <BoxContainer>
+                    <Image
+                      src={brand.src}
+                      width='45px'
+                      objectFit='contain'
+                      h='45px'
+                    />
+                  </BoxContainer>
+                ))}
+              </Flex>
+              <Flex gap='16px' flexDirection='column'>
+                {ICONS_BRAND.slice(16, 25).map((brand, i) => (
+                  <BoxContainer>
+                    <Image
+                      src={brand.src}
+                      width='45px'
+                      objectFit='contain'
+                      h='45px'
+                    />
+                  </BoxContainer>
+                ))}
+              </Flex>
             </Flex>
           </Flex>
         </Box>
@@ -305,3 +362,22 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+const BoxContainer: React.FC<any> = (props) => {
+  return (
+    <Flex
+      justifyContent='center'
+      alignItems='center'
+      flexDirection='column'
+      bgColor='#F2F2F2'
+      minW='80px'
+      minH='80px'
+      maxW='80px'
+      maxH='80px'
+      p='2'
+      borderRadius='8px'
+    >
+      {props.children}
+    </Flex>
+  );
+};
