@@ -1,46 +1,30 @@
-import { Button, IconButton } from '@chakra-ui/button';
-import { Checkbox } from '@chakra-ui/checkbox';
+import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image as ImageChakra } from '@chakra-ui/image';
 import { Box, Center, Flex, Heading, HStack, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
-import AppTemplate from 'components/templates/AppTemplate';
-import Layout from 'components/templates/Layout';
-import { APP_NAME } from 'constant';
-import type { NextPage } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
-import { FiArrowLeftCircle } from 'react-icons/fi';
-import { HiOutlinePlusSm } from 'react-icons/hi';
-import { IBrand } from 'interfaces/IBrand';
+import { logEvent } from '@firebase/analytics';
 import { ApiGetDetailBrand } from 'api/brand';
 import {
   ApiGetListImageByBrandId,
   ApiGetListModuleByBrandId,
 } from 'api/images';
+import Footer from 'components/molecules/Footer';
+import AppTemplate from 'components/templates/AppTemplate';
+import Layout from 'components/templates/Layout';
+import { APP_NAME } from 'constant';
+import { LOCAL_COMPARE } from 'constant/local';
+import { IBrand } from 'interfaces/IBrand';
 import { IImage } from 'interfaces/Image';
 import { IModule } from 'interfaces/IModule';
-import moment from 'moment';
-import { filter, groupBy } from 'lodash';
-import { setLocal } from 'lib/localStorage';
-import { LOCAL_COMPARE } from 'constant/local';
-import {
-  getLocalCookie,
-  localCookieSaveToken,
-  setLocalCookie,
-} from 'lib/Cookies/AppCookies';
-import { MoreIcon } from 'components/atoms/icons/more-icon';
-import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
-import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
-import FilterCheckbox from 'components/molecules/FilterCheckbox';
-import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
-import { GAEvent, ReactGA } from 'lib/ga';
-import { logEvent } from '@firebase/analytics';
+import { setLocalCookie } from 'lib/Cookies/AppCookies';
 import { analytics } from 'lib/firebase';
-import Footer from 'components/molecules/Footer';
+import { groupBy } from 'lodash';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
+import BrandCompareIcon from 'icons/brandCompare.svg';
 
 const FILTER_CONTENT = [
   {
@@ -291,7 +275,49 @@ const BrandIndex: NextPage = () => {
           xl: '0',
         }}
       >
-        <Box w='full' mt='22px' mb='68px'>
+        <Box w='full' mt='32px' mb='68px'>
+          <Flex alignItems='center' justifyContent='space-between'>
+            <Flex alignItems='center' gap='4px'>
+              <Text
+                fontWeight='400'
+                fontSize='14px'
+                lineHeight='21px'
+                color='#000000'
+              >
+                Home
+              </Text>
+              <Text
+                fontWeight='400'
+                fontSize='14px'
+                lineHeight='21px'
+                color='#000000'
+              >
+                /
+              </Text>
+              <Text
+                fontWeight='600'
+                fontSize='14px'
+                lineHeight='21px'
+                color='#000000'
+              >
+                {brand?.brandName}
+              </Text>
+            </Flex>
+            <Button
+              leftIcon={<BrandCompareIcon />}
+              onClick={handleCompare}
+              h='40px'
+              bgColor='#07A377'
+              boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
+              borderRadius='8px'
+              color='white'
+              fontWeight='500'
+              fontSize='14px'
+              lineHeight='21px'
+            >
+              Compare This Brand
+            </Button>
+          </Flex>
           {/* Brand Info */}
           <Box w='full' px={{ base: '16px', md: 0 }} bgColor='white'>
             <Center>
@@ -459,8 +485,11 @@ const BrandIndex: NextPage = () => {
                 h='100%'
                 display='-webkit-inline-box'
                 overflowX='scroll'
-                className='styled-scrollbar'
+                className={
+                  listImageSelectedModule.length < 3 ? '' : 'styled-scrollbar'
+                }
                 justifyContent='center'
+                pb='20px'
               >
                 {listImageSelectedModule.map((image, i) => (
                   <ImageChakra
@@ -480,16 +509,6 @@ const BrandIndex: NextPage = () => {
             </ModalBody>
           </ModalContent>
         </Modal>
-        <Button
-          onClick={handleCompare}
-          colorScheme='green'
-          position='fixed'
-          bottom='20px'
-          right='20px'
-          size='lg'
-        >
-          Compare
-        </Button>
       </AppTemplate>
     </Layout>
   );

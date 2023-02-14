@@ -19,6 +19,12 @@ export const ROUTE: INavItem[] = [
     href: '/explore',
     pathname: '/explore',
   },
+  {
+    label: 'Compare',
+    href: '/compare',
+    pathname: '/compare',
+  },
+
   // {
   //   label: 'About Us',
   //   href: '/about',
