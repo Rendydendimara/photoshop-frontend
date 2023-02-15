@@ -214,3 +214,10 @@ input[type='checkbox']:checked > span {
   background-color: white;
   padding: 0 16px;
 }
+
+.sidebarLeftBrandDetail {
+  position: fixed;
+  top: 0;
+  width: 248px;
+  z-index: 10000;
+}

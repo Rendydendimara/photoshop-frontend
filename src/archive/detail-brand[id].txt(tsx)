@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image as ImageChakra } from '@chakra-ui/image';
-import { Box, Center, Flex, Heading, Text } from '@chakra-ui/layout';
+import { Box, Center, Flex, Heading, HStack, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
 import { logEvent } from '@firebase/analytics';
 import { ApiGetDetailBrand } from 'api/brand';
@@ -9,16 +9,11 @@ import {
   ApiGetListImageByBrandId,
   ApiGetListModuleByBrandId,
 } from 'api/images';
-import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
-import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
-import FilterCheckbox from 'components/molecules/FilterCheckbox';
-import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
 import Footer from 'components/molecules/Footer';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
 import { LOCAL_COMPARE } from 'constant/local';
-import BrandCompareIcon from 'icons/brandCompare.svg';
 import { IBrand } from 'interfaces/IBrand';
 import { IImage } from 'interfaces/Image';
 import { IModule } from 'interfaces/IModule';
@@ -29,6 +24,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import BrandCompareIcon from 'icons/brandCompare.svg';
 
 const FILTER_CONTENT = [
   {
@@ -133,14 +129,10 @@ const BrandIndex: NextPage = () => {
   const getListModuleBrand = async (brandId: string) => {
     const res = await ApiGetListModuleByBrandId(brandId);
     if (res.status === 200) {
-      let countAll = 0;
-      for (const module of res?.data?.data ?? []) {
-        countAll += module.count;
-      }
       setModuleBrand([
         {
           _id: 'All',
-          count: countAll,
+          count: 0,
         },
         ...res.data.data,
       ]);
@@ -245,14 +237,14 @@ const BrandIndex: NextPage = () => {
 
   useEffect(() => {
     // Get the navbar
-    let sidebarLeft: any;
+    let modulesBrand: any;
 
     if (typeof window !== 'undefined') {
-      sidebarLeft = document.getElementById('sidebarLeft');
+      modulesBrand = document.getElementById('listModuleBrand');
     }
 
-    // Get the offset position of the navbar
-    let sticky: any = sidebarLeft?.offsetTop;
+    // Get the offset position of the modulesBrand
+    let sticky: any = modulesBrand?.offsetTop;
     // When the user scrolls the page, execute myFunction
     if (typeof window !== 'undefined') {
       window.onscroll = function () {
@@ -261,11 +253,11 @@ const BrandIndex: NextPage = () => {
     }
 
     function handleScroll() {
-      // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
-      if (window.pageYOffset >= sticky + 57) {
-        sidebarLeft.classList.add('sidebarLeftBrandDetail');
+      // Add the sticky class to the modulesBrand when you reach its scroll position. Remove "sticky" when you leave the scroll position
+      if (window.pageYOffset >= sticky + 250) {
+        modulesBrand.classList.add('stickyListModuleBrand');
       } else {
-        sidebarLeft.classList.remove('sidebarLeftBrandDetail');
+        modulesBrand.classList.remove('stickyListModuleBrand');
       }
     }
   });
@@ -284,7 +276,6 @@ const BrandIndex: NextPage = () => {
         }}
       >
         <Box w='full' mt='32px' mb='68px'>
-          {/* Breadcrumb */}
           <Flex alignItems='center' justifyContent='space-between'>
             <Flex alignItems='center' gap='4px'>
               <Text
@@ -327,54 +318,41 @@ const BrandIndex: NextPage = () => {
               Compare This Brand
             </Button>
           </Flex>
-          {/* Brand Detail */}
-          <Box
-            // flexDirection={{ base: 'column', md: 'row' }}
-            // mt={{ base: '32px', md: 0 }}
-            // gap='52px'
-            position='relative'
-            mt='6px'
-          >
-            {/* Brand Info */}
-            <Box id='sidebarLeft' maxW='248px'>
-              <Center
-                p='5'
-                width='248px'
-                height='123px'
-                border='1px solid #EFEFEF'
-                borderRadius='15px'
-              >
-                <ImageChakra
-                  src={
-                    brand?.brandImage === undefined ||
-                    brand?.brandImage.length === 0
-                      ? '/images/shoope.png'
-                      : brand.brandImage
-                  }
-                  alt='shoope logo'
-                  objectFit='contain'
-                  objectPosition='center'
-                />
-              </Center>
-              <Box mt='12px'>
-                <Heading
-                  as='h2'
-                  fontWeight='700'
-                  fontSize={{ base: '24px' }}
-                  color='#172A3A'
-                  textAlign='left'
-                >
-                  {brand?.brandName}
-                </Heading>
-                <Text
-                  textAlign='left'
-                  fontWeight='400'
-                  fontSize={{ base: '14px', md: '16px' }}
-                  color='#172A3A'
-                >
-                  {brand?.category_id.name}
-                </Text>
-              </Box>
+          {/* Brand Info */}
+          <Box w='full' px={{ base: '16px', md: 0 }} bgColor='white'>
+            <Center>
+              <ImageChakra
+                src={
+                  brand?.brandImage === undefined ||
+                  brand?.brandImage.length === 0
+                    ? '/images/shoope.png'
+                    : brand.brandImage
+                }
+                alt='shoope logo'
+                width='130px'
+                height='56px'
+                objectFit='contain'
+                objectPosition='center'
+              />
+            </Center>
+            <Heading
+              as='h2'
+              fontWeight='700'
+              fontSize={{ base: '24px', md: '48px' }}
+              color='#172A3A'
+              textAlign='center'
+            >
+              {brand?.brandName}
+            </Heading>
+            <Text
+              textAlign='center'
+              fontWeight='400'
+              fontSize={{ base: '14px', md: '16px' }}
+              color='#172A3A'
+            >
+              {brand?.category_id.name}
+            </Text>
+            <Center w='full'>
               <Box
                 mt='12px'
                 bgColor='#EEF4F9'
@@ -384,7 +362,7 @@ const BrandIndex: NextPage = () => {
                 maxW='477px'
               >
                 <Text
-                  textAlign='left'
+                  textAlign='center'
                   fontWeight='400'
                   fontSize='14px'
                   color='#172A3A'
@@ -395,60 +373,93 @@ const BrandIndex: NextPage = () => {
                     : "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."}
                 </Text>
               </Box>
-              <Box mt='16px'>
-                <FilterCheckbox labelName='Flow'>
-                  {moduleBrand.map((module, i) => (
-                    <CheckboxItem
-                      key={i}
-                      marginBtm={i + 1 === moduleBrand.length ? 0 : '12px'}
-                      icon={
-                        filterContent.includes(module._id) ? (
-                          <CheckboxCheckedIcon />
-                        ) : (
-                          <CheckboxIcon />
-                        )
-                      }
-                      value={module._id}
-                      onChange={() =>
-                        onChangeFilterContent({ target: { name: module._id } })
-                      }
-                      fontWeight={
-                        filterContent.includes(module._id) ? '600' : '400'
-                      }
-                      name={module._id}
-                      colorCount={
-                        filterContent.includes(module._id)
-                          ? '#172A3A'
-                          : '#8FA2B1'
-                      }
-                      totalCount={module.count}
-                    />
-                  ))}
-                </FilterCheckbox>
-              </Box>
-            </Box>
-            {/* Brand Image */}
-            <Box
-              position={{ base: 'initial', md: 'absolute' }}
-              zIndex='1000'
-              w={{ md: '78%', xl: '90%' }}
-              left='300px'
-              top='0'
-              // ml={{ base: 0, md: isFixedPositionSidebar ? '60px' : 0 }}
+            </Center>
+          </Box>
+          {/* List Module Brand */}
+          <Flex
+            justifyContent='center'
+            alignItems='center'
+            w='full'
+            gap={{ base: '10px', md: 0 }}
+            position='relative'
+            ml={{ base: '16px', md: 0 }}
+          >
+            <Flex
+              justifyContent='center'
+              w='full'
+              bgColor={isOpen ? 'transparent !important' : 'white'}
+              id='listModuleBrand'
             >
-              <Box w={{ base: 'full', md: 'full' }}>
-                {filterBrandImages().map((imgBrand, i) => (
-                  <Box key={i}>
-                    <ListImage
-                      moduleName={imgBrand.moduleName}
-                      images={imgBrand.images}
-                      onClickImage={onOpenImage}
-                    />
-                    <Box mt={{ base: '20px', md: '30px', xl: '48px' }} />
-                  </Box>
+              <HStack
+                bgColor='white'
+                py='16px'
+                // px={{ base: '200px', md: 0 }}
+                maxW='1200px'
+                // w='full'
+                justifyContent={{ base: 'flex-start', md: 'center' }}
+                borderRadius='4px'
+                display='-webkit-inline-box'
+                gap='16px'
+                overflowX='scroll'
+                className='styled-scrollbar'
+                // flexWrap={{ base: 'unset', md: 'wrap' }}
+              >
+                {moduleBrand.map((module, i) => (
+                  <Button
+                    display='flex'
+                    fontSize='14px'
+                    key={i}
+                    _hover={{ cursor: 'pointer' }}
+                    p='6px 8px'
+                    borderRadius='8px'
+                    bgColor={
+                      filterContent.includes(module._id)
+                        ? '#09BC8A'
+                        : 'transparent'
+                    }
+                    fontWeight={
+                      filterContent.includes(module._id) ? '700' : '400'
+                    }
+                    color={
+                      filterContent.includes(module._id) ? '#FBFFFE' : '#172A3A'
+                    }
+                    onClick={() =>
+                      onChangeFilterContent({ target: { name: module._id } })
+                    }
+                    minW='fit-content'
+                    w='fit-content'
+                  >
+                    {module._id}
+                  </Button>
                 ))}
+              </HStack>
+            </Flex>
+          </Flex>
+          {/* Brand Images */}
+          <Box
+            mt='53px'
+            w='full'
+            // overflowY='scroll'
+            // maxH='100vh'
+            // id='brandImage'
+            ref={refContainerImages}
+            // className='styled-scrollbar'
+            position='absolute'
+            // left="20%"
+            overflowX='hidden'
+            maxW={screen.width + 30}
+            pl={{ base: '16px', md: 0 }}
+          >
+            {filterBrandImages().map((imgBrand, i) => (
+              <Box key={i}>
+                <ListImage
+                  moduleName={imgBrand.moduleName}
+                  images={imgBrand.images}
+                  onClickImage={onOpenImage}
+                />
+                <Box mt={{ base: '20px', md: '30px', xl: '48px' }} />
               </Box>
-            </Box>
+            ))}
           </Box>
           <Box mt={heightContainerImages + 100}>
             <Footer />
