@@ -34,7 +34,9 @@ const FilterCheckbox: React.FC<IProps> = (props) => {
         overflowY='scroll'
         className='styled-scrollbar'
       >
-        <Box w='full'>{props.children}</Box>
+        <Box pr='1' w='full'>
+          {props.children}
+        </Box>
       </Box>
     </Box>
   );
