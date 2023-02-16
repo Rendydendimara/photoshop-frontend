@@ -473,7 +473,9 @@ const BrandIndex: NextPage = () => {
                 w='full'
                 h='100%'
                 display='-webkit-inline-box'
-                overflowX={listImageSelectedModule.length < 3 ? '' : 'scroll'}
+                overflowX={
+                  listImageSelectedModule.length < 3 ? 'unset' : 'scroll'
+                }
                 className={
                   listImageSelectedModule.length < 3 ? '' : 'styled-scrollbar'
                 }
