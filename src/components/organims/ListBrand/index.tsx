@@ -1,50 +1,23 @@
+import { Box, Flex, HStack, SimpleGrid, Text } from '@chakra-ui/layout';
 import { useMediaQuery } from '@chakra-ui/react';
-import { Button } from '@chakra-ui/button';
-import { Checkbox } from '@chakra-ui/checkbox';
-import { useDisclosure } from '@chakra-ui/hooks';
-import { Image } from '@chakra-ui/image';
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
-import { Box, Center, Flex, HStack, SimpleGrid, Text } from '@chakra-ui/layout';
-import {
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerOverlay,
-} from '@chakra-ui/modal';
-import { ApiGetListBrand } from 'api/brand';
-import { ApiGetListCategory } from 'api/category';
-import { BrandIcon } from 'components/atoms/icons/brand-icon';
-import { CategoryIcon } from 'components/atoms/icons/category-icon';
-import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
-import { FlowIcon } from 'components/atoms/icons/flow-icon';
-import BrandReachBottom from 'components/molecules/BrandReachBottom';
-import FilterTools from 'components/molecules/FilterTools';
-import TopbarFilter from 'components/molecules/FilterPageView';
-import AppTemplate from 'components/templates/AppTemplate';
-import Layout from 'components/templates/Layout';
-import { APP_NAME } from 'constant';
-import { IBrand } from 'interfaces/IBrand';
-import { ICategory } from 'interfaces/ICategory';
-import moment from 'moment';
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import { IBrandV2 } from 'interfaces/IBrand';
+import Image from 'next/image';
 // import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
-import { BiSearch } from 'react-icons/bi';
-import { useHover, useOnClickOutside } from 'usehooks-ts';
+import { useHover } from 'usehooks-ts';
+import { shimmer, toBase64 } from 'utils/imageOptimization';
 
 interface IProps {
-  listBrand: IBrand[];
+  listBrand: IBrandV2[];
 }
 const LIMIT_ROW_BRAND = 5;
 const ListBrand: React.FC<IProps> = (props) => {
-  const [dataBase, setDataBase] = useState<IBrand[]>([]);
+  const [dataBase, setDataBase] = useState<IBrandV2[]>([]);
 
-  const renderItemBrand = (brands: IBrand[]) => {
-    return <GridImage brands={brands} />;
-  };
+  // const renderItemBrand = (brands: IBrand[]) => {
+  //   return <GridImage brands={brands} />;
+  // };
 
   useEffect(() => {
     // let tempDataBase: any = [];
@@ -84,7 +57,7 @@ const ListBrand: React.FC<IProps> = (props) => {
 export default ListBrand;
 
 interface IGridImage {
-  brands: IBrand[];
+  brands: IBrandV2[];
 }
 const GridImage: React.FC<IGridImage> = (props) => {
   return (
@@ -107,7 +80,7 @@ const GridImage: React.FC<IGridImage> = (props) => {
 };
 
 interface BrandItem {
-  brand: IBrand;
+  brand: IBrandV2;
 }
 
 const BrandItem: React.FC<BrandItem> = (props) => {
@@ -141,16 +114,20 @@ const BrandItem: React.FC<BrandItem> = (props) => {
           >
             <Image
               src={
-                props.brand.brandImage === undefined ||
-                props.brand.brandImage.length === 0
+                props.brand.logoSmall === undefined ||
+                props.brand.logoSmall.length === 0
                   ? './images/shoope.png'
-                  : props.brand.brandImage
+                  : props.brand.logoSmall
               }
               alt='shoope logo'
-              width={{ base: '144px', md: '144px' }}
-              height='115px'
+              width={144}
+              height={115}
               objectFit='contain'
               objectPosition='center'
+              placeholder='blur'
+              blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                shimmer(700, 700)
+              )}`}
             />
           </Flex>
           <Box mt='8px'>
@@ -161,52 +138,23 @@ const BrandItem: React.FC<BrandItem> = (props) => {
               textAlign='center'
               color={isHover ? '#09BC8A' : '#172A3A'}
             >
-              {props.brand.brandName}
+              {props.brand.name}
             </Text>
-            <Text
-              mt='4px'
-              color='#B4C6D5'
-              textAlign='center'
-              fontWeight='400'
-              fontSize='12px'
-              lineHeight='14px'
-            >
-              {props.brand.category_id.name}
-            </Text>
-            {/* <Text
-          mt='12px'
-          textAlign='left'
-          fontWeight='400'
-          fontSize='14px'
-          lineHeight='150%'
-          color='#666666'
-        >
-          UNIQLO is a clothing apparel company, which was originally
-          founded in Yamaguchi, Japan in 1949 as a textiles manufacturer.
-          Now it is a global props.brand with over 1000 stores around the world.
-          Redefining clothing, with a focus on quality and textiles which
-          has been unwavered since the company's origins in 1949.
-        </Text> */}
-            {props.brand.tags.length > 0 && (
-              <HStack
-                flexDirection={{ base: 'column', md: 'row' }}
-                mt='12px'
-                alignItems='flex-start'
-              >
-                {props.brand.tags.map((tag, i) => (
-                  <Text
-                    margin='0 !important'
-                    fontWeight='400'
-                    fontSize='14px'
-                    lineHeight='17px'
-                    color='#3E97FF'
-                    key={i}
-                  >
-                    #{tag}
-                  </Text>
-                ))}
-              </HStack>
-            )}
+            <HStack spacing={2} justifyContent='center'>
+              {props.brand.category.map((category, i) => (
+                <Text
+                  key={i}
+                  mt='4px'
+                  color='#B4C6D5'
+                  textAlign='center'
+                  fontWeight='400'
+                  fontSize='12px'
+                  lineHeight='14px'
+                >
+                  {category.name}
+                </Text>
+              ))}
+            </HStack>
           </Box>
         </Box>
       </Link>

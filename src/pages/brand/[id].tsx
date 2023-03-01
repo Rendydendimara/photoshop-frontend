@@ -1,14 +1,12 @@
 import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Image as ImageChakra } from '@chakra-ui/image';
-import { Box, Center, Flex, Heading, Text } from '@chakra-ui/layout';
+import { Box, Center, Flex, Heading, HStack, Text } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
 import { logEvent } from '@firebase/analytics';
 import { ApiGetDetailBrand } from 'api/brand';
-import {
-  ApiGetListImageByBrandId,
-  ApiGetListModuleByBrandId,
-} from 'api/images';
+import { ApiGetListImageByBrandId } from 'api/images';
+import { ApiFindModuleByBrand } from 'api/module';
+import { ApiGetListScreenByModuleAndBrandId } from 'api/screen';
 import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
 import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import FilterCheckbox from 'components/molecules/FilterCheckbox';
@@ -19,7 +17,7 @@ import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
 import { LOCAL_COMPARE } from 'constant/local';
 import BrandCompareIcon from 'icons/brandCompare.svg';
-import { IBrand } from 'interfaces/IBrand';
+import { IBrand, IBrandV2 } from 'interfaces/IBrand';
 import { IImage } from 'interfaces/Image';
 import { IModule } from 'interfaces/IModule';
 import { setLocalCookie } from 'lib/Cookies/AppCookies';
@@ -27,8 +25,16 @@ import { analytics } from 'lib/firebase';
 import { groupBy } from 'lodash';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { shimmer, toBase64 } from 'utils/imageOptimization';
+
+interface IModuleV2 {
+  _id: string;
+  name: string;
+  images: string[];
+}
 
 const FILTER_CONTENT = [
   {
@@ -50,6 +56,8 @@ const BrandIndex: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [brand, setBrand] = useState<IBrand>();
+  const [listModule, setListModule] = useState<IModuleV2[]>([]);
+  const [brandV2, setBrandV2] = useState<IBrandV2>();
   const [imagesBrand, setImagesBrand] = useState<
     {
       moduleName: string;
@@ -60,7 +68,7 @@ const BrandIndex: NextPage = () => {
   const [brandId, setBrandId] = useState('');
   const [listCheckedModule, setListCheckedModule] = useState<string[]>([]);
   const [listImageSelectedModule, setListImageSelectedModule] = useState<
-    IImage[]
+    string[]
   >([]);
   const [filterContent, setFilterContent] = useState<string[]>([]);
 
@@ -81,21 +89,22 @@ const BrandIndex: NextPage = () => {
     setFilterContent(newFilter);
   };
 
-  const onOpenImage = async (moduleName: string) => {
+  const onOpenImage = async (moduleId: string) => {
     onOpen();
-    const res = await ApiGetListImageByBrandId({
-      brandId: brandId,
-      moduleFolder: moduleName,
-    });
+    // const res = await ApiGetListImageByBrandId({
+    //   brandId: brandId,
+    //   moduleFolder: moduleName,
+    // });
+    const res = await ApiGetListScreenByModuleAndBrandId(brandId, moduleId);
     if (res.status === 200) {
-      setListImageSelectedModule(res.data.data);
+      setListImageSelectedModule(res.data.data.images);
     }
   };
 
   const getDetailBrand = async (brandId: string) => {
     const res = await ApiGetDetailBrand(brandId);
     if (res.status === 200) {
-      setBrand(res.data.data);
+      setBrandV2(res.data.data);
     }
   };
 
@@ -131,18 +140,32 @@ const BrandIndex: NextPage = () => {
   };
 
   const getListModuleBrand = async (brandId: string) => {
-    const res = await ApiGetListModuleByBrandId(brandId);
+    const res = await ApiFindModuleByBrand(brandId);
     if (res.status === 200) {
       let countAll = 0;
+      let allImages: any = [];
+      let tempModule: any[] = [];
       for (const module of res?.data?.data ?? []) {
-        countAll += module.count;
+        countAll += module.images.length;
+        allImages = [...allImages, ...module.images];
+        tempModule.push({
+          _id: module.module._id,
+          name: module.module.name,
+          images: module.images,
+        });
       }
-      setModuleBrand([
+      setListModule([
         {
           _id: 'All',
-          count: countAll,
+          name: 'All',
+          images: allImages,
+          module: {
+            _id: 'All',
+            name: 'All',
+            hashtag: [],
+          },
         },
-        ...res.data.data,
+        ...tempModule,
       ]);
       setFilterContent(['All']);
     }
@@ -160,7 +183,6 @@ const BrandIndex: NextPage = () => {
 
   const handleCompare = () => {
     setLocalCookie(LOCAL_COMPARE[1].brandId, brandId);
-    setLocalCookie(LOCAL_COMPARE[1].listModule, listCheckedModule);
     // GAEvent({
     //   action: 'on-click-compare-button',
     //   params: JSON.stringify({
@@ -183,11 +205,10 @@ const BrandIndex: NextPage = () => {
 
   const filterBrandImages = () => {
     if (filterContent.length === 0 || filterContent.includes('All')) {
-      return imagesBrand;
+      let result = listModule.filter((mod) => mod._id !== 'All');
+      return result;
     }
-    let result = imagesBrand.filter((brand) =>
-      filterContent.includes(brand.moduleName)
-    );
+    let result = listModule.filter((mod) => filterContent.includes(mod._id));
     return result;
   };
 
@@ -343,17 +364,24 @@ const BrandIndex: NextPage = () => {
                 height='123px'
                 border='1px solid #EFEFEF'
                 borderRadius='15px'
+                objectPosition='relative'
               >
-                <ImageChakra
+                <Image
                   src={
-                    brand?.brandImage === undefined ||
-                    brand?.brandImage.length === 0
+                    brandV2?.logoSmall === undefined ||
+                    brandV2?.logoSmall.length === 0
                       ? '/images/shoope.png'
-                      : brand.brandImage
+                      : brandV2.logoSmall
                   }
                   alt='shoope logo'
                   objectFit='contain'
                   objectPosition='center'
+                  width={120}
+                  height={100}
+                  placeholder='blur'
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                    shimmer(700, 700)
+                  )}`}
                 />
               </Center>
               <Box mt='12px'>
@@ -364,16 +392,23 @@ const BrandIndex: NextPage = () => {
                   color='#172A3A'
                   textAlign='left'
                 >
-                  {brand?.brandName}
+                  {brandV2?.name}
                 </Heading>
-                <Text
-                  textAlign='left'
-                  fontWeight='400'
-                  fontSize={{ base: '14px', md: '16px' }}
-                  color='#172A3A'
-                >
-                  {brand?.category_id.name}
-                </Text>
+                <HStack spacing={2} justifyContent='flex-start'>
+                  {brandV2?.category.map((category, i) => (
+                    <Text
+                      key={i}
+                      mt='4px'
+                      color='#B4C6D5'
+                      textAlign='center'
+                      fontWeight='400'
+                      fontSize='12px'
+                      lineHeight='14px'
+                    >
+                      {category.name}
+                    </Text>
+                  ))}
+                </HStack>
               </Box>
               <Box
                 mt='12px'
@@ -390,17 +425,17 @@ const BrandIndex: NextPage = () => {
                   color='#172A3A'
                   w='full'
                 >
-                  {brand?.description
-                    ? brand?.description
+                  {brandV2?.description
+                    ? brandV2?.description
                     : "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."}
                 </Text>
               </Box>
               <Box mt='16px'>
                 <FilterCheckbox labelName='Flow'>
-                  {moduleBrand.map((module, i) => (
+                  {listModule.map((module, i) => (
                     <CheckboxItem
                       key={i}
-                      marginBtm={i + 1 === moduleBrand.length ? 0 : '12px'}
+                      marginBtm={i + 1 === listModule.length ? 0 : '12px'}
                       icon={
                         filterContent.includes(module._id) ? (
                           <CheckboxCheckedIcon />
@@ -415,13 +450,13 @@ const BrandIndex: NextPage = () => {
                       fontWeight={
                         filterContent.includes(module._id) ? '600' : '400'
                       }
-                      name={module._id}
+                      name={module.name}
                       colorCount={
                         filterContent.includes(module._id)
                           ? '#172A3A'
                           : '#8FA2B1'
                       }
-                      totalCount={module.count}
+                      totalCount={module.images.length}
                     />
                   ))}
                 </FilterCheckbox>
@@ -434,23 +469,20 @@ const BrandIndex: NextPage = () => {
               w={{ md: '78%', xl: '90%' }}
               left='300px'
               top='0'
+
               // ml={{ base: 0, md: isFixedPositionSidebar ? '60px' : 0 }}
             >
-              <Box w={{ base: 'full', md: 'full' }}>
+              <Box w={{ base: 'full', md: 'full' }} id='brandImage'>
                 {filterBrandImages().map((imgBrand, i) => (
                   <Box key={i}>
-                    <ListImage
-                      moduleName={imgBrand.moduleName}
-                      images={imgBrand.images}
-                      onClickImage={onOpenImage}
-                    />
+                    <ListImage module={imgBrand} onClickImage={onOpenImage} />
                     <Box mt={{ base: '20px', md: '30px', xl: '48px' }} />
                   </Box>
                 ))}
               </Box>
             </Box>
           </Box>
-          <Box mt={heightContainerImages + 100}>
+          <Box mt={mtSamiliarBrand + 100}>
             <Footer />
           </Box>
         </Box>
@@ -483,17 +515,21 @@ const BrandIndex: NextPage = () => {
                 pb='20px'
               >
                 {listImageSelectedModule.map((image, i) => (
-                  <ImageChakra
-                    src={image.imagePath}
-                    alt={image.filename}
-                    width='480px'
-                    height='853.33px'
-                    objectFit='contain'
-                    objectPosition='center'
+                  <Image
+                    src={image}
+                    alt={image}
+                    width={480}
+                    height={853.33}
                     key={i}
-                    _hover={{
+                    style={{
                       cursor: 'pointer',
+                      objectFit: 'contain',
+                      objectPosition: 'center',
                     }}
+                    placeholder='blur'
+                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                      shimmer(700, 700)
+                    )}`}
                   />
                 ))}
               </Flex>
@@ -508,8 +544,7 @@ const BrandIndex: NextPage = () => {
 export default BrandIndex;
 
 interface IListImage {
-  moduleName: string;
-  images: IImage[];
+  module: IModuleV2;
   onClickImage: (moduleName: string) => void;
 }
 const ListImage: React.FC<IListImage> = (props) => {
@@ -522,7 +557,7 @@ const ListImage: React.FC<IListImage> = (props) => {
         fontSize='20px'
         lineHeight='24px'
       >
-        {props.moduleName}
+        {props.module.name}
       </Text>
       <Flex
         mt='24px'
@@ -535,22 +570,26 @@ const ListImage: React.FC<IListImage> = (props) => {
         className='styled-scrollbar'
         pb='12px'
       >
-        {props.images.map((image, i) => (
-          <ImageChakra
-            onClick={() => props.onClickImage(image.folder)}
-            src={image.imagePath}
-            alt={image.filename}
-            width='360px'
-            height='640px'
+        {props.module.images.map((image, i) => (
+          <Image
+            onClick={() => props.onClickImage(props.module._id)}
+            src={image}
+            alt={image}
+            width={360}
+            height={640}
             objectFit='contain'
             objectPosition='center'
             key={i}
-            _hover={{
+            style={{
               cursor: 'pointer',
+              borderRadius: '8px',
+              border: '2px solid #172A3A',
+              marginRight: i + 1 === props.module.images.length ? '10px' : 0,
             }}
-            borderRadius='8px'
-            border='2px solid #172A3A'
-            marginRight={i + 1 === props.images.length ? '10px' : 0}
+            placeholder='blur'
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              shimmer(700, 700)
+            )}`}
           />
         ))}
       </Flex>

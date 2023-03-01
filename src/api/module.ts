@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { BACKEND_URL, BACKEND_URLV2 } from 'constant';
+import { BACKEND_URL } from 'constant';
 
-export const ApiGetListCategory = async () => {
+export const ApiFindModule = async (data: { keyword?: string[] }) => {
   const response = await axios
-    .get(`${BACKEND_URL}/category/list`)
+    .post(`${BACKEND_URL}/module/find`, {
+      keyword: data.keyword,
+    })
     .then((response) => {
       return response;
     })
@@ -17,9 +19,9 @@ export const ApiGetListCategory = async () => {
   }
 };
 
-export const ApiGetListCategoryV2 = async () => {
+export const ApiFindModuleByBrand = async (brandId: string) => {
   const response = await axios
-    .get(`${BACKEND_URLV2}/category/list-with-count-brand`)
+    .get(`${BACKEND_URL}/module/list-by-brand/${brandId}`)
     .then((response) => {
       return response;
     })

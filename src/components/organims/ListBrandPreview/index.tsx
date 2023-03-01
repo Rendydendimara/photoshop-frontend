@@ -1,13 +1,29 @@
-import { Image } from '@chakra-ui/image';
+// import { Image } from '@chakra-ui/react';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
-import { IBrand, IListBrandByFlow } from 'interfaces/IBrand';
+import { chakra } from '@chakra-ui/react';
+import { IBrand, IBrandV2 } from 'interfaces/IBrand';
 import moment from 'moment';
+import NextImage from 'next/image';
 // import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
+const Image = chakra(NextImage, {
+  baseStyle: { maxH: 354, maxW: 200 },
+  shouldForwardProp: (prop) =>
+    [
+      'width',
+      'height',
+      'src',
+      'alt',
+      'quality',
+      'placeholder',
+      'blurDataURL',
+      'loader ',
+    ].includes(prop),
+});
 interface IProps {
-  listBrandByFlow: IListBrandByFlow[];
+  listBrand: IBrandV2[];
   activeFlow: string[];
 }
 const ListBrandPreview: React.FC<IProps> = (props) => {
@@ -21,7 +37,7 @@ const ListBrandPreview: React.FC<IProps> = (props) => {
       gap={{ base: 3, md: '30px' }}
       flexWrap='wrap'
     >
-      {props.listBrandByFlow.map((brand, item) => (
+      {props.listBrand.map((brand, item) => (
         <Box
           mt={item + 1 > 1 ? '52px' : 0}
           w='full'
@@ -47,14 +63,16 @@ const ListBrandPreview: React.FC<IProps> = (props) => {
                 <Image
                   src={
                     // './images/shoope.png'
-                    brand.brandImage === undefined ||
-                    brand.brandImage.length === 0
+                    brand.logoSmall === undefined ||
+                    brand.logoSmall.length === 0
                       ? './images/shoope.png'
-                      : brand.brandImage
+                      : brand.logoSmall
                   }
                   alt='shoope logo'
-                  width='full'
-                  // height='153px'
+                  width={140}
+                  // layout='responsive'
+                  height={153}
+                  // width='140'
                   objectFit='contain'
                   objectPosition='center'
                 />
@@ -71,20 +89,23 @@ const ListBrandPreview: React.FC<IProps> = (props) => {
                     textAlign='left'
                     color='#172A3A'
                   >
-                    {brand.brandName}
+                    {brand.name}
                   </Text>
-                  <Text
-                    mt='4px'
-                    fontWeight='400'
-                    fontSize='12px'
-                    textAlign='left'
-                    color='#97A5B0'
-                    display={{ base: 'none', md: 'block' }}
-                  >
-                    {brand.category_id.name}
-                    {/* {brand.modules} Module {brand.screens} Screen */}
-                  </Text>
-                  <Text
+                  <HStack my='1'>
+                    {brand.category.map((category, index3) => (
+                      <Text
+                        mt='4px'
+                        fontWeight='400'
+                        fontSize='12px'
+                        textAlign='left'
+                        color='#97A5B0'
+                        display={{ base: 'none', md: 'block' }}
+                      >
+                        {category.name}
+                      </Text>
+                    ))}
+                  </HStack>
+                  {/* <Text
                     mt='4px'
                     fontWeight='400'
                     fontSize='12px'
@@ -93,7 +114,7 @@ const ListBrandPreview: React.FC<IProps> = (props) => {
                     display={{ base: 'initial', md: 'none' }}
                   >
                     Have 3 Screen for Register
-                  </Text>
+                  </Text> */}
                   <Box
                     display={{ base: 'none', md: 'block' }}
                     mt='8px'
@@ -107,24 +128,19 @@ const ListBrandPreview: React.FC<IProps> = (props) => {
                       textAlign='left'
                       color='#172A3A'
                     >
-                      {/* brand.description ?? */}
-                      {
-                        "Digitalisation of animal and plant markets by the nation's children to provide a place for the community of flora and fauna lovers and new players in fauna & flora."
-                      }
-
-                      {/* Last updated {moment(brand.updated_at).format('DD MMM')} */}
+                      {brand.description}
                     </Text>
                   </Box>
                 </Box>
                 <Box display={{ base: 'none', md: 'initial' }}>
                   <Text fontWeight='600' fontSize='12px' color='#07A377'>
-                    {brand.screens} Screen
+                    {brand.screenTotal} Screen
                   </Text>
                   <Text fontWeight='400' fontSize='11px' mt='4px' color='black'>
                     Last updated{' '}
-                    {brand.updated_at
-                      ? moment(brand.updated_at).format('DD MMM')
-                      : moment(brand.created_at).format('DD MMM')}
+                    {brand.updatedAt
+                      ? moment(brand.updatedAt).format('DD MMM')
+                      : moment(brand.createdAt).format('DD MMM')}
                   </Text>
                 </Box>
               </Flex>
@@ -139,13 +155,19 @@ const ListBrandPreview: React.FC<IProps> = (props) => {
             gap='28px'
           >
             {brand.images.map((image, i) => (
+              // <Box width='200px' height='354px'>
               <Image
-                src={image.imagePath}
-                width={{ base: '144px', md: '200px' }}
-                height='354px'
+                src={image}
+                alt='shoope logo'
+                layout='responsive'
+                width={200}
+                height={354}
+                // width={{ base: '144px', md: '200px' }}
+                // height='354px'
                 objectFit='contain'
-                objectPosition='center'
+                // objectPosition='center'
               />
+              // </Box>
             ))}
           </Flex>
         </Box>

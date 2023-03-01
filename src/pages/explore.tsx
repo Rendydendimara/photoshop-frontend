@@ -1,58 +1,49 @@
-import { every, filter, includes, some } from 'lodash';
 import { Button, IconButton } from '@chakra-ui/button';
-import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Image } from '@chakra-ui/image';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
-import { SearchIcon } from 'components/atoms/icons/search-icon';
-import { Box, Center, Flex, HStack, Text } from '@chakra-ui/layout';
+import { Box, Center, Flex, Text } from '@chakra-ui/layout';
 import {
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
 } from '@chakra-ui/modal';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/tabs';
 import {
+  ApiFindBrand,
   ApiFindBrandByModules,
   ApiGetDetailBrand,
-  ApiGetListBrand,
   ApiGetListModules,
   ApiSearchBrand,
 } from 'api/brand';
-import { ApiGetListCategory } from 'api/category';
-import { BrandIcon } from 'components/atoms/icons/brand-icon';
-import { CategoryIcon } from 'components/atoms/icons/category-icon';
-import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
-import { FlowIcon } from 'components/atoms/icons/flow-icon';
+import { ApiGetListCategoryV2 } from 'api/category';
+import { ApiFindModule } from 'api/module';
+import { SearchIcon } from 'components/atoms/icons/search-icon';
 import BrandReachBottom from 'components/molecules/BrandReachBottom';
-import FilterTools from 'components/molecules/FilterTools';
 import FilterPageView from 'components/molecules/FilterPageView';
+import FilterTools from 'components/molecules/FilterTools';
+import Footer from 'components/molecules/Footer';
 import ListBrand from 'components/organims/ListBrand';
+import ListBrandPreview from 'components/organims/ListBrandPreview';
+import ListFlowBrand from 'components/organims/ListFlowBrand';
 import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
 import {
   IBrand,
+  IBrandV2,
   IListBrandByFlow,
   IListFlow,
   ISearchBrand,
 } from 'interfaces/IBrand';
 import { ICategory } from 'interfaces/ICategory';
-import moment from 'moment';
+import { IModuleV2 } from 'interfaces/IModule';
+import { every, filter, includes, some } from 'lodash';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-// import Image from 'next/image';
-import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
-import { BiSearch } from 'react-icons/bi';
 import { useOnClickOutside } from 'usehooks-ts';
-import ListBrandPreview from 'components/organims/ListBrandPreview';
-import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
-import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
-import Footer from 'components/molecules/Footer';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/tabs';
-import ListFlowBrand from 'components/organims/ListFlowBrand';
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -113,9 +104,11 @@ const Explore: NextPage = () => {
   const [loadingGetBrand, setLoadingGetBrand] = useState(false);
   const [isFixedPositionSidebar, setIsFixedPositionSidebar] = useState(false);
   const [listBrand, setListBrand] = useState<IBrand[]>([]);
+  const [listBrandV2, setListBrandV2] = useState<IBrandV2[]>([]);
   const [listBrandByFlow, setListBrandByFlow] = useState<IListBrandByFlow[]>(
     []
   );
+  const [listFlowV2, setListFlowV2] = useState<IModuleV2[]>([]);
   const inputSearchElement: any = useRef(null);
   const [listCategory, setListCategory] = useState<ICategory[]>([]);
   const [listFlow, setListFlow] = useState<IListFlow[]>([]);
@@ -266,33 +259,31 @@ const Explore: NextPage = () => {
     module?: string[];
   }) => {
     setLoadingGetBrand(true);
-    const res = await ApiGetListBrand(filter);
+    const res = await ApiFindBrand(filter);
     if (res.status === 200) {
-      setListBrand(res.data.data);
+      setListBrandV2(res.data.data);
     }
     setLoadingGetBrand(false);
   };
 
   const handleGetListCategory = async () => {
-    const res = await ApiGetListCategory();
+    const res = await ApiGetListCategoryV2();
     if (res.status === 200) {
       let data = res.data.data;
       let dataResult: any = data;
       let countTotal = 0;
-      if (data.length > 0) {
-        data.forEach((dt: any) => {
-          countTotal += dt.totalBrand;
-        });
-        dataResult = [
-          {
-            name: 'all',
-            _id: 'all',
-            created_at: '',
-            totalBrand: countTotal,
-          },
-          ...data,
-        ];
-      }
+      data.forEach((dt: any) => {
+        countTotal += dt.totalBrand;
+      });
+      dataResult = [
+        {
+          name: 'all',
+          _id: 'all',
+          created_at: '',
+          totalBrand: countTotal,
+        },
+        ...data,
+      ];
       setListCategory(dataResult);
     }
   };
@@ -321,18 +312,25 @@ const Explore: NextPage = () => {
     }
   };
 
+  const findModule = async () => {
+    const res = await ApiFindModule({});
+    if (res.status === 200) {
+      setListFlowV2(res.data.data);
+    }
+  };
+
   const renderBrand = () => {
     if (filterPageView.brand && showPreview) {
       return (
         <ListBrandPreview
           activeFlow={filterBrandByFlow.flows}
-          listBrandByFlow={listBrandByFlow}
+          listBrand={listBrandV2}
         />
       );
     } else if (filterPageView.brand) {
-      return <ListBrand listBrand={listBrand} />;
+      return <ListBrand listBrand={listBrandV2} />;
     } else if (filterPageView.flow) {
-      return <ListFlowBrand />;
+      return <ListFlowBrand listFlow={listFlowV2} />;
     }
   };
 
@@ -725,6 +723,7 @@ const Explore: NextPage = () => {
     handleGetListBrand({});
     handleGetListCategory();
     getListFlow();
+    findModule();
     getListBrandByFlow({
       categories: [],
       flows: [],
@@ -1265,7 +1264,7 @@ const Explore: NextPage = () => {
             display={{ base: 'hide', md: 'initial' }}
           >
             Result :{' '}
-            {filterPageView.brand ? listBrand.length : listBrandByFlow.length}{' '}
+            {filterPageView.brand ? listBrandV2.length : listBrandByFlow.length}{' '}
             Apps
           </Text>
         </Box>
@@ -1305,7 +1304,7 @@ const Explore: NextPage = () => {
             // ml={{ base: 0, md: isFixedPositionSidebar ? '60px' : 0 }}
           >
             {renderBrand()}
-            {listBrand.length > 0 && (
+            {listBrandV2.length > 0 && (
               <BrandReachBottom
                 onSearchAgain={scrollOnTop}
                 onRequest={onRequest}

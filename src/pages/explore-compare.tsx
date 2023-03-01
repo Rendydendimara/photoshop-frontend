@@ -1,23 +1,13 @@
 import { Button, IconButton } from '@chakra-ui/button';
 import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Image } from '@chakra-ui/image';
-import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/layout';
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
-} from '@chakra-ui/modal';
-import { ApiGetDetailBrand } from 'api/brand';
+import { Box, Flex, Text } from '@chakra-ui/layout';
+import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
+import { ApiCompareBrand, ApiGetDetailBrand } from 'api/brand';
 import {
   ApiGetListImageByBrandId,
   ApiGetListSameModuleByBrandsId,
 } from 'api/images';
-import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
-import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import { ListIcon } from 'components/atoms/icons/list-icon';
 import { RemoveIcon } from 'components/atoms/icons/remove-icon';
 import AppTemplate from 'components/templates/AppTemplate';
@@ -27,9 +17,11 @@ import { IBrand } from 'interfaces/IBrand';
 import { IImage } from 'interfaces/Image';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useHover, useOnClickOutside } from 'usehooks-ts';
+import { shimmer, toBase64 } from 'utils/imageOptimization';
 
 const DUMMY_MODULE = [
   {
@@ -49,12 +41,31 @@ const DUMMY_MODULE = [
   },
 ];
 
+interface IBranCompareItem {
+  id: string;
+  name: string;
+  smallLogo: string;
+  modules: [
+    {
+      name: string;
+      images: string[];
+    }
+  ];
+}
+interface IBrandCompare {
+  brands: IBranCompareItem[];
+  sameModules: string[];
+}
+
 const Explore: NextPage = () => {
   const height = ['529px', '600px', '350px', '500px', '429px', '400px'];
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
   const router = useRouter();
   const [listSameModule, setListSameModule] = useState<string[]>([]);
+  const [listIdBrand, serListIdBrand] = useState<string[]>([]);
   const [openFilterModule, setOpenFilterModule] = useState(false);
+  const [brand, setBrand] = useState<IBrandCompare>();
+  const [brandStatic, setBrandStatic] = useState<IBrandCompare>();
   const [listIdBrandCompare, setListIdBrandCompare] = useState<IBrand[]>([]);
   const [imagesBrand, setImagesBrand] = useState<
     {
@@ -91,21 +102,21 @@ const Explore: NextPage = () => {
       newFilter = [...filterModule, e.target.name];
     }
     setFilterModule(newFilter);
-    if (newFilter.length > 0) {
-      let result: any[] = [];
-      imagesBrandStatic.forEach((brand) => {
-        let imgs = brand.images.filter((image: IImage) =>
-          newFilter.includes(image.folder)
-        );
-        result.push({
-          ...brand,
-          images: imgs,
-        });
-      });
-      setImagesBrand(result);
-    } else {
-      setImagesBrand(imagesBrandStatic);
-    }
+    // if (newFilter.length > 0) {
+    //   let result: any[] = [];
+    //   imagesBrandStatic.forEach((brand) => {
+    //     let imgs = brand.images.filter((image: IImage) =>
+    //       newFilter.includes(image.folder)
+    //     );
+    //     result.push({
+    //       ...brand,
+    //       images: imgs,
+    //     });
+    //   });
+    //   setImagesBrand(result);
+    // } else {
+    //   setImagesBrand(imagesBrandStatic);
+    // }
   };
 
   const getListSameModule = async (brandsId: string[]) => {
@@ -172,11 +183,88 @@ const Explore: NextPage = () => {
   };
 
   const handleRemoveBrand = (id: string) => {
-    const newBrand = listIdBrandCompare.filter((brand) => brand._id !== id);
-    const newBrandId = newBrand.map((brand) => brand._id);
-    setListIdBrandCompare(newBrand);
-    getImageBrand(newBrandId);
-    getListSameModule(newBrandId);
+    let newIdBrand = listIdBrand.filter((idBrnd) => idBrnd !== id);
+    compareBrand(newIdBrand);
+  };
+
+  const compareBrand = async (brandId: string[]) => {
+    const res = await ApiCompareBrand({ brandId });
+    if (res.status === 200) {
+      setBrand(res.data.data);
+      setBrandStatic(res.data.data);
+    }
+  };
+
+  const renderImageBrand = (brandData: IBranCompareItem) => {
+    if (filterModule.length === 0) {
+      return brandData.modules.map((mod, j) =>
+        mod.images.map((imge, k) => (
+          <Image
+            alt='alt'
+            src={imge}
+            style={{
+              cursor: 'pointer',
+              marginBottom: '30px',
+              backgroundColor: '#FF9797',
+            }}
+            height={400}
+            // layout=""
+            key={`${j}${k}`}
+            width={360}
+            placeholder='blur'
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              shimmer(700, 700)
+            )}`}
+          />
+        ))
+      );
+    } else {
+      const selectedModules = brandData.modules.filter((mod) =>
+        filterModule.includes(mod.name)
+      );
+      return selectedModules.map((modDt, i) =>
+        modDt.images.map((imge, k) => (
+          <Image
+            alt='alt'
+            src={imge}
+            style={{
+              cursor: 'pointer',
+              marginBottom: '30px',
+              backgroundColor: '#FF9797',
+            }}
+            height={400}
+            // layout=""
+            key={`${i}${k}`}
+            width={360}
+            placeholder='blur'
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              shimmer(700, 700)
+            )}`}
+          />
+        ))
+      );
+    }
+    // {brd.modules.map((mod, j) =>
+    //   mod.images.map((imge, k) => (
+    //     <Image
+    //       alt='alt'
+    //       src={imge}
+    //       style={{
+    //         cursor: 'pointer',
+    //         marginBottom: '30px',
+    //         backgroundColor: '#FF9797',
+    //       }}
+    //       height={400}
+    //       // layout=""
+    //       key={`${i}${j}${k}`}
+    //       width={360}
+    //       placeholder='blur'
+    //       blurDataURL={`data:image/svg+xml;base64,${toBase64(
+    //         shimmer(700, 700)
+    //       )}`}
+    //     />
+    //   ))
+    // )}
   };
 
   useEffect(() => {
@@ -191,9 +279,10 @@ const Explore: NextPage = () => {
     if (brand3) {
       temp.push(brand3);
     }
-    getDetailBrand(temp);
-    getImageBrand(temp);
-    getListSameModule(temp);
+    if (temp.length > 0) {
+      serListIdBrand(temp);
+    }
+    compareBrand(temp);
   }, [router.query]);
 
   return (
@@ -246,29 +335,35 @@ const Explore: NextPage = () => {
                   justifyContent='center'
                   // alignItems='center'
                 >
-                  {imagesBrand.map((brand, i) => (
+                  {brand?.brands.map((brd, i) => (
                     <Box
                       key={i}
                       maxH='100vh' //{{ base: 'unset', md: '100vh' }}
                       overflowY={{ base: 'unset', md: 'scroll' }}
                       className='hide-styled-scrollbar'
                     >
-                      {brand.images.map((image, index) => (
-                        <Image
-                          alt={image.filename}
-                          src={image.imagePath}
-                          _hover={{ cursor: 'pointer' }}
-                          key={index}
-                          w={{
-                            base: '270px',
-                            md: '360px',
-                            lg: '360px',
-                            xl: '360px',
-                          }}
-                          mb='30px'
-                          bgColor='#FF9797'
-                        />
-                      ))}
+                      {renderImageBrand(brd)}
+                      {/* {brd.modules.map((mod, j) =>
+                        mod.images.map((imge, k) => (
+                          <Image
+                            alt='alt'
+                            src={imge}
+                            style={{
+                              cursor: 'pointer',
+                              marginBottom: '30px',
+                              backgroundColor: '#FF9797',
+                            }}
+                            height={400}
+                            // layout=""
+                            key={`${i}${j}${k}`}
+                            width={360}
+                            placeholder='blur'
+                            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                              shimmer(700, 700)
+                            )}`}
+                          />
+                        ))
+                      )} */}
                     </Box>
                   ))}
                 </Flex>
@@ -302,8 +397,8 @@ const Explore: NextPage = () => {
                   Same Module
                 </Text>
                 <Box mt='28px'>
-                  {listSameModule.length > 0 ? (
-                    listSameModule.map((module, i) => (
+                  {brand?.sameModules ? (
+                    brand?.sameModules.map((module, i) => (
                       <RenderItemCheckbox
                         fontWeight={
                           filterModule.includes(module) ? '600' : '400'
@@ -339,7 +434,7 @@ const Explore: NextPage = () => {
             </Button>
           </Box>
           <Flex alignItems='center' gap='12px'>
-            {listIdBrandCompare.map((brand, item) => (
+            {brand?.brands.map((brd, item) => (
               <Box position='relative' key={item}>
                 <Flex
                   alignItems='center'
@@ -352,17 +447,26 @@ const Explore: NextPage = () => {
                 >
                   <Image
                     src={
-                      brand?.brandImage === undefined ||
-                      brand?.brandImage.length === 0
+                      brd?.smallLogo === undefined ||
+                      brd?.smallLogo.length === 0
                         ? '/images/shoope.png'
-                        : brand.brandImage
+                        : brd?.smallLogo
                     }
+                    alt='logo'
+                    layout='fill'
+                    placeholder='blur'
+                    blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                      shimmer(700, 700)
+                    )}`}
+                    style={{
+                      borderRadius: '100%',
+                    }}
                   />
                 </Flex>
                 <IconButton
                   top='8px'
                   right='-12px'
-                  onClick={() => handleRemoveBrand(brand._id)}
+                  onClick={() => handleRemoveBrand(brd.id)}
                   w='16px'
                   h='16px'
                   padding='0'
@@ -390,7 +494,7 @@ interface IRenderItemCheckbox {
 const RenderItemCheckbox: React.FC<IRenderItemCheckbox> = (props) => {
   const hoverRef = useRef(null);
   const isHover = useHover(hoverRef);
-
+  // props.filterModule.includes(props.value)
   return (
     <Flex
       justifyContent='space-between'

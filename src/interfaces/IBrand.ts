@@ -56,3 +56,27 @@ export interface IListBrandByFlow {
   screens: number;
   modules: number;
 }
+
+export interface IBrandV2 {
+  _id: string;
+  name: string;
+  description: string;
+  banner: string;
+  companyName: string;
+  logoSmall: string;
+  bigLogo: string;
+  category: [
+    {
+      _id: string;
+      name: string;
+      hashtag: string[];
+    }
+  ];
+  createdAt: string;
+  updatedAt: string;
+  isAndroid: boolean;
+  isIos: boolean;
+  isWeb: boolean;
+  screenTotal: number;
+  images: string[];
+}

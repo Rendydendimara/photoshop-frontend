@@ -1,4 +1,6 @@
 export const BACKEND_URL: string = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';
+export const BACKEND_URLV2: string =
+  process.env.NEXT_PUBLIC_BACKEND_URL_V2 ?? '';
 export const APP_NAME = 'Thetruesight';
 
 export interface INavItem {

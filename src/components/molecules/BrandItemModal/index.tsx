@@ -1,27 +1,38 @@
 import { Button } from '@chakra-ui/button';
-import { Image as ChakraImage } from '@chakra-ui/image';
 import { Box, Center, Flex, Text } from '@chakra-ui/layout';
 import { ApiGetDetailBrand } from 'api/brand';
-import { IBrand } from 'interfaces/IBrand';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { HiTrash } from 'react-icons/hi';
+import { shimmer, toBase64 } from 'utils/imageOptimization';
 
 interface IBrandSelected {
   fieldName: string;
   brandId: string;
   onRemove: (brandId: string, fieldName: string) => void;
 }
+
+interface IBrandItem {
+  id: string;
+  name: string;
+  logoSmall: string;
+  moduleCount: number;
+  screenCount: number;
+}
+
 const BrandItemModal: React.FC<IBrandSelected> = (props) => {
-  const [brand, setBrand] = useState<IBrand>();
+  const [brand, setBrand] = useState<IBrandItem>();
   const getDetailBrand = async () => {
-    const res = await ApiGetDetailBrand(props.brandId);
+    const res = await ApiGetDetailBrand(props.brandId, {
+      type: 'simple-compare',
+    });
     if (res.status === 200) {
       setBrand(res.data.data);
     }
   };
 
   const handleRemove = () => {
-    props.onRemove(brand?._id ?? '', props.fieldName);
+    props.onRemove(brand?.id ?? '', props.fieldName);
   };
 
   useEffect(() => {
@@ -38,18 +49,22 @@ const BrandItemModal: React.FC<IBrandSelected> = (props) => {
         boxShadow='0px 0px 4px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.06)'
         borderRadius='12px'
       >
-        <ChakraImage
+        <Image
           alt='shoope'
           src={
-            brand?.brandImage === undefined || brand?.brandImage.length === 0
-              ? './images/shoope.png'
-              : brand.brandImage
+            brand === undefined || brand?.logoSmall.length === 0
+              ? '/images/shoope.png'
+              : brand?.logoSmall
           }
-          width={{ base: '144px', md: '144px' }}
-          height='153px'
+          width={144}
+          height={153}
+          placeholder='blur'
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            shimmer(700, 700)
+          )}`}
           objectFit='contain'
           objectPosition='center'
-        />{' '}
+        />
       </Flex>
       <Text
         fontWeight='500'
@@ -59,7 +74,7 @@ const BrandItemModal: React.FC<IBrandSelected> = (props) => {
         mt='12px'
         color='#172A3A'
       >
-        {brand?.brandName}
+        {brand?.name}
       </Text>
       <Text
         fontWeight='500'
@@ -69,7 +84,7 @@ const BrandItemModal: React.FC<IBrandSelected> = (props) => {
         mt='4px'
         color='#B4C6D4'
       >
-        {brand?.modules} Module {brand?.screens} Screen
+        {brand?.moduleCount} Module {brand?.screenCount} Screen
       </Text>
       <Center>
         <Button

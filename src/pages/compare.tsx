@@ -1,19 +1,20 @@
 import { Button } from '@chakra-ui/button';
 import { useDisclosure } from '@chakra-ui/hooks';
-import { Image } from '@chakra-ui/image';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
-import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
-import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import {
   Box,
   Center,
   Flex,
   Heading,
+  HStack,
   SimpleGrid,
   Text,
 } from '@chakra-ui/layout';
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/modal';
-import { ApiGetListBrand } from 'api/brand';
+import { ApiFindBrand } from 'api/brand';
+import { ApiGetListCategoryV2 } from 'api/category';
+import { CheckboxCheckedIcon } from 'components/atoms/icons/checkbox-checked-icon';
+import { CheckboxIcon } from 'components/atoms/icons/checkbox-icon';
 import BrandItemModal from 'components/molecules/BrandItemModal';
 import FilterCheckbox from 'components/molecules/FilterCheckbox';
 import CheckboxItem from 'components/molecules/FilterCheckbox/CheckboxItem';
@@ -21,18 +22,18 @@ import AppTemplate from 'components/templates/AppTemplate';
 import Layout from 'components/templates/Layout';
 import { APP_NAME } from 'constant';
 import { LOCAL_COMPARE } from 'constant/local';
-import { IBrand } from 'interfaces/IBrand';
+import { IBrandV2 } from 'interfaces/IBrand';
+import { ICategory } from 'interfaces/ICategory';
 import { getLocalCookie, setLocalCookie } from 'lib/Cookies/AppCookies';
 import { every, filter, includes, some } from 'lodash';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { HiOutlinePlusSm } from 'react-icons/hi';
 import { RiSearchLine } from 'react-icons/ri';
-import { ApiGetListCategory } from 'api/category';
-import { ICategory } from 'interfaces/ICategory';
+import { shimmer, toBase64 } from 'utils/imageOptimization';
 
 let searchTimer: any;
 const Compare: NextPage = () => {
@@ -48,9 +49,11 @@ const Compare: NextPage = () => {
     }
   );
   const [fieldAdd, setFieldAdd] = useState('');
-  const [listBrandCompetitor, setListBrandCompetitor] = useState<IBrand[]>([]);
+  const [listBrandCompetitor, setListBrandCompetitor] = useState<IBrandV2[]>(
+    []
+  );
   const [listBrandCompetitorStatic, setListBrandCompetitorStatic] = useState<
-    IBrand[]
+    IBrandV2[]
   >([]);
   const [listCategory, setListCategory] = useState<ICategory[]>([]);
   const [filterBrand, setFilterBrand] = useState<{
@@ -85,7 +88,7 @@ const Compare: NextPage = () => {
     notIncludeBrandId?: string[];
     keyword?: string[];
   }) => {
-    const res = await ApiGetListBrand(filter);
+    const res = await ApiFindBrand(filter);
     if (res.status === 200) {
       setListBrandCompetitor(res.data.data);
       setListBrandCompetitorStatic(res.data.data);
@@ -134,11 +137,11 @@ const Compare: NextPage = () => {
   const searching = (query: string): void => {
     if (query != '') {
       const searchQuery = query.toLowerCase();
-      const temp = filter(listBrandCompetitorStatic, (brand: IBrand) => {
+      const temp = filter(listBrandCompetitorStatic, (brand: IBrandV2) => {
         let passFilter: boolean[] = [];
         // SEARCH
         if ((searchQuery?.length ?? 0) > 0) {
-          const haystack = [brand.brandName.toLowerCase()];
+          const haystack = [brand.name.toLowerCase()];
           passFilter.push(some(haystack, (el) => includes(el, searchQuery)));
         } else {
           passFilter.push(true);
@@ -161,24 +164,24 @@ const Compare: NextPage = () => {
     if (search.length === 0 && filterBrand.categories.length === 0) {
       return listBrandCompetitorStatic;
     } else {
-      const tempBrand = filter(listBrandCompetitorStatic, (brand: IBrand) => {
+      const tempBrand = filter(listBrandCompetitorStatic, (brand: IBrandV2) => {
         let passFilter: boolean[] = [];
-
+        // let catBrand = brand.category.map((cat) => cat._id)
         // FILTER
-        if (
-          filterBrand.categories.length > 0 &&
-          filterBrand.categories.includes('all') === false
-        ) {
-          passFilter.push(
-            filterBrand.categories.includes(brand.category_id._id)
-          );
-        } else {
-          passFilter.push(true);
-        }
+        // if (
+        //   filterBrand.categories.length > 0 &&
+        //   filterBrand.categories.includes('all') === false
+        // ) {
+        //   passFilter.push(
+        //     filterBrand.categories.includes(brand.category_id._id)
+        //   );
+        // } else {
+        //   passFilter.push(true);
+        // }
 
         // SEARCH
         if (search.length > 0) {
-          const haystack = [brand.brandName.toLowerCase()];
+          const haystack = [brand.name.toLowerCase()];
           passFilter.push(some(haystack, (el) => includes(el, search)));
         } else {
           passFilter.push(true);
@@ -221,29 +224,26 @@ const Compare: NextPage = () => {
   };
 
   const handleGetListCategory = async () => {
-    const res = await ApiGetListCategory();
+    const res = await ApiGetListCategoryV2();
     if (res.status === 200) {
       let data = res.data.data;
       let dataResult: any = data;
       let countTotal = 0;
-      if (data.length > 0) {
-        data.forEach((dt: any) => {
-          countTotal += dt.totalBrand;
-        });
-        dataResult = [
-          {
-            name: 'all',
-            _id: 'all',
-            created_at: '',
-            totalBrand: countTotal,
-          },
-          ...data,
-        ];
-      }
+      data.forEach((dt: any) => {
+        countTotal += dt.totalBrand;
+      });
+      dataResult = [
+        {
+          name: 'all',
+          _id: 'all',
+          created_at: '',
+          totalBrand: countTotal,
+        },
+        ...data,
+      ];
       setListCategory(dataResult);
     }
   };
-
   const renderBrandName = (name: string) => {
     let searchString = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     // let paragraph = document.getElementById("paragraph");
@@ -302,8 +302,8 @@ const Compare: NextPage = () => {
       temp.push(brandIdLocal);
       setLocalCookie(LOCAL_COMPARE[1].brandId, false);
       setLocalCookie(LOCAL_COMPARE[1].listModule, false);
+      handleGetListBrand({ notIncludeBrandId: temp });
     }
-    handleGetListBrand({ notIncludeBrandId: temp });
   }, []);
 
   return (
@@ -566,17 +566,21 @@ const Compare: NextPage = () => {
                         >
                           <Image
                             src={
-                              brand.brandImage === undefined ||
-                              brand.brandImage.length === 0
-                                ? './images/shoope.png'
-                                : brand.brandImage
+                              brand.logoSmall === undefined ||
+                              brand.logoSmall.length === 0
+                                ? '/images/shoope.png'
+                                : brand.logoSmall
                             }
                             alt='shoope logo'
                             // width={{ base: 'full', md: '120px' }}
-                            w={{ base: '120px', md: '120px' }}
-                            height='120px'
+                            width={120}
+                            height={120}
                             objectFit='contain'
                             objectPosition='center'
+                            placeholder='blur'
+                            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                              shimmer(700, 700)
+                            )}`}
                           />
                         </Center>
                         <Text
@@ -586,19 +590,23 @@ const Compare: NextPage = () => {
                           textAlign='center'
                           mt='12px'
                           dangerouslySetInnerHTML={{
-                            __html: renderBrandName(brand.brandName),
+                            __html: renderBrandName(brand?.name ?? ''),
                           }}
                         />
-                        <Text
-                          fontWeight='400'
-                          fontSize='12px'
-                          // lineHeight='24px'
-                          textAlign='center'
-                          mt='4px'
-                          color='#91A5B6'
-                        >
-                          {brand.category_id.name}
-                        </Text>
+                        <HStack spacing={2} justifyContent='center'>
+                          {brand?.category.map((category, i) => (
+                            <Text
+                              fontWeight='400'
+                              fontSize='12px'
+                              // lineHeight='24px'
+                              textAlign='center'
+                              mt='4px'
+                              color='#91A5B6'
+                            >
+                              {category.name}
+                            </Text>
+                          ))}
+                        </HStack>
                       </Box>
                     ))}
                   </SimpleGrid>
